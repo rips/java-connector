@@ -1,6 +1,7 @@
 package com.ripstech.apiconnector2.config;
 
 import okhttp3.Authenticator;
+import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
@@ -27,6 +28,21 @@ public class HttpClientConfig {
 		clientBuilder.proxy(proxy);
 		clientCache = null;
 		return this;
+	}
+
+	public HttpClientConfig setProxy(Proxy proxy, String username, String password) {
+		clientBuilder.proxyAuthenticator((route, response) -> {
+			if(response.request().header("Proxy-Authorization") != null) {
+				return null;
+			}
+			return response.request()
+					       .newBuilder()
+					       .header("Proxy-Authorization",
+					               Credentials.basic(username, password))
+					       .build();
+		});
+		clientCache = null;
+		return setProxy(proxy);
 	}
 
 	public HttpClientConfig setSslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager x509TrustManager) {
