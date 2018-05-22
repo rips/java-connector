@@ -9,8 +9,7 @@ import com.ripstech.apiconnector2.service.template.GenericService.HttpMethod;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 public class ApiRequest {
@@ -19,7 +18,7 @@ public class ApiRequest {
 	private ObjectMapper objectMapper;
 	private String baseUrl;
 	private String path;
-	private Map<String, String> queryParams = new HashMap<>();
+	private LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
 	private HttpMethod method = HttpMethod.GET;
 	private RequestBody body;
 	private JsonProcessingException exception;
@@ -81,7 +80,7 @@ public class ApiRequest {
 		return this;
 	}
 
-	public ApiRequest setQueryParams(Map<String, String> queryParams) {
+	public ApiRequest setQueryParams(LinkedHashMap<String, String> queryParams) {
 		this.queryParams = queryParams;
 		return this;
 	}

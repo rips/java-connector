@@ -1,17 +1,16 @@
 package com.ripstech.apiconnector2.service.queryparameter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public abstract class QueryParamerters {
 
-	final Map<String, String> params;
+	final LinkedHashMap<String, String> params;
 
 	QueryParamerters() {
-		this.params = new HashMap<>();
+		this.params = new LinkedHashMap<>();
 	}
 
-	public Map<String, String> getParams() {
+	public LinkedHashMap<String, String> getParams() {
 		return params;
 	}
 
