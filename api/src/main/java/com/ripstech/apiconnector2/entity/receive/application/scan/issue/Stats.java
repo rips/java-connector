@@ -1,5 +1,8 @@
 package com.ripstech.apiconnector2.entity.receive.application.scan.issue;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.ripstech.apiconnector2.entity.deserializer.ArrayToMapDeserializer;
+
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,6 +23,7 @@ public class Stats {
 		return this.issueSeverities;
 	}
 
+	@JsonDeserialize(using = ArrayToMapDeserializer.class)
 	public Map<Integer, Integer> getIssueDepths() {
 		return this.issueDepths;
 	}
