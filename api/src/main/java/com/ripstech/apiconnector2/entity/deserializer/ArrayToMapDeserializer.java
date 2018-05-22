@@ -32,7 +32,8 @@ public class ArrayToMapDeserializer extends StdDeserializer<Map<Integer, Integer
 				JsonDeserializer<Object> deserializerMap = ctxt.findRootValueDeserializer(ctxt.constructType(Map.class));
 				Map<Integer, Integer> deserializeMap = (Map<Integer, Integer>) deserializerMap.deserialize(p, ctxt);
 				return deserializeMap;
+			default:
+				return Collections.emptyMap();
 		}
-		return Collections.emptyMap();
 	}
 }
