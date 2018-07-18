@@ -32,6 +32,7 @@ public class Issue {
 	private Boolean directlyCalled;
 	private Boolean registerGlobals;
 	private String cve;
+	private String uuid;
 
 	public int getId() {
 		return this.id;
@@ -123,6 +124,10 @@ public class Issue {
 
 	public String getCve() {
 		return cve;
+	}
+
+	public String getUuid() {
+		return uuid;
 	}
 
 }
