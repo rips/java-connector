@@ -1,5 +1,7 @@
 package com.ripstech.apiconnector2.service.queryparameter;
 
+import com.ripstech.apiconnector2.entity.send.filter.Expression;
+
 import java.time.OffsetDateTime;
 
 public class Filter extends QueryParamerters {
@@ -136,6 +138,16 @@ public class Filter extends QueryParamerters {
 
 	public Filter readable() {
 		params.put("showIssueReadable", "1");
+		return this;
+	}
+
+	public Filter json(Expression expression) {
+		json(new JsonFilter(expression));
+		return this;
+	}
+
+	public Filter json(JsonFilter jsonFilter) {
+		params.put("filter", jsonFilter.asJsonString());
 		return this;
 	}
 
