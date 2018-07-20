@@ -17,4 +17,8 @@ public class And implements Condition, Expression {
 		__and.addAll(Arrays.asList(expressions));
 	}
 
+	public And(List<Expression> expressions) {
+		__and.addAll(expressions);
+	}
+
 }

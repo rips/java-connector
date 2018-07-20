@@ -7,6 +7,8 @@ import com.ripstech.apiconnector2.entity.send.filter.condition.And;
 import com.ripstech.apiconnector2.entity.send.filter.condition.Or;
 import com.ripstech.apiconnector2.entity.send.filter.expression.*;
 
+import java.util.List;
+
 public class JsonFilter {
 
 	private final String json;
@@ -27,7 +29,15 @@ public class JsonFilter {
 		return new And(expression);
 	}
 
+	public static And and(List<Expression> expression) {
+		return new And(expression);
+	}
+
 	public static Or or(Expression... expression) {
+		return new Or(expression);
+	}
+
+	public static Or or(List<Expression> expression) {
 		return new Or(expression);
 	}
 
