@@ -29,7 +29,7 @@ public class JsonFilter {
 		return new And(expression);
 	}
 
-	public static And and(List<Expression> expression) {
+	public static And and(List<? extends Expression> expression) {
 		return new And(expression);
 	}
 
@@ -37,7 +37,7 @@ public class JsonFilter {
 		return new Or(expression);
 	}
 
-	public static Or or(List<Expression> expression) {
+	public static Or or(List<? extends Expression> expression) {
 		return new Or(expression);
 	}
 

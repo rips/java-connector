@@ -17,7 +17,7 @@ public class Or implements Condition, Expression {
 		__or.addAll(Arrays.asList(expressions));
 	}
 
-	public Or(List<Expression> expressions) {
+	public Or(List<? extends Expression> expressions) {
 		__or.addAll(expressions);
 	}
 
