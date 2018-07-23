@@ -11,6 +11,7 @@ public class ApplicationSend {
 	private Optional<String> name;
 	private Optional<Integer> chargedQuota;
 	private Optional<List<String>> defaultScanCallbacks;
+	private Optional<Boolean> defaultExtendedScanCallbacks;
 
 	public static ApplicationSend createPost(String name) {
 		return new ApplicationSend().setName(name);
@@ -37,6 +38,11 @@ public class ApplicationSend {
 		return this;
 	}
 
+	public ApplicationSend setDefaultExtendedScanCallbacks(Boolean defaultExtendedScanCallbacks) {
+		this.defaultExtendedScanCallbacks = Optional.ofNullable(defaultExtendedScanCallbacks);
+		return this;
+	}
+
 	public Optional<String> getName() {
 		return this.name;
 	}
@@ -47,5 +53,9 @@ public class ApplicationSend {
 
 	public Optional<List<String>> getDefaultScanCallbacks() {
 		return this.defaultScanCallbacks;
+	}
+
+	public Optional<Boolean> getDefaultExtendedScanCallbacks() {
+		return defaultExtendedScanCallbacks;
 	}
 }

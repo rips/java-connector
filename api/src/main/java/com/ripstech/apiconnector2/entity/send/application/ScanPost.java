@@ -98,6 +98,7 @@ public class ScanPost {
 		private String path;
 		private Integer analysisDepth;
 		private List<String> callbacks;
+		private Boolean extendedCallbacks;
 		private Integer maxIssuesPerType;
 		private String comment;
 
@@ -160,6 +161,10 @@ public class ScanPost {
 
 		public List<String> getCallbacks() {
 			return this.callbacks;
+		}
+
+		public Boolean getExtendedCallbacks() {
+			return extendedCallbacks;
 		}
 
 		public Integer getMaxIssuesPerType() {
@@ -275,6 +280,15 @@ public class ScanPost {
 
 		public ScanSub setCallbacks(List<String> callbacks) {
 			this.callbacks = callbacks;
+			return this;
+		}
+
+		public static Parameter<ScanSub> extendedCallbacks(Boolean extendedCallbacks) {
+			return new ParameterImpl<>(extendedCallbacks, ScanSub::setExtendedCallbacks);
+		}
+
+		public ScanSub setExtendedCallbacks(Boolean extendedCallbacks) {
+			this.extendedCallbacks = extendedCallbacks;
 			return this;
 		}
 

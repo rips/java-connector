@@ -24,6 +24,7 @@ public class Scan {
 	private Object parent;
 	private Object severityDistribution;
 	private List<String> callbacks = Collections.emptyList();
+	private Boolean extendedCallbacks;
 	private User createdBy;
 	private Process process;
 	private Application application;
@@ -81,6 +82,10 @@ public class Scan {
 
 	public List<String> getCallbacks() {
 		return this.callbacks;
+	}
+
+	public Boolean getExtendedCallbacks() {
+		return extendedCallbacks;
 	}
 
 	public User getCreatedBy() {

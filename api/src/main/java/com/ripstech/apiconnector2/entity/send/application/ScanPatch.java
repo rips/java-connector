@@ -38,6 +38,7 @@ public class ScanPatch {
 		private Optional<Integer> percent;
 		private Optional<Integer> log;
 		private Optional<String> version;
+		private Optional<Boolean> extendedCallbacks;
 		private Optional<String> comment;
 
 		public ScanSub setPhase(Integer phase) {
@@ -60,6 +61,11 @@ public class ScanPatch {
 			return this;
 		}
 
+		public ScanSub setExtendedCallbacks(Boolean extendedCallbacks) {
+			this.extendedCallbacks = Optional.ofNullable(extendedCallbacks);
+			return this;
+		}
+
 		public ScanSub setComment(String comment) {
 			this.comment = Optional.ofNullable(comment);
 			return this;
@@ -79,6 +85,10 @@ public class ScanPatch {
 
 		public Optional<String> getVersion() {
 			return this.version;
+		}
+
+		public Optional<Boolean> getExtendedCallbacks() {
+			return extendedCallbacks;
 		}
 
 		public Optional<String> getComment() {

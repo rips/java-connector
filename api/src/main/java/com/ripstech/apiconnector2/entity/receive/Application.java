@@ -15,6 +15,7 @@ public class Application {
 	private OffsetDateTime creation;
 	private Organisation organisation;
 	private List<String> defaultScanCallbacks = Collections.emptyList();
+	private Boolean defaultExtendedScanCallbacks;
 
 	public int getId() {
 		return this.id;
@@ -48,4 +49,7 @@ public class Application {
 		return this.defaultScanCallbacks;
 	}
 
+	public Boolean getDefaultExtendedScanCallbacks() {
+		return defaultExtendedScanCallbacks;
+	}
 }
