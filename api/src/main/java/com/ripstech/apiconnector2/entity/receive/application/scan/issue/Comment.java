@@ -12,6 +12,7 @@ public class Comment {
 	private OffsetDateTime submission;
 	private Issue issue;
 	private User createdBy;
+	private String source;
 
 	public int getId() {
 		return this.id;
@@ -33,4 +34,7 @@ public class Comment {
 		return this.createdBy;
 	}
 
+	public String getSource() {
+		return this.source;
+	}
 }

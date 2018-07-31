@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 public class CommentSend {
 
 	private String comment;
+	private String source;
 
 	public static CommentSend createPost(String comment) {
 		return new CommentSend().setComment(comment);
@@ -17,8 +18,17 @@ public class CommentSend {
 		return this.comment;
 	}
 
+	public String getSource() {
+		return this.source;
+	}
+
 	public CommentSend setComment(String comment) {
 		this.comment = comment;
+		return this;
+	}
+
+	public CommentSend setSource(String source) {
+		this.source = source;
 		return this;
 	}
 }

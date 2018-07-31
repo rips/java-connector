@@ -12,6 +12,7 @@ public class Review {
 	private User createdBy;
 	private Issue issue;
 	private ReviewType type;
+	private String source;
 
 	public int getId() {
 		return this.id;
@@ -33,4 +34,7 @@ public class Review {
 		return this.type;
 	}
 
+	public String getSource() {
+		return this.source;
+	}
 }
