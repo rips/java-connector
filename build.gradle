@@ -1,0 +1,17 @@
+plugins {
+    id 'idea'
+}
+
+group 'com.ripstech'
+version '2.0.0'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: "jacoco"
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+}

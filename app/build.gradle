@@ -1,0 +1,7 @@
+apply plugin: 'application'
+
+mainClassName = 'com.ripstech.apiconnector2.Main'
+
+dependencies {
+    compile project(':api')
+}

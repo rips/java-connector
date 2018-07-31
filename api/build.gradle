@@ -1,0 +1,75 @@
+plugins {
+    id "org.sonarqube" version "2.6.2"
+    id 'net.ltgt.errorprone' version '0.0.13'
+    id 'org.ajoberstar.grgit' version '2.1.1'
+    id 'maven-publish'
+}
+
+ext {
+    jacksonVersion = '2.9.5'
+    resteasyVersion = '3.5.1.Final'
+    jerseyVersion = '2.26'
+    slf4jVersion = '1.8.0-beta1'
+    junitVersion = '5.1.0'
+}
+
+sonarqube {
+    properties {
+        property 'sonar.projectName', "RIPS Java API Connector 2"
+        property 'sonar.projectKey', "com.ripstech:java-api-connector-2"
+        property 'sonar.branch.name', grgit.branch.current.name
+        property 'sonar.branch.target', ""
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+        property "sonar.binaries", "${project.buildDir}/classes"
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "PASSED", "STARTED", "FAILED", "SKIPPED"
+    }
+}
+
+dependencies {
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "$jacksonVersion"
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "$jacksonVersion"
+    implementation (group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: "$jacksonVersion") {
+        because 'java 8 date use in entities'
+    }
+    implementation (group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: "$jacksonVersion") {
+        because 'java optional use in entities'
+    }
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp' , version: '3.10.0'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testCompile "org.reflections:reflections:0.9.11"
+    testCompile "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+
+    errorprone 'com.google.errorprone:error_prone_core:2.0.21'
+}
+
+publishing {
+    repositories {
+        maven {
+            url "https://nexus.internal.ripstech.com/repository/maven-rips-release/"
+            if(project.hasProperty('nexusUser')) {
+                credentials {
+                    username nexusUser
+                    password nexusPassword
+                }
+            }
+        }
+    }
+
+    publications {
+        api(MavenPublication) {
+            groupId 'com.ripstech'
+            artifactId 'api-connector-java2'
+            version rootProject.version
+
+            from components.java
+        }
+    }
+}

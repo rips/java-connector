@@ -1,0 +1,5 @@
+systemProp.sonar.login=
+systemProp.sonar.password=
+systemProp.sonar.host.url=
+nexusUser=""
+nexusPassword=""
