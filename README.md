@@ -7,7 +7,7 @@ A Java library to provide easy access to RIPS and all of its features.
 ### Gradle
 
 ```groovy
-implementation 'com.ripstech:api-connector-java2:2.0.0'
+implementation 'com.ripstech:api-connector-java2:2.5.0'
 ```
 
 ### Maven
@@ -18,7 +18,7 @@ implementation 'com.ripstech:api-connector-java2:2.0.0'
   <dependency>
     <groupId>com.ripstech</groupId>
     <artifactId>api-connector-java2</artifactId>
-    <version>2.0.0</version>
+    <version>2.5.0</version>
   </dependency>
   ...
 </dependencies>
