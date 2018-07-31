@@ -1,6 +1,5 @@
 plugins {
     id "org.sonarqube" version "2.6.2"
-    id 'net.ltgt.errorprone' version '0.0.13'
     id 'org.ajoberstar.grgit' version '2.1.1'
     id 'maven-publish'
 }
@@ -46,8 +45,6 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     testCompile "org.reflections:reflections:0.9.11"
     testCompile "org.junit.jupiter:junit-jupiter-params:$junitVersion"
-
-    errorprone 'com.google.errorprone:error_prone_core:2.0.21'
 }
 
 publishing {
