@@ -24,6 +24,11 @@ implementation 'com.ripstech:api-connector-java2:2.5.0'
 </dependencies>
 ```
 
+## Use locally
+```bash
+gradle publishToMavenLocal
+```
+
 ## Usage
 
 ### Create API-Connector
