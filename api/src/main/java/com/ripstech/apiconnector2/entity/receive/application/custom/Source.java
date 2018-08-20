@@ -5,7 +5,7 @@ import com.ripstech.apiconnector2.entity.receive.application.Custom;
 
 public class Source {
 
-	private int id;
+	private long id;
 	@JsonProperty("class")
 	private String clazz;
 	private String method;
@@ -14,7 +14,7 @@ public class Source {
 	private String type;
 	private Custom custom;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

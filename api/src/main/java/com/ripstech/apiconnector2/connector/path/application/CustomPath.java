@@ -5,10 +5,10 @@ import com.ripstech.apiconnector2.service.application.custom.*;
 
 public class CustomPath extends Path {
 
-	private final int applicationId;
-	private final int customId;
+	private final long applicationId;
+	private final long customId;
 
-	public CustomPath(String baseUri, int applicationId, int customId) {
+	public CustomPath(String baseUri, long applicationId, long customId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.customId = customId;

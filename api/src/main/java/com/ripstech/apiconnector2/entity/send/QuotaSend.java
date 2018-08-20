@@ -15,16 +15,16 @@ public class QuotaSend {
 	private Optional<Integer> maxApplications;
 	private Optional<Integer> maxScans;
 	private Optional<Integer> maxUsers;
-	private Optional<Integer> maxLoc;
+	private Optional<Long> maxLoc;
 	private Optional<OffsetDateTime> validFrom;
 	private Optional<OffsetDateTime> validUntil;
 	private Optional<Integer> allowedMisses;
 	@JsonProperty("public")
 	private Optional<Boolean> public_;
-	private Optional<Integer> organisation;
+	private Optional<Long> organisation;
 	private Optional<Boolean> notify;
 
-	public static QuotaSend createPost(OffsetDateTime validFrom, OffsetDateTime validUntil, Integer organisation) {
+	public static QuotaSend createPost(OffsetDateTime validFrom, OffsetDateTime validUntil, long organisation) {
 		return new QuotaSend().setValidFrom(validFrom).setValidUntil(validUntil).setOrganisation(organisation);
 	}
 
@@ -64,7 +64,7 @@ public class QuotaSend {
 		return this;
 	}
 
-	public QuotaSend setMaxLoc(Integer maxLoc) {
+	public QuotaSend setMaxLoc(Long maxLoc) {
 		this.maxLoc = Optional.ofNullable(maxLoc);
 		return this;
 	}
@@ -89,7 +89,7 @@ public class QuotaSend {
 		return this;
 	}
 
-	public QuotaSend setOrganisation(Integer organisation) {
+	public QuotaSend setOrganisation(Long organisation) {
 		this.organisation = Optional.ofNullable(organisation);
 		return this;
 	}
@@ -123,7 +123,7 @@ public class QuotaSend {
 		return this.maxUsers;
 	}
 
-	public Optional<Integer> getMaxLoc() {
+	public Optional<Long> getMaxLoc() {
 		return this.maxLoc;
 	}
 
@@ -143,7 +143,7 @@ public class QuotaSend {
 		return this.public_;
 	}
 
-	public Optional<Integer> getOrganisation() {
+	public Optional<Long> getOrganisation() {
 		return this.organisation;
 	}
 

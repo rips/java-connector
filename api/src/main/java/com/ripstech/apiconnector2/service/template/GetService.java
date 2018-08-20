@@ -10,8 +10,8 @@ public abstract class GetService<T> extends SimpleGetListService<T> implements G
 		super(baseUri);
 	}
 
-	public ApiResponse<T> get(int id) {
-		return new ApiResponse<>(getTarget(GET).appendPath(Integer.toString(id)), getGenericType());
+	public ApiResponse<T> get(long id) {
+		return new ApiResponse<>(getTarget(GET).appendPath(Long.toString(id)), getGenericType());
 	}
 
 }

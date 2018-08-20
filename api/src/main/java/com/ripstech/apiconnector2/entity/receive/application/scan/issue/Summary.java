@@ -5,14 +5,14 @@ import com.ripstech.apiconnector2.entity.receive.application.scan.Issue;
 
 public class Summary {
 
-	private int id;
+	private long id;
 	private String content;
 	private String highlightedContent;
 	private Integer line;
 	private File file;
 	private Issue issue;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

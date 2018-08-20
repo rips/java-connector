@@ -9,10 +9,10 @@ import java.util.List;
 
 public class SanitiserService extends PatchDeletePostGetService<Sanitiser, SanitiserSend> {
 
-	private final int applicationId;
-	private final int customId;
+	private final long applicationId;
+	private final long customId;
 
-	public SanitiserService(String baseUri, int applicationId, int customId) {
+	public SanitiserService(String baseUri, long applicationId, long customId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.customId = customId;

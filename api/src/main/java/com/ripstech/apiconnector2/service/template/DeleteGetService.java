@@ -16,7 +16,7 @@ public abstract class DeleteGetService<T> extends GetService<T> {
 		return new ApiResponse<>(getTarget(DELETE).setQueryParams(filter), Void.class);
 	}
 
-	public ApiResponse<Void> delete(int id) {
+	public ApiResponse<Void> delete(long id) {
 		return new ApiResponse<>(getTarget(DELETE).appendPath(id), Void.class);
 	}
 

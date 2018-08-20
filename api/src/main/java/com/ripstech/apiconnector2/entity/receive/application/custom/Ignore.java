@@ -5,7 +5,7 @@ import com.ripstech.apiconnector2.entity.receive.application.Custom;
 
 public class Ignore {
 
-	private int id;
+	private long id;
 	@JsonProperty("class")
 	private String clazz;
 	private String method;
@@ -15,7 +15,7 @@ public class Ignore {
 	private String codeQualityFolder;
 	private Custom custom;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

@@ -9,8 +9,8 @@ import java.util.Optional;
 public class TeamSend {
 
 	private Optional<String> name;
-	private Optional<List<Integer>> users;
-	private Optional<Integer> organisation;
+	private Optional<List<Long>> users;
+	private Optional<Long> organisation;
 
 	public static TeamSend createPost(String name) {
 		return new TeamSend().setName(name);
@@ -27,12 +27,12 @@ public class TeamSend {
 		return this;
 	}
 
-	public TeamSend setUsers(List<Integer> users) {
+	public TeamSend setUsers(List<Long> users) {
 		this.users = Optional.ofNullable(users);
 		return this;
 	}
 
-	public TeamSend setOrganisation(Integer organisation) {
+	public TeamSend setOrganisation(Long organisation) {
 		this.organisation = Optional.ofNullable(organisation);
 		return this;
 	}
@@ -41,11 +41,11 @@ public class TeamSend {
 		return this.name;
 	}
 
-	public Optional<List<Integer>> getUsers() {
+	public Optional<List<Long>> getUsers() {
 		return this.users;
 	}
 
-	public Optional<Integer> getOrganisation() {
+	public Optional<Long> getOrganisation() {
 		return this.organisation;
 	}
 }

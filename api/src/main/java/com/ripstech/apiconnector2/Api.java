@@ -195,7 +195,7 @@ public class Api {
 		return service;
 	}
 
-	public ApplicationPath application(int applicationId) {
+	public ApplicationPath application(long applicationId) {
 		ApplicationPath path = new ApplicationPath(baseUri, applicationId);
 		path.setHttpClientConfig(httpClientConfig);
 		return path;

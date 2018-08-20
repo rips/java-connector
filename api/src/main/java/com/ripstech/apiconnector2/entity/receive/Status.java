@@ -1,5 +1,6 @@
 package com.ripstech.apiconnector2.entity.receive;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,19 +69,19 @@ public class Status {
 
 	public static class Census {
 
-		private Integer scans;
-		private Integer issues;
-		private Integer loc;
+		private Long scans;
+		private Long issues;
+		private BigInteger loc;
 
-		public Integer getScans() {
+		public Long getScans() {
 			return this.scans;
 		}
 
-		public Integer getIssues() {
+		public Long getIssues() {
 			return this.issues;
 		}
 
-		public Integer getLoc() {
+		public BigInteger getLoc() {
 			return this.loc;
 		}
 

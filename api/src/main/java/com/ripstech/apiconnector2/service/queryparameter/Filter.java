@@ -10,13 +10,13 @@ public class Filter extends QueryParamerters {
 		return new Filter();
 	}
 
-	public Filter limit(int i) {
-		and("limit", Integer.toString(i));
+	public Filter limit(long i) {
+		and("limit", Long.toString(i));
 		return this;
 	}
 
-	public Filter offset(int i) {
-		and("offset", Integer.toString(i));
+	public Filter offset(long i) {
+		and("offset", Long.toString(i));
 		return this;
 	}
 
@@ -30,8 +30,8 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter isEqual(String name, int value) {
-		isEqual(name, Integer.toString(value));
+	public Filter isEqual(String name, long value) {
+		isEqual(name, Long.toString(value));
 		return this;
 	}
 
@@ -45,8 +45,8 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter notEqual(String name, int value) {
-		notEqual(name, Integer.toString(value));
+	public Filter notEqual(String name, long value) {
+		notEqual(name, Long.toString(value));
 		return this;
 	}
 
@@ -85,7 +85,7 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter lessThan(String name, int value) {
+	public Filter lessThan(String name, long value) {
 		and("lessThan", name, String.valueOf(value));
 		return this;
 	}
@@ -100,7 +100,7 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter greaterThan(String name, int value) {
+	public Filter greaterThan(String name, long value) {
 		and("greaterThan", name, String.valueOf(value));
 		return this;
 	}
@@ -116,7 +116,7 @@ public class Filter extends QueryParamerters {
 	}
 
 
-	public Filter lessThanEqual(String name, int value) {
+	public Filter lessThanEqual(String name, long value) {
 		and("lessThanEqual", name, String.valueOf(value));
 		return this;
 	}
@@ -131,7 +131,7 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter greaterThanEqual(String name, int value) {
+	public Filter greaterThanEqual(String name, long value) {
 		and("greaterThanEqual", name, String.valueOf(value));
 		return this;
 	}

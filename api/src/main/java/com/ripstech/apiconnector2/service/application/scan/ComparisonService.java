@@ -12,10 +12,10 @@ import static com.ripstech.apiconnector2.service.template.GenericService.HttpMet
 
 public class ComparisonService extends GenericService {
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public ComparisonService(String baseUri, int applicationId, int scanId) {
+	public ComparisonService(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

@@ -12,13 +12,13 @@ import java.util.Map;
 
 public class Class {
 
-	private int id;
+	private long id;
 	private String version;
 	private OffsetDateTime start;
 	private OffsetDateTime finish;
 	private Integer phase;
 	private Integer percent;
-	private Integer loc;
+	private Long loc;
 	private Boolean codeStored;
 	private Boolean uploadRemoved;
 	private String sourceType;
@@ -38,7 +38,7 @@ public class Class {
 	private Integer endLine;
 	private String name;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
@@ -62,7 +62,7 @@ public class Class {
 		return this.percent;
 	}
 
-	public Integer getLoc() {
+	public Long getLoc() {
 		return this.loc;
 	}
 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -86,7 +87,7 @@ public class ApiUtils {
 
         AtomicInteger tries = new AtomicInteger(0);
         AtomicInteger percent = new AtomicInteger(-1);
-        AtomicInteger highestIssueId = new AtomicInteger(-1);
+        AtomicLong highestIssueId = new AtomicLong(-1);
 
         ScheduledFuture<?> scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
                 scanService.get(scanId).process(applicationScan -> {
@@ -102,7 +103,7 @@ public class ApiUtils {
                             .process(applicationScanIssues -> {
                                         applicationScanIssues.stream()
                                                 .map(Issue::getId)
-                                                .max(Integer::compareTo)
+                                                .max(Long::compareTo)
                                                 .ifPresent(highestIssueId::set);
                                         applicationScanIssues.forEach(scanIssueProcessor);
                                         if (percent.get() >= 100) {

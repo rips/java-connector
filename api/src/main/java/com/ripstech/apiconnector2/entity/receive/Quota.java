@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 
 public class Quota {
 
-	private int id;
+	private long id;
 	private Integer currentApplication;
 	private Integer currentScan;
 	private Integer currentUser;
@@ -22,7 +22,7 @@ public class Quota {
 	private Organisation organisation;
 	private Boolean notify;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

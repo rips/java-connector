@@ -8,10 +8,10 @@ import com.ripstech.apiconnector2.service.template.SimpleGetService;
 
 public class SettingService extends SimpleGetService<Setting> {
 
-	private int applicationId;
-	private int customId;
+	private long applicationId;
+	private long customId;
 
-	public SettingService(String baseUri, int applicationId, int customId) {
+	public SettingService(String baseUri, long applicationId, long customId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.customId = customId;

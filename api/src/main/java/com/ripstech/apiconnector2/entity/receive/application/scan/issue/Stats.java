@@ -11,8 +11,8 @@ public class Stats {
 	private Type issueType;
 	private Map<String, Integer> issueSeverities = Collections.emptyMap();
 	private Map<Integer, Integer> issueDepths = Collections.emptyMap();
-	private Integer issues;
-	private Integer reviewedIssues;
+	private Long issues;
+	private Long reviewedIssues;
 	private Map<String, Integer> issueTypes = Collections.emptyMap();
 
 	public Type getIssueType() {
@@ -28,11 +28,11 @@ public class Stats {
 		return this.issueDepths;
 	}
 
-	public Integer getIssues() {
+	public Long getIssues() {
 		return this.issues;
 	}
 
-	public Integer getReviewedIssues() {
+	public Long getReviewedIssues() {
 		return this.reviewedIssues;
 	}
 

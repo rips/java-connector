@@ -11,7 +11,7 @@ public abstract class PatchDeletePostGetService<T, K> extends DeletePostGetServi
 		super(baseUri);
 	}
 
-	public ApiResponse<T> patch(int id, K entity) {
+	public ApiResponse<T> patch(long id, K entity) {
 		return new ApiResponse<>(getTarget(PATCH, entity.getClass().getAnnotation(JsonRootName.class) != null)
 				                         .appendPath(id)
 				                         .setJsonBody(entity),
