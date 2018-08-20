@@ -7,14 +7,14 @@ import java.time.OffsetDateTime;
 
 public class Comment {
 
-	private int id;
+	private long id;
 	private String comment;
 	private OffsetDateTime submission;
 	private Issue issue;
 	private User createdBy;
 	private String source;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

@@ -10,10 +10,10 @@ public class InviteSend {
 	private String firstname;
 	private String lastname;
 	private String email;
-	private Integer organisation;
+	private Long organisation;
 	private List<String> roles;
 
-	public static InviteSend createPost(String email, int organisation) {
+	public static InviteSend createPost(String email, long organisation) {
 		return new InviteSend().setEmail(email).setOrganisation(organisation);
 	}
 
@@ -46,11 +46,11 @@ public class InviteSend {
 		return this;
 	}
 
-	public Integer getOrganisation() {
+	public Long getOrganisation() {
 		return organisation;
 	}
 
-	public InviteSend setOrganisation(Integer organisation) {
+	public InviteSend setOrganisation(Long organisation) {
 		this.organisation = organisation;
 		return this;
 	}

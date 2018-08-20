@@ -9,10 +9,10 @@ import java.util.List;
 
 public class SourceService extends PatchDeletePostGetService<Source, SourceSend> {
 
-	private final int applicationId;
-	private final int customId;
+	private final long applicationId;
+	private final long customId;
 
-	public SourceService(String baseUri, int applicationId, int customId) {
+	public SourceService(String baseUri, long applicationId, long customId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.customId = customId;

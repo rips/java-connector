@@ -5,9 +5,9 @@ import com.ripstech.apiconnector2.service.quota.QuotaAclService;
 
 public class QuotaPath extends Path {
 
-	private final int quotaId;
+	private final long quotaId;
 
-	public QuotaPath(String baseUri, int quotaId) {
+	public QuotaPath(String baseUri, long quotaId) {
 		super(baseUri);
 		this.quotaId = quotaId;
 	}

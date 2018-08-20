@@ -9,9 +9,9 @@ import java.util.List;
 
 public class QuotaAclService extends PatchDeletePostGetService<Acl, AclSend> {
 
-	private final int quotaId;
+	private final long quotaId;
 
-	public QuotaAclService(String baseUri, int quotaId) {
+	public QuotaAclService(String baseUri, long quotaId) {
 		super(baseUri);
 		this.quotaId = quotaId;
 	}

@@ -4,11 +4,11 @@ import com.ripstech.apiconnector2.entity.receive.application.scan.Issue;
 
 public class Markup {
 
-	private int id;
+	private long id;
 	private String markup;
 	private Issue issue;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

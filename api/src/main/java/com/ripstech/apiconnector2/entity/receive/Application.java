@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Application {
 
-	private int id;
+	private long id;
 	private String name;
-	private Integer currentScan;
+	private Long currentScan;
 	private User createdBy;
 	private Quota chargedQuota;
 	private OffsetDateTime creation;
@@ -17,7 +17,7 @@ public class Application {
 	private List<String> defaultScanCallbacks = Collections.emptyList();
 	private Boolean defaultExtendedScanCallbacks;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
@@ -25,7 +25,7 @@ public class Application {
 		return this.name;
 	}
 
-	public Integer getCurrentScan() {
+	public Long getCurrentScan() {
 		return this.currentScan;
 	}
 

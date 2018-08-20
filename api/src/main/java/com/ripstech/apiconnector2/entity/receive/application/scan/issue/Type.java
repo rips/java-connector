@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Type {
 
-	private int id;
+	private long id;
 	private String tag;
 	private String description;
 	private String name;
@@ -26,7 +26,7 @@ public class Type {
 	private List<Resource> resources = Collections.emptyList();
 	private Boolean inactive;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

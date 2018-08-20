@@ -8,11 +8,11 @@ import com.ripstech.apiconnector2.service.application.scan.issue.SummaryService;
 
 public class IssuePath extends Path {
 
-	private final int applicationId;
-	private final int scanId;
-	private final int issueId;
+	private final long applicationId;
+	private final long scanId;
+	private final long issueId;
 
-	public IssuePath(String baseUri, int applicationId, int scanId, int issueId) {
+	public IssuePath(String baseUri, long applicationId, long scanId, long issueId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

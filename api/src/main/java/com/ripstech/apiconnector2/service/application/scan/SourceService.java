@@ -8,10 +8,10 @@ import java.util.List;
 
 public class SourceService extends GetService<Source> {
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public SourceService(String baseUri, int applicationId, int scanId) {
+	public SourceService(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

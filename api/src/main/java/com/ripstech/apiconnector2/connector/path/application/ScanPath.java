@@ -6,10 +6,10 @@ import com.ripstech.apiconnector2.service.application.scan.*;
 
 public class ScanPath extends Path {
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public ScanPath(String baseUri, int applicationId, int scanId) {
+	public ScanPath(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

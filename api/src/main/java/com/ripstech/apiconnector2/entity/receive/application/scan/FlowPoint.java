@@ -5,7 +5,7 @@ import com.ripstech.apiconnector2.entity.receive.application.Scan;
 
 public abstract class FlowPoint {
 
-    protected int id;
+    protected long id;
     protected Integer line;
     protected File file;
     protected Scan scan;
@@ -13,7 +13,7 @@ public abstract class FlowPoint {
     @JsonProperty("class")
     protected Class clazz;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

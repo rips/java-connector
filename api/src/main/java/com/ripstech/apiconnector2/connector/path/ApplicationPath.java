@@ -10,20 +10,20 @@ import com.ripstech.apiconnector2.service.application.UploadService;
 
 public class ApplicationPath extends Path {
 
-	private final int applicationId;
+	private final long applicationId;
 
-	public ApplicationPath(String baseUri, int applicationId) {
+	public ApplicationPath(String baseUri, long applicationId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 	}
 
-	public ScanPath scan(int scanId) {
+	public ScanPath scan(long scanId) {
 		ScanPath path = new ScanPath(baseUri, applicationId, scanId);
 		path.setHttpClientConfig(httpClientConfig);
 		return path;
 	}
 
-	public CustomPath custom(int customId) {
+	public CustomPath custom(long customId) {
 		CustomPath path = new CustomPath(baseUri, applicationId, customId);
 		path.setHttpClientConfig(httpClientConfig);
 		return path;

@@ -26,7 +26,7 @@ public class DifferenceDetails {
 
 	public class Entry {
 
-		private int id;
+		private long id;
 		private List<String> comments = Collections.emptyList();
 		private List<String> summaries = Collections.emptyList();
 		private List<String> markups = Collections.emptyList();
@@ -38,7 +38,7 @@ public class DifferenceDetails {
 		private Boolean complete;
 		private String hash;
 
-		public int getId() {
+		public long getId() {
 			return this.id;
 		}
 

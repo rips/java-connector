@@ -5,7 +5,7 @@ import com.ripstech.apiconnector2.entity.receive.application.Scan;
 
 public class Function {
 
-	private int id;
+	private long id;
 	private String name;
 	private Integer startLine;
 	private Integer endLine;
@@ -14,7 +14,7 @@ public class Function {
 	private Class clazz;
 	private Scan scan;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

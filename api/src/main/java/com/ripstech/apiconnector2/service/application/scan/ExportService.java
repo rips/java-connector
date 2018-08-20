@@ -14,10 +14,10 @@ public class ExportService extends GenericService {
 	private static final String MIMETYPE_TEXT_CSV = "text/csv";
 	private static final String MIMETYPE_APPLICATION_PDF = "application/pdf";
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public ExportService(String baseUri, int applicationId, int scanId) {
+	public ExportService(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

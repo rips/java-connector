@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Issue {
 
-	private int id;
+	private long id;
 	private List<Comment> comments = Collections.emptyList();
 	private List<Summary> summaries = Collections.emptyList();
 	private List<Markup> markups = Collections.emptyList();
@@ -34,7 +34,7 @@ public class Issue {
 	private String cve;
 	private String uuid;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

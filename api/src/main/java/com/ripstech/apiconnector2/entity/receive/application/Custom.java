@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Custom {
 
-	private int id;
+	private long id;
 	private String name;
 	private Boolean global;
 	@JsonProperty("default")
@@ -22,7 +22,7 @@ public class Custom {
 	private List<Source> sources = Collections.emptyList();
 	private Setting setting;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

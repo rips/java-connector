@@ -4,14 +4,14 @@ import java.time.OffsetDateTime;
 
 public class License {
 
-	private int id;
+	private long id;
 	private OffsetDateTime submission;
 	private OffsetDateTime validUntil;
 	private Boolean quotaDistributed;
 	private Organisation organisation;
 	private User createdBy;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

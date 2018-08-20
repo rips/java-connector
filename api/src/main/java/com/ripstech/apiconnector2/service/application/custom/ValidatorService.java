@@ -9,10 +9,10 @@ import java.util.List;
 
 public class ValidatorService extends PatchDeletePostGetService<Validator, ValidatorSend> {
 
-	private final int applicationId;
-	private final int customId;
+	private final long applicationId;
+	private final long customId;
 
-	public ValidatorService(String baseUri, int applicationId, int customId) {
+	public ValidatorService(String baseUri, long applicationId, long customId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.customId = customId;
