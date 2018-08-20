@@ -70,7 +70,7 @@ public class Status {
 
 		private Integer scans;
 		private Integer issues;
-		private Integer loc;
+		private Long loc;
 
 		public Integer getScans() {
 			return this.scans;
@@ -80,7 +80,7 @@ public class Status {
 			return this.issues;
 		}
 
-		public Integer getLoc() {
+		public Long getLoc() {
 			return this.loc;
 		}
 
