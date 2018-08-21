@@ -104,13 +104,13 @@ public class Type {
 
 	public static class Resource {
 
-		private int id;
+		private long id;
 		private String title;
 		private String author;
 		private String url;
 		private OffsetDateTime publishedAt;
 
-		public int getId() {
+		public long getId() {
 			return id;
 		}
 
