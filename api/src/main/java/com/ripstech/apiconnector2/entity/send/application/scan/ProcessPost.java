@@ -8,6 +8,8 @@ public class ProcessPost {
 	private Integer pid;
 	private String finish;
 	private String version;
+	private String name;
+	private Boolean finished;
 
 	static ProcessPost createPost(int pid) {
 		return new ProcessPost().setPid(pid);
@@ -27,6 +29,14 @@ public class ProcessPost {
 		return this.version;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public Boolean getFinished() {
+		return finished;
+	}
+
 	public ProcessPost setPid(Integer pid) {
 		this.pid = pid;
 		return this;
@@ -39,6 +49,16 @@ public class ProcessPost {
 
 	public ProcessPost setVersion(String version) {
 		this.version = version;
+		return this;
+	}
+
+	public ProcessPost setName(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public ProcessPost setFinished(Boolean finished) {
+		this.finished = finished;
 		return this;
 	}
 }

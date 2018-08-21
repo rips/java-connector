@@ -86,7 +86,7 @@ public class ScanPost {
 
 	public static class ScanSub {
 
-		private Integer chargedQuota;
+		private Long chargedQuota;
 		private Long custom;
 		private Long parent;
 		private Boolean codeStored;
@@ -115,7 +115,7 @@ public class ScanPost {
 
 		private ScanSub() {}
 
-		public Integer getChargedQuota() {
+		public Long getChargedQuota() {
 			return this.chargedQuota;
 		}
 
@@ -175,11 +175,11 @@ public class ScanPost {
 			return comment;
 		}
 
-		public static Parameter<ScanSub> chargedQuota(Integer chargedQuota) {
+		public static Parameter<ScanSub> chargedQuota(Long chargedQuota) {
 			return new ParameterImpl<>(chargedQuota, ScanSub::setChargedQuota);
 		}
 
-		public ScanSub setChargedQuota(Integer chargedQuota) {
+		public ScanSub setChargedQuota(Long chargedQuota) {
 			this.chargedQuota = chargedQuota;
 			return this;
 		}
