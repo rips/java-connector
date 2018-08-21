@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class CustomServiceTest extends ApiSettings {
 
 	private static Api api;
-	private static int appId;
+	private static long appId;
 
 	public CustomServiceTest() throws IOException, ApiException {
 	}
@@ -43,7 +43,7 @@ class CustomServiceTest extends ApiSettings {
 	@Test
 	void postPatchDelete() throws ApiException {
 		CustomService service = api.application(appId).customs();
-		int profileId = service.post(CustomSend.createPost("test")).orThrow(ApiException::new).getId();
+		long profileId = service.post(CustomSend.createPost("test")).orThrow(ApiException::new).getId();
 		service.patch(profileId, CustomSend.createPatch().setGlobal(true))
 				.process(custom -> assertTrue(custom.getGlobal()), (httpStatus, s) -> fail(s));
 		service.delete(profileId);

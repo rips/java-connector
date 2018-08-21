@@ -28,7 +28,7 @@ class ApplicationServiceTest extends ApiSettings {
 		ApplicationService service = api.applications();
 		Application application = service.post(ApplicationSend.createPost(ApplicationServiceTest.class.getCanonicalName()))
 				                          .orThrow(ApiException::new);
-		int id = application
+		long id = application
 				         .getId();
 		String changedName = ApplicationServiceTest.class.getName() + "changed";
 		assertEquals(changedName,
