@@ -87,14 +87,14 @@ public class ScanPost {
 	public static class ScanSub {
 
 		private Integer chargedQuota;
-		private Integer custom;
-		private Integer parent;
+		private Long custom;
+		private Long parent;
 		private Boolean codeStored;
 		private Boolean uploadRemoved;
 		private Boolean historyInherited;
 		private List<Integer> issueTypes;
 		private String version;
-		private Integer upload;
+		private Long upload;
 		private String path;
 		private Integer analysisDepth;
 		private List<String> callbacks;
@@ -119,11 +119,11 @@ public class ScanPost {
 			return this.chargedQuota;
 		}
 
-		public Integer getCustom() {
+		public Long getCustom() {
 			return this.custom;
 		}
 
-		public Integer getParent() {
+		public Long getParent() {
 			return this.parent;
 		}
 
@@ -147,7 +147,7 @@ public class ScanPost {
 			return this.version;
 		}
 
-		public Integer getUpload() {
+		public Long getUpload() {
 			return upload;
 		}
 
@@ -184,20 +184,20 @@ public class ScanPost {
 			return this;
 		}
 
-		public static Parameter<ScanSub> custom(Integer custom) {
+		public static Parameter<ScanSub> custom(Long custom) {
 			return new ParameterImpl<>(custom, ScanSub::setCustom);
 		}
 
-		public ScanSub setCustom(Integer custom) {
+		public ScanSub setCustom(Long custom) {
 			this.custom = custom;
 			return this;
 		}
 
-		public static Parameter<ScanSub> parent(Integer parent) {
+		public static Parameter<ScanSub> parent(Long parent) {
 			return new ParameterImpl<>(parent, ScanSub::setParent);
 		}
 
-		public ScanSub setParent(Integer parent) {
+		public ScanSub setParent(Long parent) {
 			this.parent = parent;
 			return this;
 		}
@@ -247,11 +247,11 @@ public class ScanPost {
 			return this;
 		}
 
-		public static Parameter<ScanSub> upload(Integer upload) {
+		public static Parameter<ScanSub> upload(Long upload) {
 			return new ParameterImpl<>(upload, ScanSub::setUpload);
 		}
 
-		public ScanSub setUpload(Integer upload) {
+		public ScanSub setUpload(Long upload) {
 			this.upload = upload;
 			return this;
 		}

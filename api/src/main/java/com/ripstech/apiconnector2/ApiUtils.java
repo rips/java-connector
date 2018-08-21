@@ -20,7 +20,7 @@ public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
                                                     IssueService issueService,
-                                                    int scanId,
+                                                    long scanId,
                                                     Filter filter,
                                                     Consumer<String> logConsumer,
                                                     int pollInterval,
@@ -59,7 +59,7 @@ public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
                                                     IssueService issueService,
-                                                    int scanId,
+                                                    long scanId,
                                                     Filter filter,
                                                     Consumer<String> logConsumer) {
         return getScanIssues(scanService, issueService, scanId, filter, logConsumer, 10, TimeUnit.SECONDS);
@@ -67,14 +67,14 @@ public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
                                                     IssueService issueService,
-                                                    int scanId,
+                                                    long scanId,
                                                     Consumer<String> logConsumer) {
         return getScanIssues(scanService, issueService, scanId, Filter.empty(), logConsumer);
     }
 
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
-                                              int scanId,
+                                              long scanId,
                                               Filter filter,
                                               Consumer<String> logConsumer,
                                               int pollInterval,
@@ -124,7 +124,7 @@ public class ApiUtils {
 
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
-                                              int scanId,
+                                              long scanId,
                                               Filter filter,
                                               Consumer<String> logConsumer,
                                               Consumer<Issue> scanIssueProcessor)
@@ -145,7 +145,7 @@ public class ApiUtils {
 
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
-                                              int scanId,
+                                              long scanId,
                                               Consumer<String> logConsumer,
                                               Consumer<Issue> scanIssueProcessor)
             throws InterruptedException, ExecutionException, TimeoutException {
