@@ -3,6 +3,7 @@ package com.ripstech.apiconnector2.entity.receive.application.scan;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.ripstech.apiconnector2.entity.deserializer.ArrayToMapDeserializer;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Map;
 
@@ -11,9 +12,9 @@ public class Stats {
 	private Map<String, Integer> issueSeverities = Collections.emptyMap();
 	private Map<Integer, Integer> issueDepths = Collections.emptyMap();
 	private Map<String, Integer> issueTypes = Collections.emptyMap();
-	private Integer scans;
-	private Integer issues;
-	private Integer reviewedIssues;
+	private BigInteger scans;
+	private BigInteger issues;
+	private BigInteger reviewedIssues;
 
 	public Map<String, Integer> getIssueSeverities() {
 		return this.issueSeverities;
@@ -28,15 +29,15 @@ public class Stats {
 		return this.issueTypes;
 	}
 
-	public Integer getScans() {
+	public BigInteger getScans() {
 		return this.scans;
 	}
 
-	public Integer getIssues() {
+	public BigInteger getIssues() {
 		return this.issues;
 	}
 
-	public Integer getReviewedIssues() {
+	public BigInteger getReviewedIssues() {
 		return this.reviewedIssues;
 	}
 

@@ -9,9 +9,9 @@ import java.util.List;
 
 public class AclService extends PatchDeletePostGetService<Acl, AclSend> {
 
-	private final int applicationId;
+	private final long applicationId;
 
-	public AclService(String baseUri, int applicationId) {
+	public AclService(String baseUri, long applicationId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 	}

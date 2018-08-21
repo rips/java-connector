@@ -9,11 +9,11 @@ import java.util.List;
 
 public class CommentService extends DeletePostGetService<Comment, CommentSend> {
 
-	private final int applicationId;
-	private final int scanId;
-	private final int issueId;
+	private final long applicationId;
+	private final long scanId;
+	private final long issueId;
 
-	public CommentService(String baseUri, int applicationId, int scanId, int issueId) {
+	public CommentService(String baseUri, long applicationId, long scanId, long issueId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

@@ -8,10 +8,10 @@ import java.util.List;
 
 public class SinkService extends GetService<Sink> {
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public SinkService(String baseUri, int applicationId, int scanId) {
+	public SinkService(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

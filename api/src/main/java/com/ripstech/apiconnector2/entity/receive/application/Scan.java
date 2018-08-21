@@ -13,8 +13,8 @@ import java.util.List;
 
 public class Scan {
 
-	private int id;
-	private Integer loc;
+	private long id;
+	private Long loc;
 	private Integer analysisDepth;
 	private Boolean fullCodeCompared;
 	private Upload upload;
@@ -26,7 +26,7 @@ public class Scan {
 	private List<String> callbacks = Collections.emptyList();
 	private Boolean extendedCallbacks;
 	private User createdBy;
-	private Process process;
+	private List<Process> processes = Collections.emptyList();
 	private Application application;
 	private OffsetDateTime finish;
 	private List<Type> issueTypes = Collections.emptyList();
@@ -40,11 +40,11 @@ public class Scan {
 	private String path;
 	private Integer maxIssuesPerType;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public Integer getLoc() {
+	public Long getLoc() {
 		return this.loc;
 	}
 
@@ -92,8 +92,8 @@ public class Scan {
 		return this.createdBy;
 	}
 
-	public Process getProcess() {
-		return this.process;
+	public List<Process> getProcesses() {
+		return this.processes;
 	}
 
 	public Application getApplication() {
@@ -150,10 +150,10 @@ public class Scan {
 
 	public static class TagItem {
 
-		private int id;
+		private long id;
 		private String name;
 
-		public int getId() {
+		public long getId() {
 			return this.id;
 		}
 

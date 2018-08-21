@@ -6,14 +6,14 @@ import java.time.OffsetDateTime;
 
 public class Process {
 
-	private int id;
+	private long id;
 	private Integer pid;
 	private OffsetDateTime start;
 	private OffsetDateTime finish;
 	private String version;
 	private Scan scan;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

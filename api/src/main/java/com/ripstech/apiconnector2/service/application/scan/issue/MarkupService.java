@@ -8,11 +8,11 @@ import java.util.List;
 
 public class MarkupService extends GetService<Markup> {
 
-	private final int applicationId;
-	private final int scanId;
-	private final int issueId;
+	private final long applicationId;
+	private final long scanId;
+	private final long issueId;
 
-	public MarkupService(String baseUri, int applicationId, int scanId, int issueId) {
+	public MarkupService(String baseUri, long applicationId, long scanId, long issueId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Team {
 
-	private int id;
+	private long id;
 	private String name;
 	private Organisation organisation;
 	private List<User> users = Collections.emptyList();
 	private User createdBy;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

@@ -15,8 +15,8 @@ public class UserSend {
 	private Optional<List<String>> roles;
 	private Optional<String> username;
 	private Optional<Boolean> enabled;
-	private Optional<Integer> organisation;
-	private Optional<Integer> chargedQuota;
+	private Optional<Long> organisation;
+	private Optional<Long> chargedQuota;
 	private Optional<List<String>> whitelistedIps;
 
 	public static UserSend createPost(String plainPassword, String email) {
@@ -64,12 +64,12 @@ public class UserSend {
 		return this;
 	}
 
-	public UserSend setOrganisation(Integer organisation) {
+	public UserSend setOrganisation(Long organisation) {
 		this.organisation = Optional.ofNullable(organisation);
 		return this;
 	}
 
-	public UserSend setChargedQuota(Integer chargedQuota) {
+	public UserSend setChargedQuota(Long chargedQuota) {
 		this.chargedQuota = Optional.ofNullable(chargedQuota);
 		return this;
 	}
@@ -107,11 +107,11 @@ public class UserSend {
 		return this.enabled;
 	}
 
-	public Optional<Integer> getOrganisation() {
+	public Optional<Long> getOrganisation() {
 		return this.organisation;
 	}
 
-	public Optional<Integer> getChargedQuota() {
+	public Optional<Long> getChargedQuota() {
 		return this.chargedQuota;
 	}
 

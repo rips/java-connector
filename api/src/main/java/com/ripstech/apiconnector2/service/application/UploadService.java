@@ -15,9 +15,9 @@ import static com.ripstech.apiconnector2.service.template.GenericService.HttpMet
 
 public class UploadService extends DeletePostGetService<Upload, File> {
 
-	private final int applicationId;
+	private final long applicationId;
 
-	public UploadService(String baseUri, int applicationId) {
+	public UploadService(String baseUri, long applicationId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 	}

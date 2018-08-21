@@ -12,10 +12,10 @@ import static com.ripstech.apiconnector2.service.template.GenericService.HttpMet
 
 public class ClassService extends GetService<Class> {
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public ClassService(String baseUri, int applicationId, int scanId) {
+	public ClassService(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

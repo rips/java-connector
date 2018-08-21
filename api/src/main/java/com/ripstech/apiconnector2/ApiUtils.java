@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -19,7 +20,7 @@ public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
                                                     IssueService issueService,
-                                                    int scanId,
+                                                    long scanId,
                                                     Filter filter,
                                                     Consumer<String> logConsumer,
                                                     int pollInterval,
@@ -58,7 +59,7 @@ public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
                                                     IssueService issueService,
-                                                    int scanId,
+                                                    long scanId,
                                                     Filter filter,
                                                     Consumer<String> logConsumer) {
         return getScanIssues(scanService, issueService, scanId, filter, logConsumer, 10, TimeUnit.SECONDS);
@@ -66,14 +67,14 @@ public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
                                                     IssueService issueService,
-                                                    int scanId,
+                                                    long scanId,
                                                     Consumer<String> logConsumer) {
         return getScanIssues(scanService, issueService, scanId, Filter.empty(), logConsumer);
     }
 
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
-                                              int scanId,
+                                              long scanId,
                                               Filter filter,
                                               Consumer<String> logConsumer,
                                               int pollInterval,
@@ -86,7 +87,7 @@ public class ApiUtils {
 
         AtomicInteger tries = new AtomicInteger(0);
         AtomicInteger percent = new AtomicInteger(-1);
-        AtomicInteger highestIssueId = new AtomicInteger(-1);
+        AtomicLong highestIssueId = new AtomicLong(-1);
 
         ScheduledFuture<?> scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
                 scanService.get(scanId).process(applicationScan -> {
@@ -102,7 +103,7 @@ public class ApiUtils {
                             .process(applicationScanIssues -> {
                                         applicationScanIssues.stream()
                                                 .map(Issue::getId)
-                                                .max(Integer::compareTo)
+                                                .max(Long::compareTo)
                                                 .ifPresent(highestIssueId::set);
                                         applicationScanIssues.forEach(scanIssueProcessor);
                                         if (percent.get() >= 100) {
@@ -123,7 +124,7 @@ public class ApiUtils {
 
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
-                                              int scanId,
+                                              long scanId,
                                               Filter filter,
                                               Consumer<String> logConsumer,
                                               Consumer<Issue> scanIssueProcessor)
@@ -144,7 +145,7 @@ public class ApiUtils {
 
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
-                                              int scanId,
+                                              long scanId,
                                               Consumer<String> logConsumer,
                                               Consumer<Issue> scanIssueProcessor)
             throws InterruptedException, ExecutionException, TimeoutException {

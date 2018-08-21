@@ -14,10 +14,10 @@ import static com.ripstech.apiconnector2.service.template.GenericService.HttpMet
 
 public class IssueService extends PostGetService<Issue, IssueSend> {
 
-	private final int applicationId;
-	private final int scanId;
+	private final long applicationId;
+	private final long scanId;
 
-	public IssueService(String baseUri, int applicationId, int scanId) {
+	public IssueService(String baseUri, long applicationId, long scanId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;

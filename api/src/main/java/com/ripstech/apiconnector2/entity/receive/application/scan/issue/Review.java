@@ -7,14 +7,14 @@ import java.time.OffsetDateTime;
 
 public class Review {
 
-	private int id;
+	private long id;
 	private OffsetDateTime submission;
 	private User createdBy;
 	private Issue issue;
 	private ReviewType type;
 	private String source;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

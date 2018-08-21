@@ -6,7 +6,7 @@ import com.ripstech.apiconnector2.entity.receive.application.scan.issue.Type;
 
 public class Sink {
 
-	private int id;
+	private long id;
 	@JsonProperty("class")
 	private String clazz;
 	private String method;
@@ -14,7 +14,7 @@ public class Sink {
 	private Type type;
 	private Custom custom;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

@@ -6,7 +6,7 @@ import com.ripstech.apiconnector2.entity.receive.User;
 
 public class Acl {
 
-	private int id;
+	private long id;
 	private Boolean immutable;
 	private Boolean manage;
 	private Boolean view;
@@ -19,7 +19,7 @@ public class Acl {
 	private Boolean create;
 	private User createdBy;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

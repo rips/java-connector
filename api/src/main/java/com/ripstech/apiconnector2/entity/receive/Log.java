@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 
 public class Log {
 
-	private int id;
+	private long id;
 	private String text;
 	private Integer level;
 	private String channel;
@@ -18,7 +18,7 @@ public class Log {
 	private String context;
 	private OffsetDateTime created;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

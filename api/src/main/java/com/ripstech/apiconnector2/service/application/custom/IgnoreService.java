@@ -9,10 +9,10 @@ import java.util.List;
 
 public class IgnoreService extends PatchDeletePostGetService<Ignore, IgnoreSend> {
 
-	private final int applicationId;
-	private final int customId;
+	private final long applicationId;
+	private final long customId;
 
-	public IgnoreService(String baseUri, int applicationId, int customId) {
+	public IgnoreService(String baseUri, long applicationId, long customId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.customId = customId;

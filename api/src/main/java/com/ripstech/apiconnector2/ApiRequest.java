@@ -50,7 +50,7 @@ public class ApiRequest {
 		return this;
 	}
 
-	public ApiRequest appendPath(int path) {
+	public ApiRequest appendPath(long path) {
 		this.path += "/" + path;
 		return this;
 	}

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Setting {
 
-	private int id;
+	private long id;
 	private List<Type> issueTypes = Collections.emptyList();
 	private Boolean codeStored;
 	private Boolean uploadRemoved;
@@ -20,7 +20,7 @@ public class Setting {
 	private Php php;
 	private Custom custom;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

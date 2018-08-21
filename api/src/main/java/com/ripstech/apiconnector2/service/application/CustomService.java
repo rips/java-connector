@@ -13,9 +13,9 @@ import static com.ripstech.apiconnector2.service.template.GenericService.HttpMet
 
 public class CustomService extends PatchDeletePostGetService<Custom, CustomSend> {
 
-	private final int applicationId;
+	private final long applicationId;
 
-	public CustomService(String baseUri, int applicationId) {
+	public CustomService(String baseUri, long applicationId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 	}

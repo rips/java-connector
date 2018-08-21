@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 
 public class Upload {
 
-	private int id;
+	private long id;
 	private OffsetDateTime submission;
 	private String name;
 	private String file;
@@ -16,7 +16,7 @@ public class Upload {
 	private User createdBy;
 	private Application application;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

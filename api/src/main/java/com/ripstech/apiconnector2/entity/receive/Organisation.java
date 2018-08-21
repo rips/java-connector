@@ -6,14 +6,14 @@ import java.util.List;
 
 public class Organisation {
 
-	private int id;
+	private long id;
 	private String name;
 	private List<Quota> quotas = Collections.emptyList();
 	private OffsetDateTime validUntil;
 	private List<String> trialIssueTypes = Collections.emptyList();
 	private List<String> callbacks = Collections.emptyList();
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

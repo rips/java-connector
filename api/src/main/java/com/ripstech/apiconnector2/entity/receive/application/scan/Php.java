@@ -10,7 +10,7 @@ public class Php {
 	private String majorVersion;
 	private Boolean registerGlobals;
 	private String filterDefault;
-	private Integer id;
+	private long id;
 
 	public String getReleaseVersion() {
 		return this.releaseVersion;
@@ -44,7 +44,7 @@ public class Php {
 		return this.filterDefault;
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return this.id;
 	}
 

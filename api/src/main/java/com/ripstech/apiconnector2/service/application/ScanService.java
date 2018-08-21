@@ -16,9 +16,9 @@ import static com.ripstech.apiconnector2.service.template.GenericService.HttpMet
 
 public class ScanService extends DeletePostGetService<Scan, ScanPost> {
 
-	private final int applicationId;
+	private final long applicationId;
 
-	public ScanService(String baseUri, int applicationId) {
+	public ScanService(String baseUri, long applicationId) {
 		super(baseUri);
 		this.applicationId = applicationId;
 		withRootName = false;
@@ -50,7 +50,7 @@ public class ScanService extends DeletePostGetService<Scan, ScanPost> {
 		return getStats(Filter.empty());
 	}
 
-	public ApiResponse<Scan> patch(int scanId, ScanPatch scan) {
+	public ApiResponse<Scan> patch(long scanId, ScanPatch scan) {
 		return new ApiResponse<>(getTarget(PATCH)
 				                         .appendPath(scanId)
 				                         .setJsonBody(scan),

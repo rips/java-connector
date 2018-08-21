@@ -5,14 +5,14 @@ import java.util.List;
 
 public class Client {
 
-	private int id;
+	private long id;
 	private String name;
 	private String randomId;
 	private String secret;
 	private List<String> redirectUris = Collections.emptyList();
 	private List<String> allowedGrantTypes = Collections.emptyList();
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

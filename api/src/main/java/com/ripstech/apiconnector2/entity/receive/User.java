@@ -6,7 +6,7 @@ import java.util.List;
 
 public class User {
 
-	private int id;
+	private long id;
 	private String username;
 	private Boolean emptyUsername;
 	private String email;
@@ -21,7 +21,7 @@ public class User {
 	private List<String> whitelistedIps = Collections.emptyList();
 	private Organisation organisation;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

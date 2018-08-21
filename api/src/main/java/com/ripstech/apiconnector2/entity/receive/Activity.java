@@ -4,14 +4,14 @@ import java.time.OffsetDateTime;
 
 public class Activity {
 
-	private int id;
+	private long id;
 	private String type;
 	private Object context;
 	private Application application;
 	private User createdBy;
 	private OffsetDateTime createdAt;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 

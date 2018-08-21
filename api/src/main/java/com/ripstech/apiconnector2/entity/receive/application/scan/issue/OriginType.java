@@ -2,11 +2,11 @@ package com.ripstech.apiconnector2.entity.receive.application.scan.issue;
 
 public class OriginType {
 
-	private int id;
+	private long id;
 	private String tag;
 	private String name;
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
