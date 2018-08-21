@@ -22,7 +22,7 @@ public class OAuth2 extends HeaderAuthenticator {
 	}
 
 	public OAuth2(String baseUri, String username, String password, HttpClientConfig httpClientConfig) throws ApiException {
-		this(baseUri, username, password, "ui", httpClientConfig);
+		this(baseUri, username, password, "ci", httpClientConfig);
 	}
 
 	public OAuth2(String baseUri, String username, String password, String clientIdName, HttpClientConfig httpClientConfig) throws ApiException {
