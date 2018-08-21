@@ -39,7 +39,7 @@ class ApplicationScanServiceTest extends ApiSettings {
 	@Test
 	void postPatchDelete() throws ApiException, IOException {
 		ApplicationService appService = api.applications();
-		int appId = appService.post(ApplicationSend.createPost(ApplicationScanServiceTest.class.getName()))
+		long appId = appService.post(ApplicationSend.createPost(ApplicationScanServiceTest.class.getName()))
 				         .orThrow(ApiException::new)
 				         .getId();
 		UploadService uploadService = api.application(appId).uploads();
@@ -51,10 +51,10 @@ class ApplicationScanServiceTest extends ApiSettings {
 		zos.closeEntry();
 		zos.close();
 		fos.close();
-		int uploadId = uploadService.post(zipFile).orThrow(ApiException::new).getId();
+		long uploadId = uploadService.post(zipFile).orThrow(ApiException::new).getId();
 		zipFile.delete();
 		ScanService scanService = api.application(appId).scans();
-		int scanId = scanService.post(ScanPost.createPost(
+		long scanId = scanService.post(ScanPost.createPost(
 				scan(ApplicationScanServiceTest.class.getName(),
 				     upload(uploadId)
 				    )))

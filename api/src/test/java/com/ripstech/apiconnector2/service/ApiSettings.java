@@ -1,5 +1,6 @@
 package com.ripstech.apiconnector2.service;
 
+import com.ripstech.apiconnector2.AssumePropertyFile;
 import com.ripstech.apiconnector2.authorization.OAuth2;
 import com.ripstech.apiconnector2.config.HttpClientConfig;
 import com.ripstech.apiconnector2.exception.ApiException;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+@AssumePropertyFile
 public abstract class ApiSettings {
 
 	protected static HttpClientConfig HTTP_CLIENT_CONFIG;

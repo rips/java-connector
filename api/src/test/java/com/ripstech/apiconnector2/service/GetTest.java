@@ -28,7 +28,7 @@ class GetTest extends ApiSettings {
 	private static List<Class<? extends GenericService>> servicesCache = null;
 
 	private static Api api;
-	private static int appId = 0;
+	private static long appId = 0;
 
 	GetTest() throws IOException, ApiException {
 	}
@@ -79,8 +79,8 @@ class GetTest extends ApiSettings {
 		}
 
 		if(response.isForbidden()) {
-			if(tryOrFalse(() -> clazz.getMethod("get", Integer.TYPE))) {
-				Method getWithId = clazz.getMethod("get", Integer.TYPE);
+			if(tryOrFalse(() -> clazz.getMethod("get", Long.TYPE))) {
+				Method getWithId = clazz.getMethod("get", Long.TYPE);
 				ApiResponse response2 = (ApiResponse) getWithId.invoke(service, 0);
 				System.out.println(response2.getStatus());
 				Assertions.assertTrue(response2.isOk() || response2.isNotFound() || response2.isForbidden(),
@@ -107,7 +107,7 @@ class GetTest extends ApiSettings {
 	private static Stream<Arguments> getWithAppIdServiceProvider() {
 		return services().stream()
 				       .filter(simpleGet)
-				       .filter(aClass -> tryOrFalse(() -> aClass.getConstructor(String.class, Integer.TYPE))
+				       .filter(aClass -> tryOrFalse(() -> aClass.getConstructor(String.class, Long.TYPE))
 				                         && Arrays.asList(aClass.getName().split("\\.")).contains("application"))
 				       .map(Arguments::of);
 	}
@@ -115,7 +115,7 @@ class GetTest extends ApiSettings {
 	@ParameterizedTest
 	@MethodSource("getWithAppIdServiceProvider")
 	void getWithAppId(Class<GenericService> clazz) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-		GenericService service = clazz.getConstructor(String.class, Integer.TYPE).newInstance(BASE_URL, appId);
+		GenericService service = clazz.getConstructor(String.class, Long.TYPE).newInstance(BASE_URL, appId);
 
 		check(clazz, service);
 	}
