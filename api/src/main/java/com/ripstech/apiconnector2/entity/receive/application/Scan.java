@@ -26,7 +26,7 @@ public class Scan {
 	private List<String> callbacks = Collections.emptyList();
 	private Boolean extendedCallbacks;
 	private User createdBy;
-	private Process process;
+	private List<Process> processes = Collections.emptyList();
 	private Application application;
 	private OffsetDateTime finish;
 	private List<Type> issueTypes = Collections.emptyList();
@@ -92,8 +92,8 @@ public class Scan {
 		return this.createdBy;
 	}
 
-	public Process getProcess() {
-		return this.process;
+	public List<Process> getProcesses() {
+		return this.processes;
 	}
 
 	public Application getApplication() {
