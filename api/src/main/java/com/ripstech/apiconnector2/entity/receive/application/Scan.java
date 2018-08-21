@@ -150,10 +150,10 @@ public class Scan {
 
 	public static class TagItem {
 
-		private int id;
+		private long id;
 		private String name;
 
-		public int getId() {
+		public long getId() {
 			return this.id;
 		}
 
