@@ -11,6 +11,7 @@ public class Process {
 	private OffsetDateTime start;
 	private OffsetDateTime finish;
 	private String version;
+	private String name;
 	private Scan scan;
 
 	public long getId() {
@@ -31,6 +32,10 @@ public class Process {
 
 	public String getVersion() {
 		return this.version;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	public Scan getScan() {
