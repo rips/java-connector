@@ -15,7 +15,7 @@ public class ScanPath extends Path {
 		this.scanId = scanId;
 	}
 
-	public IssuePath issue(int issueId) {
+	public IssuePath issue(long issueId) {
 		IssuePath path = new IssuePath(baseUri, applicationId, scanId, issueId);
 		path.setHttpClientConfig(httpClientConfig);
 		return path;
