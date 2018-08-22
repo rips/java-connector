@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.ripstech'
-version '2.6.1'
+version '2.6.2'
 
 subprojects {
     apply plugin: 'java'
