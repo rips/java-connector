@@ -21,7 +21,8 @@ public class HttpClientConfig {
 	private boolean isAuthenticatorSetted = false;
 
 	public HttpClientConfig() {
-		clientBuilder = new OkHttpClient.Builder();
+		clientBuilder = new OkHttpClient.Builder()
+				                .readTimeout(5, TimeUnit.MINUTES);
 	}
 
 	public HttpClientConfig setProxy(Proxy proxy) {
