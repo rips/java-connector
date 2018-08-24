@@ -16,6 +16,7 @@ public class OAuth2 extends HeaderAuthenticator {
 	private String accessToken;
 	private String refreshToken;
 	private Duration expiresIn;
+	private String clientId;
 
 	public OAuth2(String accessToken) {
 		this.accessToken = accessToken;
@@ -32,7 +33,7 @@ public class OAuth2 extends HeaderAuthenticator {
 		if(!clientIds.containsKey(clientIdName)) {
 			throw new ClientIdMissingException("No client ID with name: " + clientIdName);
 		}
-		String clientId = clientIds.get(clientIdName);
+		clientId = clientIds.get(clientIdName);
 		ClientIdSend postBody = ClientIdSend.toPost(clientId, username, password);
 		Token token = oAuthv2Service.getAuthToken(postBody).orThrow(ApiException::new);
 		accessToken = token.getAccessToken();
@@ -50,6 +51,10 @@ public class OAuth2 extends HeaderAuthenticator {
 
 	public Duration getExpiresIn() {
 		return expiresIn;
+	}
+
+	public String getClientId() {
+		return clientId;
 	}
 
 	@Override

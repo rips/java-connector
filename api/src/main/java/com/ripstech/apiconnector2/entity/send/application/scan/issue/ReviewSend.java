@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 @JsonRootName("review")
 public class ReviewSend {
 
-	private Integer type;
+	private Long type;
 	private String source;
 
-	public static ReviewSend createPost(int type) {
+	public static ReviewSend createPost(long type) {
 		return new ReviewSend().setType(type);
 	}
 
 	private ReviewSend() {}
 
-	public Integer getType() {
+	public Long getType() {
 		return this.type;
 	}
 
@@ -22,7 +22,7 @@ public class ReviewSend {
 		return this.source;
 	}
 
-	public ReviewSend setType(Integer type) {
+	public ReviewSend setType(Long type) {
 		this.type = type;
 		return this;
 	}
