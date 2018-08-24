@@ -5,6 +5,7 @@ import com.ripstech.apiconnector2.ApiResponse;
 import com.ripstech.apiconnector2.annotation.AuthRequired;
 import com.ripstech.apiconnector2.entity.receive.Token;
 import com.ripstech.apiconnector2.entity.send.ClientIdSend;
+import com.ripstech.apiconnector2.entity.send.RefreshTokenSend;
 import com.ripstech.apiconnector2.service.template.GenericService;
 
 import java.util.Map;
@@ -34,6 +35,13 @@ public class OAuthv2Service extends GenericService {
 		return new ApiResponse<>(getTarget(POST, false)
 				                         .appendPath("auth/tokens")
 				                         .setJsonBody(clientId),
+		                         Token.class);
+	}
+
+	public ApiResponse<Token> getAuthToken(RefreshTokenSend refreshToken) {
+		return new ApiResponse<>(getTarget(POST, false)
+				                         .appendPath("auth/tokens")
+				                         .setJsonBody(refreshToken),
 		                         Token.class);
 	}
 
