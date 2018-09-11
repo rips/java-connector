@@ -44,7 +44,7 @@ public class ScanPatch {
 
 		private ScanSub() {}
 
-		public ScanSub createPatch() {
+		public static ScanSub createPatch() {
 			return new ScanSub();
 		}
 
