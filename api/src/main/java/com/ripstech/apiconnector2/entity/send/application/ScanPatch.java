@@ -38,8 +38,15 @@ public class ScanPatch {
 		private Optional<Integer> percent;
 		private Optional<Integer> log;
 		private Optional<String> version;
+		private Optional<List<String>> callbacks;
 		private Optional<Boolean> extendedCallbacks;
 		private Optional<String> comment;
+
+		private ScanSub() {}
+
+		public ScanSub createPatch() {
+			return new ScanSub();
+		}
 
 		public ScanSub setPhase(Integer phase) {
 			this.phase = Optional.ofNullable(phase);
@@ -58,6 +65,11 @@ public class ScanPatch {
 
 		public ScanSub setVersion(String version) {
 			this.version = Optional.ofNullable(version);
+			return this;
+		}
+
+		public ScanSub setCallbacks(Optional<List<String>> callbacks) {
+			this.callbacks = callbacks;
 			return this;
 		}
 
@@ -85,6 +97,10 @@ public class ScanPatch {
 
 		public Optional<String> getVersion() {
 			return this.version;
+		}
+
+		public Optional<List<String>> getCallbacks() {
+			return callbacks;
 		}
 
 		public Optional<Boolean> getExtendedCallbacks() {
