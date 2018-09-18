@@ -19,6 +19,7 @@ public class FunctionService extends GetService<Function> {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;
+		this.withRootName = false;
 	}
 
 	@Override

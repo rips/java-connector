@@ -19,6 +19,7 @@ public class ClassService extends GetService<Class> {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;
+		this.withRootName = false;
 	}
 
 	@Override
