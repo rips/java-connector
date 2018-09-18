@@ -36,7 +36,7 @@ public class ProcessService extends PostGetService<Process, ProcessPost> {
 
 	@Override
 	protected String getPath() {
-		return String.format("applications/%d/scans/%d/processes/", applicationId, scanId);
+		return String.format("applications/%d/scans/%d/processes", applicationId, scanId);
 	}
 
 	public ApiResponse<Process> patch(int processId, ProcessPatch finish) {

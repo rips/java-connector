@@ -97,7 +97,7 @@ public class IssueSend {
 		return this;
 	}
 
-	private static class Issue {
+	public static class Issue {
 		private Integer type;
 		private Integer origin;
 		private Integer depth;
@@ -175,7 +175,7 @@ public class IssueSend {
 		}
 	}
 
-	private static class Source {
+	public static class Source {
 		private Integer line;
 		private String name;
 		private String parameter;
@@ -239,7 +239,7 @@ public class IssueSend {
 		}
 	}
 
-	private static class Sink {
+	public static class Sink {
 		private Integer line;
 		private String name;
 		private Integer file;
@@ -293,7 +293,7 @@ public class IssueSend {
 		}
 	}
 
-	private static class Concat {
+	public static class Concat {
 		private Integer line;
 		private String name;
 		private Integer function;
@@ -350,7 +350,7 @@ public class IssueSend {
 		}
 	}
 
-	private static class Summary {
+	public static class Summary {
 		private Integer line;
 		private String content;
 		private Integer file;
