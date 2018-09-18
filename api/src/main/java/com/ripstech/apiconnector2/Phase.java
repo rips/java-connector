@@ -27,6 +27,10 @@ public enum Phase {
         return description;
     }
 
+    public int getPhase() {
+        return phase;
+    }
+
     public static Phase getById(int id) {
         return Arrays.stream(Phase.values())
                 .filter(phase1 -> phase1.phase == id)
