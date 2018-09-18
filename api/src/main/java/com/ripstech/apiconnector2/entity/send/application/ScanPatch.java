@@ -1,5 +1,7 @@
 package com.ripstech.apiconnector2.entity.send.application;
 
+import com.ripstech.apiconnector2.Phase;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +52,11 @@ public class ScanPatch {
 
 		public ScanSub setPhase(Integer phase) {
 			this.phase = Optional.ofNullable(phase);
+			return this;
+		}
+
+		public ScanSub setPhase(Phase phase) {
+			this.phase = Optional.of(phase.getPhase());
 			return this;
 		}
 
