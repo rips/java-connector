@@ -5,9 +5,9 @@ public class Batch {
 	private Integer startLine;
 	private Integer endLine;
 	private String name;
-	private Integer file;
+	private Long file;
 
-	public Batch(Integer startLine, Integer endLine, String name, Integer file) {
+	public Batch(Integer startLine, Integer endLine, String name, Long file) {
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.name = name;
@@ -41,11 +41,11 @@ public class Batch {
 		return this;
 	}
 
-	public Integer getFile() {
+	public Long getFile() {
 		return file;
 	}
 
-	public Batch setFile(Integer file) {
+	public Batch setFile(Long file) {
 		this.file = file;
 		return this;
 	}
