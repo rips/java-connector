@@ -14,6 +14,13 @@ public class Batch {
 		this.file = file;
 	}
 
+	public Batch(Batch batch) {
+		this.startLine = batch.startLine;
+		this.endLine = batch.endLine;
+		this.name = batch.name;
+		this.file = batch.file;
+	}
+
 	public Integer getStartLine() {
 		return startLine;
 	}
