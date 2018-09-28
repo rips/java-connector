@@ -1,6 +1,8 @@
 package com.ripstech.apiconnector2.entity.send.application.scan;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ripstech.apiconnector2.type.SinkType;
+import com.ripstech.apiconnector2.type.SourceType;
 
 import java.util.List;
 
@@ -183,6 +185,7 @@ public class IssueSend {
 		private Long function;
 		@JsonProperty("class")
 		private Long clazz;
+		private SourceType type;
 
 		public Integer getLine() {
 			return this.line;
@@ -206,6 +209,10 @@ public class IssueSend {
 
 		public Long getClazz() {
 			return this.clazz;
+		}
+
+		public SourceType getType() {
+			return type;
 		}
 
 		public Source setLine(Integer line) {
@@ -237,6 +244,11 @@ public class IssueSend {
 			this.clazz = clazz;
 			return this;
 		}
+
+		public Source setType(SourceType type) {
+			this.type = type;
+			return this;
+		}
 	}
 
 	public static class Sink {
@@ -246,6 +258,7 @@ public class IssueSend {
 		private Long function;
 		@JsonProperty("class")
 		private Long clazz;
+		private SinkType type;
 
 		public Integer getLine() {
 			return this.line;
@@ -265,6 +278,10 @@ public class IssueSend {
 
 		public Long getClazz() {
 			return this.clazz;
+		}
+
+		public SinkType getType() {
+			return type;
 		}
 
 		public Sink setLine(Integer line) {
@@ -289,6 +306,11 @@ public class IssueSend {
 
 		public Sink setClazz(Long clazz) {
 			this.clazz = clazz;
+			return this;
+		}
+
+		public Sink setType(SinkType type) {
+			this.type = type;
 			return this;
 		}
 	}
