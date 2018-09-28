@@ -5,6 +5,8 @@ import com.ripstech.apiconnector2.type.SinkType;
 import com.ripstech.apiconnector2.type.SourceType;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class IssueSend {
 
@@ -13,7 +15,7 @@ public class IssueSend {
 	private Sink sink;
 	private Concat concat;
 	private List<Markup> markups;
-	private List<Summary> summaries;
+	private Set<Summary> summaries;
 
 	public static IssueSend createPost(Issue issue) {
 		return new IssueSend().setIssue(issue);
@@ -65,7 +67,7 @@ public class IssueSend {
 		return this.markups;
 	}
 
-	public List<Summary> getSummaries() {
+	public Set<Summary> getSummaries() {
 		return this.summaries;
 	}
 
@@ -94,7 +96,7 @@ public class IssueSend {
 		return this;
 	}
 
-	public IssueSend setSummaries(List<Summary> summaries) {
+	public IssueSend setSummaries(Set<Summary> summaries) {
 		this.summaries = summaries;
 		return this;
 	}
@@ -413,6 +415,21 @@ public class IssueSend {
 			this.file = file;
 			return this;
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Summary summary = (Summary) o;
+			return Objects.equals(line, summary.line) &&
+			       Objects.equals(file, summary.file);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(line, file);
+		}
+
 	}
 
 }
