@@ -75,7 +75,7 @@ public class Api {
 					authenticator = new OAuth2(accessToken);
 					accessToken = ((OAuth2) authenticator).getAccessToken();
 				} else if(username != null && password != null) {
-					if (clientIdName == null) {
+					if (clientIdName == null || clientIdName.isEmpty()) {
 						authenticator = new OAuth2(baseUri, username, password, httpClientConfig);
 					} else {
 						authenticator = new OAuth2(baseUri, username, password, clientIdName, httpClientConfig);
