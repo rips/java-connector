@@ -39,14 +39,14 @@ public class ProcessService extends PostGetService<Process, ProcessPost> {
 		return String.format("applications/%d/scans/%d/processes", applicationId, scanId);
 	}
 
-	public ApiResponse<Process> patch(int processId, ProcessPatch finish) {
+	public ApiResponse<Process> patch(long processId, ProcessPatch finish) {
 		return new ApiResponse<>(getTarget(PATCH)
 				                         .appendPath(processId)
 				                         .setJsonBody(finish),
 		                         getGenericType());
 	}
 
-	public ApiResponse<Process> patch(int processId, OffsetDateTime finish) {
+	public ApiResponse<Process> patch(long processId, OffsetDateTime finish) {
 		return patch(processId, ProcessSend.createPatch().setFinish(finish));
 	}
 

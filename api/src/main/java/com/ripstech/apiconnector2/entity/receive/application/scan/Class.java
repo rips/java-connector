@@ -1,5 +1,6 @@
 package com.ripstech.apiconnector2.entity.receive.application.scan;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ripstech.apiconnector2.entity.receive.application.Scan;
 
 public class Class {
@@ -8,6 +9,8 @@ public class Class {
 	private Integer startLine;
 	private Integer endLine;
 	private String name;
+	@JsonProperty("package")
+	private String packageName;
 	private File file;
 	private Scan scan;
 
@@ -25,6 +28,14 @@ public class Class {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public String getPackageName() {
+		return this.packageName;
+	}
+
+	public String getFullQualifiedName() {
+		return this.packageName + "." + this.name;
 	}
 
 	public File getFile() {

@@ -1,8 +1,12 @@
 package com.ripstech.apiconnector2.entity.send.application.scan;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ripstech.apiconnector2.type.SinkType;
+import com.ripstech.apiconnector2.type.SourceType;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class IssueSend {
 
@@ -11,13 +15,13 @@ public class IssueSend {
 	private Sink sink;
 	private Concat concat;
 	private List<Markup> markups;
-	private List<Summary> summaries;
+	private Set<Summary> summaries;
 
 	public static IssueSend createPost(Issue issue) {
 		return new IssueSend().setIssue(issue);
 	}
 
-	public static Issue createIssue(int type, int depth) {
+	public static Issue createIssue(long type, int depth) {
 		return new Issue(type, depth);
 	}
 
@@ -63,7 +67,7 @@ public class IssueSend {
 		return this.markups;
 	}
 
-	public List<Summary> getSummaries() {
+	public Set<Summary> getSummaries() {
 		return this.summaries;
 	}
 
@@ -92,30 +96,30 @@ public class IssueSend {
 		return this;
 	}
 
-	public IssueSend setSummaries(List<Summary> summaries) {
+	public IssueSend setSummaries(Set<Summary> summaries) {
 		this.summaries = summaries;
 		return this;
 	}
 
 	public static class Issue {
-		private Integer type;
-		private Integer origin;
+		private Long type;
+		private Long origin;
 		private Integer depth;
 		private String cve;
 		private Boolean directlyCalled;
 		private Boolean registerGlobals;
 		private String tool;
 
-		private Issue(int type, int depth) {
+		private Issue(long type, int depth) {
 			this.type = type;
 			this.depth = depth;
 		}
 
-		public Integer getType() {
+		public Long getType() {
 			return this.type;
 		}
 
-		public Integer getOrigin() {
+		public Long getOrigin() {
 			return this.origin;
 		}
 
@@ -139,12 +143,12 @@ public class IssueSend {
 			return tool;
 		}
 
-		public Issue setType(Integer type) {
+		public Issue setType(Long type) {
 			this.type = type;
 			return this;
 		}
 
-		public Issue setOrigin(Integer origin) {
+		public Issue setOrigin(Long origin) {
 			this.origin = origin;
 			return this;
 		}
@@ -179,10 +183,11 @@ public class IssueSend {
 		private Integer line;
 		private String name;
 		private String parameter;
-		private Integer file;
-		private Integer function;
+		private Long file;
+		private Long function;
 		@JsonProperty("class")
-		private Integer clazz;
+		private Long clazz;
+		private SourceType type;
 
 		public Integer getLine() {
 			return this.line;
@@ -196,16 +201,20 @@ public class IssueSend {
 			return this.parameter;
 		}
 
-		public Integer getFile() {
+		public Long getFile() {
 			return this.file;
 		}
 
-		public Integer getFunction() {
+		public Long getFunction() {
 			return this.function;
 		}
 
-		public Integer getClazz() {
+		public Long getClazz() {
 			return this.clazz;
+		}
+
+		public SourceType getType() {
+			return type;
 		}
 
 		public Source setLine(Integer line) {
@@ -223,18 +232,23 @@ public class IssueSend {
 			return this;
 		}
 
-		public Source setFile(Integer file) {
+		public Source setFile(Long file) {
 			this.file = file;
 			return this;
 		}
 
-		public Source setFunction(Integer function) {
+		public Source setFunction(Long function) {
 			this.function = function;
 			return this;
 		}
 
-		public Source setClazz(Integer clazz) {
+		public Source setClazz(Long clazz) {
 			this.clazz = clazz;
+			return this;
+		}
+
+		public Source setType(SourceType type) {
+			this.type = type;
 			return this;
 		}
 	}
@@ -242,10 +256,11 @@ public class IssueSend {
 	public static class Sink {
 		private Integer line;
 		private String name;
-		private Integer file;
-		private Integer function;
+		private Long file;
+		private Long function;
 		@JsonProperty("class")
-		private Integer clazz;
+		private Long clazz;
+		private SinkType type;
 
 		public Integer getLine() {
 			return this.line;
@@ -255,16 +270,20 @@ public class IssueSend {
 			return this.name;
 		}
 
-		public Integer getFile() {
+		public Long getFile() {
 			return this.file;
 		}
 
-		public Integer getFunction() {
+		public Long getFunction() {
 			return this.function;
 		}
 
-		public Integer getClazz() {
+		public Long getClazz() {
 			return this.clazz;
+		}
+
+		public SinkType getType() {
+			return type;
 		}
 
 		public Sink setLine(Integer line) {
@@ -277,18 +296,23 @@ public class IssueSend {
 			return this;
 		}
 
-		public Sink setFile(Integer file) {
+		public Sink setFile(Long file) {
 			this.file = file;
 			return this;
 		}
 
-		public Sink setFunction(Integer function) {
+		public Sink setFunction(Long function) {
 			this.function = function;
 			return this;
 		}
 
-		public Sink setClazz(Integer clazz) {
+		public Sink setClazz(Long clazz) {
 			this.clazz = clazz;
+			return this;
+		}
+
+		public Sink setType(SinkType type) {
+			this.type = type;
 			return this;
 		}
 	}
@@ -296,9 +320,10 @@ public class IssueSend {
 	public static class Concat {
 		private Integer line;
 		private String name;
-		private Integer function;
+		private Long file;
+		private Long function;
 		@JsonProperty("class")
-		private Integer clazz;
+		private Long clazz;
 
 		public Integer getLine() {
 			return this.line;
@@ -308,11 +333,15 @@ public class IssueSend {
 			return this.name;
 		}
 
-		public Integer getFunction() {
+		public Long getFile() {
+			return file;
+		}
+
+		public Long getFunction() {
 			return this.function;
 		}
 
-		public Integer getClazz() {
+		public Long getClazz() {
 			return this.clazz;
 		}
 
@@ -326,12 +355,17 @@ public class IssueSend {
 			return this;
 		}
 
-		public Concat setFunction(Integer function) {
+		public Concat setFile(Long file) {
+			this.file = file;
+			return this;
+		}
+
+		public Concat setFunction(Long function) {
 			this.function = function;
 			return this;
 		}
 
-		public Concat setClazz(Integer clazz) {
+		public Concat setClazz(Long clazz) {
 			this.clazz = clazz;
 			return this;
 		}
@@ -353,7 +387,7 @@ public class IssueSend {
 	public static class Summary {
 		private Integer line;
 		private String content;
-		private Integer file;
+		private Long file;
 
 		public Integer getLine() {
 			return this.line;
@@ -363,7 +397,7 @@ public class IssueSend {
 			return this.content;
 		}
 
-		public Integer getFile() {
+		public Long getFile() {
 			return this.file;
 		}
 
@@ -377,10 +411,25 @@ public class IssueSend {
 			return this;
 		}
 
-		public Summary setFile(Integer file) {
+		public Summary setFile(Long file) {
 			this.file = file;
 			return this;
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Summary summary = (Summary) o;
+			return Objects.equals(line, summary.line) &&
+			       Objects.equals(file, summary.file);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(line, file);
+		}
+
 	}
 
 }
