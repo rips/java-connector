@@ -1,9 +1,9 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.Application;
+import com.ripstech.api.entity.send.ApplicationSend;
 import com.ripstech.apiconnector2.connector.path.application.ScanWoIdPath;
-import com.ripstech.apiconnector2.entity.receive.Application;
-import com.ripstech.apiconnector2.entity.send.ApplicationSend;
 import com.ripstech.apiconnector2.service.application.AclOwnService;
 import com.ripstech.apiconnector2.service.template.PatchDeletePostGetService;
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.ripstech.apiconnector2.authorization.HeaderAuthenticator;
+import com.ripstech.apiconnector2.exception.ApiException;
 import com.ripstech.apiconnector2.service.queryparameter.QueryParamerters;
 import com.ripstech.apiconnector2.service.template.GenericService.HttpMethod;
 import okhttp3.*;
@@ -117,12 +118,18 @@ public class ApiRequest {
 		return this;
 	}
 
-	private Request.Builder builder() {
+	private Request.Builder builder() throws ApiException {
 		if(path.startsWith("/")) {
-			path = path.substring(1, path.length());
+			path = path.substring(1);
 		}
-		HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl)
-				                          .newBuilder()
+		if(baseUrl == null) {
+			throw new ApiException("Missing baseUrl");
+		}
+		final HttpUrl httpUrl = HttpUrl.parse(baseUrl);
+		if(httpUrl == null) {
+			throw new ApiException(baseUrl + " is not a valid URL");
+		}
+		HttpUrl.Builder urlBuilder = httpUrl.newBuilder()
 				                          .addPathSegments(path);
 		queryParams.forEach(urlBuilder::addQueryParameter);
 		Request.Builder request = new Request.Builder()
@@ -137,7 +144,7 @@ public class ApiRequest {
 		return request;
 	}
 
-	Response execute() throws IOException {
+	public Response execute() throws IOException, ApiException {
 		if (exception != null)
 			throw exception;
 		Request.Builder builder = builder();

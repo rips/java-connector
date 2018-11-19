@@ -2,9 +2,25 @@ package com.ripstech.apiconnector2.service.queryparameter;
 
 import com.ripstech.apiconnector2.entity.send.filter.Expression;
 
-import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Filter extends QueryParamerters {
+
+	private Set<String> selects = new HashSet<>();
+
+	public Filter() {}
+
+	public Filter(Expression expression) {
+		this.json(expression);
+	}
+
+	public Filter(JsonFilter jsonFilter) {
+		this.json(jsonFilter);
+	}
 
 	public static Filter empty() {
 		return new Filter();
@@ -25,114 +41,13 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter isEqual(String name, String value) {
-		and("equal", name, value);
+	public Filter select(String... fields) {
+		selects.addAll(Arrays.asList(fields));
 		return this;
 	}
 
-	public Filter isEqual(String name, long value) {
-		isEqual(name, Long.toString(value));
-		return this;
-	}
-
-	public Filter isEqual(String name, OffsetDateTime value) {
-		isEqual(name, value.toString());
-		return this;
-	}
-
-	public Filter notEqual(String name, String value) {
-		and("notEqual", name, value);
-		return this;
-	}
-
-	public Filter notEqual(String name, long value) {
-		notEqual(name, Long.toString(value));
-		return this;
-	}
-
-	public Filter notEqual(String name, OffsetDateTime value) {
-		notEqual(name, value.toString());
-		return this;
-	}
-
-	public Filter nul(String name, String value) {
-		and("null", name, value);
-		return this;
-	}
-
-	public Filter notNull(String name, String value) {
-		and("notNull", name, value);
-		return this;
-	}
-
-	public Filter like(String name, String value) {
-		and("like", name, value);
-		return this;
-	}
-
-	public Filter notLike(String name, String value) {
-		and("notLike", name, value);
-		return this;
-	}
-
-	public Filter lessThan(String name, String value) {
-		and("lessThan", name, value);
-		return this;
-	}
-
-	public Filter lessThan(String name, OffsetDateTime value) {
-		and("lessThan", name, value.toString());
-		return this;
-	}
-
-	public Filter lessThan(String name, long value) {
-		and("lessThan", name, String.valueOf(value));
-		return this;
-	}
-
-	public Filter greaterThan(String name, String value) {
-		and("greaterThan", name, value);
-		return this;
-	}
-
-	public Filter greaterThan(String name, OffsetDateTime value) {
-		and("greaterThan", name, value.toString());
-		return this;
-	}
-
-	public Filter greaterThan(String name, long value) {
-		and("greaterThan", name, String.valueOf(value));
-		return this;
-	}
-
-	public Filter lessThanEqual(String name, String value) {
-		and("lessThanEqual", name, value);
-		return this;
-	}
-
-	public Filter lessThanEqual(String name, OffsetDateTime value) {
-		and("lessThanEqual", name, value.toString());
-		return this;
-	}
-
-
-	public Filter lessThanEqual(String name, long value) {
-		and("lessThanEqual", name, String.valueOf(value));
-		return this;
-	}
-
-	public Filter greaterThanEqual(String name, String value) {
-		and("greaterThanEqual", name, value);
-		return this;
-	}
-
-	public Filter greaterThanEqual(String name, OffsetDateTime value) {
-		and("greaterThanEqual", name, value.toString());
-		return this;
-	}
-
-	public Filter greaterThanEqual(String name, long value) {
-		and("greaterThanEqual", name, String.valueOf(value));
+	public Filter select(Collection<String> fields) {
+		selects.addAll(fields);
 		return this;
 	}
 
@@ -161,6 +76,18 @@ public class Filter extends QueryParamerters {
 
 	private void and(String operator, String name, String value) {
 		params.put(String.format("%s[%s]", operator, name), value);
+	}
+
+	@Override
+	protected void finalizeParameters() {
+		if(selects.size() > 0) {
+			and("select",
+			    selects.stream()
+					    .collect(Collectors.joining(
+							    "\", \"",
+							    "[\"",
+							    "\"]")));
+		}
 	}
 
 	public enum Order {

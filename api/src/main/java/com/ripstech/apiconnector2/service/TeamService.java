@@ -1,8 +1,8 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.ripstech.apiconnector2.entity.receive.Team;
-import com.ripstech.apiconnector2.entity.send.TeamSend;
+import com.ripstech.api.entity.receive.Team;
+import com.ripstech.api.entity.send.TeamSend;
 import com.ripstech.apiconnector2.service.template.PatchDeletePostGetService;
 
 import java.util.List;

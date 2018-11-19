@@ -1,21 +1,24 @@
 package com.ripstech.apiconnector2;
 
-import com.ripstech.apiconnector2.entity.receive.application.custom.Setting;
-import com.ripstech.apiconnector2.entity.receive.application.scan.Issue;
-import com.ripstech.apiconnector2.entity.receive.application.scan.Php;
+import com.ripstech.api.entity.receive.application.scan.Issue;
+import com.ripstech.api.entity.receive.application.scan.issue.Type;
 import com.ripstech.apiconnector2.exception.ApiException;
 import com.ripstech.apiconnector2.service.application.ScanService;
 import com.ripstech.apiconnector2.service.application.scan.IssueService;
 import com.ripstech.apiconnector2.service.queryparameter.Filter;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import static com.ripstech.apiconnector2.service.queryparameter.JsonFilter.greaterThan;
+
+@SuppressWarnings("unused")
 public class ApiUtils {
 
     public static Future<List<Issue>> getScanIssues(ScanService scanService,
@@ -30,12 +33,12 @@ public class ApiUtils {
         AtomicInteger percent = new AtomicInteger(-1);
 
         ScheduledFuture<?> scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
-                scanService.get(scanId).process(applicationScan -> {
+                scanService.get(scanId, new Filter().select("percent", "phase")).process(applicationScan -> {
                     if (percent.get() != applicationScan.getPercent()) {
                         logConsumer.accept(String.format(
                                 "Scan Status: %d%% (%s)",
                                 applicationScan.getPercent(),
-                                applicationScan.getPhaseName().getDescription()
+                                Phase.getById(applicationScan.getPhase()).getDescription()
                         ));
                     }
                     percent.set(applicationScan.getPercent());
@@ -90,16 +93,16 @@ public class ApiUtils {
         AtomicLong highestIssueId = new AtomicLong(-1);
 
         ScheduledFuture<?> scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
-                scanService.get(scanId).process(applicationScan -> {
+                scanService.get(scanId, new Filter().select("percent", "phase")).process(applicationScan -> {
                     if (percent.get() != applicationScan.getPercent()) {
                         logConsumer.accept(String.format(
                                 "Scan Status: %d%% (%s)",
                                 applicationScan.getPercent(),
-                                applicationScan.getPhaseName().getDescription()
+                                Phase.getById(applicationScan.getPhase()).getDescription()
                         ));
                     }
                     percent.set(applicationScan.getPercent());
-                    issueService.get(filter.greaterThan("id", highestIssueId.get()))
+                    issueService.get(filter.json(greaterThan("id", highestIssueId.get())))
                             .process(applicationScanIssues -> {
                                         applicationScanIssues.stream()
                                                 .map(Issue::getId)
@@ -143,6 +146,7 @@ public class ApiUtils {
                               );
     }
 
+    @SuppressWarnings("unused")
     public static void processScanIssuesAsync(ScanService scanService,
                                               IssueService issueService,
                                               long scanId,
@@ -159,24 +163,39 @@ public class ApiUtils {
         );
     }
 
-    public static String getPhpVersion(Php php) {
-        if(php == null)
-            return "";
-        StringBuilder phpVersion = new StringBuilder();
-        resolve(php::getMajorVersion).ifPresent(major -> {
-            phpVersion.append(major);
-            resolve(php::getMinorVersion).ifPresent(minor -> {
-                phpVersion.append('.').append(minor);
-                resolve(php::getReleaseVersion).ifPresent(release -> phpVersion.append('.').append(release));
-            });
-        });
-        return phpVersion.toString();
+    @NotNull
+    public static Map<Long, Integer> getIssueTypeSeverities(@NotNull final Api api) throws ApiException {
+        return api.applications()
+                       .scans()
+                       .issues()
+                       .types()
+                       .get(new Filter().select("id", "severity"))
+                       .orThrow(ApiException::new)
+                       .stream()
+                       .map(types -> new AbstractMap.SimpleImmutableEntry<>(
+                               types.getId(),
+                               types.getSeverity()))
+                       .collect(Collectors.toMap(
+                               AbstractMap.SimpleImmutableEntry::getKey,
+                               AbstractMap.SimpleImmutableEntry::getValue));
     }
 
-    public static String getPhpVersion(Setting setting) {
-        if(setting == null || setting.getPhp() == null)
-            return "";
-        return getPhpVersion(setting.getPhp());
+    public static Map<Long, Type> getIssueTypeSeverities(@NotNull final Api api, String... selects) throws ApiException {
+        final Set<String> sendSelect = new HashSet<>(Arrays.asList(selects));
+        sendSelect.add("id");
+        return api.applications()
+                       .scans()
+                       .issues()
+                       .types()
+                       .get(new Filter().select(sendSelect))
+                       .orThrow(ApiException::new)
+                       .stream()
+                       .map(types -> new AbstractMap.SimpleImmutableEntry<>(
+                               types.getId(),
+                               types))
+                       .collect(Collectors.toMap(
+                               AbstractMap.SimpleImmutableEntry::getKey,
+                               AbstractMap.SimpleImmutableEntry::getValue));
     }
 
     public static <T> Optional<T> resolve(Supplier<T> resolver) {

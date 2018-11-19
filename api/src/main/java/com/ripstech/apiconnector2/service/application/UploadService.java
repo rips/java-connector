@@ -1,8 +1,8 @@
 package com.ripstech.apiconnector2.service.application;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.application.Upload;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.application.Upload;
 import com.ripstech.apiconnector2.service.template.DeletePostGetService;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;

@@ -1,8 +1,8 @@
 package com.ripstech.apiconnector2.service.application.scan.issue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.application.scan.issue.Type;
 import com.ripstech.apiconnector2.annotation.AuthRequired;
-import com.ripstech.apiconnector2.entity.receive.application.scan.issue.Type;
 import com.ripstech.apiconnector2.service.template.GetService;
 
 import java.util.List;

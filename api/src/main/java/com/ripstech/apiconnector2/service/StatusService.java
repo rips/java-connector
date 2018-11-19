@@ -1,12 +1,10 @@
 package com.ripstech.apiconnector2.service;
 
-import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.Status;
-import com.ripstech.apiconnector2.service.template.GenericService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.Status;
+import com.ripstech.apiconnector2.service.template.SimpleGetService;
 
-import static com.ripstech.apiconnector2.service.template.GenericService.HttpMethod.GET;
-
-public class StatusService extends GenericService {
+public class StatusService extends SimpleGetService<Status> {
 
 	public StatusService(String baseUri) {
 		super(baseUri);
@@ -17,8 +15,8 @@ public class StatusService extends GenericService {
 		return "status";
 	}
 
-	public ApiResponse<Status> get() {
-		return new ApiResponse<>(getTarget(GET), Status.class);
+	@Override
+	public TypeReference<Status> getGenericType() {
+		return new TypeReference<Status>() {};
 	}
-
 }
