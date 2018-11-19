@@ -1,6 +1,5 @@
 package com.ripstech.apiconnector2;
 
-import com.ripstech.api.entity.send.ApplicationSend;
 import com.ripstech.api.entity.send.LogSend;
 import com.ripstech.api.entity.send.OrganizationSend;
 import com.ripstech.api.entity.send.SettingSend;
