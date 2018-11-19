@@ -61,7 +61,6 @@ class GetTest extends ApiSettings {
 			servicesCache = new Reflections("com.ripstech.apiconnector2.service")
 					                .getSubTypesOf(GenericService.class).stream()
 					                .filter(aClass -> !aClass.toString().contains("template"))
-									.filter(aClass -> !aClass.toString().contains("CommentAllService"))
 					                .collect(Collectors.toList());
 		}
 		return servicesCache;

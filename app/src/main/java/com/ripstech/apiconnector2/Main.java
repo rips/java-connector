@@ -83,7 +83,6 @@ public class Main {
 
 		ScanWoIdPath scanPath = api.applications().scans();
 		IssueWoIdPath issuePath = scanPath.issues();
-		issuePath.commentsAll().get(new Filter().limit(5)).process(System.out::println, printError());
 		issuePath.originTypes().get().process(System.out::println, printError());
 		issuePath.reviewTypes().get().process(System.out::println, printError());
 		scanPath.stats().get(new Filter().limit(5)).process(System.out::println, printError());

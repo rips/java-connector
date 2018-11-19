@@ -1,19 +1,15 @@
 package com.ripstech.apiconnector2.connector.path.application.scan;
 
 import com.ripstech.apiconnector2.connector.Path;
-import com.ripstech.apiconnector2.service.application.scan.issue.*;
+import com.ripstech.apiconnector2.service.application.scan.issue.OriginTypeService;
+import com.ripstech.apiconnector2.service.application.scan.issue.PatchTypeService;
+import com.ripstech.apiconnector2.service.application.scan.issue.ReviewTypeService;
+import com.ripstech.apiconnector2.service.application.scan.issue.TypeService;
 
 public class IssueWoIdPath extends Path {
 
 	public IssueWoIdPath(String baseUri) {
 		super(baseUri);
-	}
-
-	@SuppressWarnings("unused")
-	public CommentAllService commentsAll() {
-		CommentAllService service = new CommentAllService(baseUri);
-		setPrefs(service);
-		return service;
 	}
 
 	@SuppressWarnings("unused")
