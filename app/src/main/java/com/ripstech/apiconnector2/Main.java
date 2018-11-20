@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 
@@ -34,11 +35,16 @@ public class Main {
 				          .withXPassword(properties.getProperty("api.username"), properties.getProperty("api.password"))
 				          .build();
 
-		long appId = api.applications().post(new ApplicationSend.Post("test"))
-				             .orThrow(ApiException::new)
-				             .getId();
-
-		System.exit(0);
+		System.out.println(api.application(1L)
+				                   .scans()
+				                   .get(new Filter().offset(0))
+				                   .map(List::size)
+				                   .orElse(0));
+		System.out.println(api.application(1L)
+				                   .scans()
+				                   .get()
+				                   .map(List::size)
+				                   .orElse(0));
 
 		api.status().get(new Filter().json(JsonFilter.or(equal("name", "hallo")))).process(System.out::println, printError());
 
