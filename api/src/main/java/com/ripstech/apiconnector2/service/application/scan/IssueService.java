@@ -73,8 +73,11 @@ public class IssueService extends PostGetService<Issue, IssueService.IssueSendPo
 	public static class IssueSendPost {
 		IssueSend.Post issue;
 		SourceSend.Post source;
+		TaintSend.Post sourceTaint;
 		SinkSend.Post sink;
+		TaintSend.Post sinkTaint;
 		ConcatSend.Post concat;
+		TaintSend.Post concatTaint;
 		EntrypointSend.Post entrypoint;
 		MarkupsSend markups;
 		SummariesSend summaries;
@@ -101,6 +104,15 @@ public class IssueService extends PostGetService<Issue, IssueService.IssueSendPo
 			return this;
 		}
 
+		public TaintSend.Post getSourceTaint() {
+			return sourceTaint;
+		}
+
+		public IssueSendPost setSourceTaint(TaintSend.Post sourceTaint) {
+			this.sourceTaint = sourceTaint;
+			return this;
+		}
+
 		public SinkSend.Post getSink() {
 			return sink;
 		}
@@ -110,12 +122,30 @@ public class IssueService extends PostGetService<Issue, IssueService.IssueSendPo
 			return this;
 		}
 
+		public TaintSend.Post getSinkTaint() {
+			return sinkTaint;
+		}
+
+		public IssueSendPost setSinkTaint(TaintSend.Post sinkTaint) {
+			this.sinkTaint = sinkTaint;
+			return this;
+		}
+
 		public ConcatSend.Post getConcat() {
 			return concat;
 		}
 
 		public IssueSendPost setConcat(ConcatSend.Post concat) {
 			this.concat = concat;
+			return this;
+		}
+
+		public TaintSend.Post getConcatTaint() {
+			return concatTaint;
+		}
+
+		public IssueSendPost setConcatTaint(TaintSend.Post concatTaint) {
+			this.concatTaint = concatTaint;
 			return this;
 		}
 
