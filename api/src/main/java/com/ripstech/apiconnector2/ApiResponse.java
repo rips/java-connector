@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.*;
 
@@ -51,10 +52,24 @@ public class ApiResponse<T> {
 		setException(e);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void exec() {
 		try (Response response = request.execute()) {
 			status = new HttpStatus(response.code(), response.message());
 			value = apiResponseMapper.getValue(response);
+			if (value instanceof Collection<?> && request.usePagination()) {
+				boolean nextPage = "1".equals(response.header("X-API-Pagination-More", "0"));
+				while (nextPage) {
+					try (Response nextResponse = request.nextPage().execute()) {
+						status = new HttpStatus(nextResponse.code(), nextResponse.message());
+						nextPage = "1".equals(nextResponse.header("X-API-Pagination-More", "0"));
+						final Collection nextItems = (Collection) apiResponseMapper.getValue(nextResponse);
+						if(nextItems != null) {
+							((Collection<?>) value).addAll(nextItems);
+						}
+					}
+				}
+			}
 		} catch (ApiException | IOException e) {
 			setException(e);
 		} catch (ErrorMessageException e) {
