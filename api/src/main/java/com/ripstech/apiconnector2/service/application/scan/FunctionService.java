@@ -1,9 +1,9 @@
 package com.ripstech.apiconnector2.service.application.scan;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.application.scan.Function;
+import com.ripstech.api.entity.send.application.scan.FunctionsSend;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.application.scan.Function;
-import com.ripstech.apiconnector2.entity.send.application.scan.FunctionSend;
 import com.ripstech.apiconnector2.service.template.GetService;
 
 import java.util.List;
@@ -19,7 +19,6 @@ public class FunctionService extends GetService<Function> {
 		super(baseUri);
 		this.applicationId = applicationId;
 		this.scanId = scanId;
-		this.withRootName = false;
 	}
 
 	@Override
@@ -37,7 +36,7 @@ public class FunctionService extends GetService<Function> {
 		return String.format("applications/%d/scans/%d/functions", applicationId, scanId);
 	}
 
-	public ApiResponse<List<Function>> postBatches(FunctionSend applicationScanFunction) {
+	public ApiResponse<List<Function>> postBatches(FunctionsSend applicationScanFunction) {
 		return new ApiResponse<>(getTarget(POST)
 				                         .appendPath("batches")
 				                         .setJsonBody(applicationScanFunction),

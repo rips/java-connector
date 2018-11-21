@@ -20,6 +20,7 @@ public class Configuration {
 	private Configuration() {}
 
 	public static boolean strict = false;
+	public static int pageSize = 500;
 
 	private static ObjectMapper getObjectMapperOAuth() {
 		ObjectMapper om = new ObjectMapper()

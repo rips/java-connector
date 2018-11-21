@@ -1,8 +1,8 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.ripstech.apiconnector2.entity.receive.License;
-import com.ripstech.apiconnector2.entity.send.LicenseSend;
+import com.ripstech.api.entity.receive.License;
+import com.ripstech.api.entity.send.LicenseSend;
 import com.ripstech.apiconnector2.service.template.PostGetService;
 
 import java.util.List;

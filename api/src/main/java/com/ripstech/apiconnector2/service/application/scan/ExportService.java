@@ -40,18 +40,6 @@ public class ExportService extends GenericService {
 		                         InputStream.class);
 	}
 
-	public ApiResponse<InputStream> jiraCsv() {
-		return jiraCsv(Filter.empty());
-	}
-
-	public ApiResponse<InputStream> jiraCsv(Filter filter) {
-		return new ApiResponse<>(getTarget(GET)
-				                         .appendPath("jiracsvs")
-				                         .setQueryParams(filter)
-				                         .setAcceptHeader(MIMETYPE_TEXT_CSV),
-		                         InputStream.class);
-	}
-
 	public ApiResponse<InputStream> pdf() {
 		return pdf(Filter.empty(), PdfOptions.empty());
 	}

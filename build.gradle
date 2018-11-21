@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.ripstech'
-version '2.9.0'
+version '3.0.0-alpha'
 
 subprojects {
     apply plugin: 'java'
@@ -13,5 +13,10 @@ subprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        implementation group: 'com.ripstech.api', name: 'entity', version: '1.0-SNAPSHOT'
     }
 }

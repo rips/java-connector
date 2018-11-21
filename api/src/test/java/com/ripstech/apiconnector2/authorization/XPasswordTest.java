@@ -18,14 +18,14 @@ class XPasswordTest extends ApiSettings {
 	@Test
 	void header() {
 		Map<String, String> authHeader = new XPassword("user", "pass").getAuthHeader();
-		assertEquals("user", authHeader.get("X-Api-Username"));
+		assertEquals("user", authHeader.get("X-Api-Email"));
 		assertEquals("pass", authHeader.get("X-Api-Password"));
 	}
 
 	@Test
 	void connect() throws ApiException {
 		Api api = new Api.Builder(BASE_URL).withXPassword(USERNAME, PASSWORD).build();
-		assertEquals(USERNAME, api.status().get().orThrow(ApiException::new).getUser().getUsername());
+		assertEquals(USERNAME, api.status().get().orThrow(ApiException::new).getUser().getEmail());
 	}
 
 }

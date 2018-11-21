@@ -1,7 +1,7 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.ripstech.apiconnector2.entity.receive.Activity;
+import com.ripstech.api.entity.receive.Activity;
 import com.ripstech.apiconnector2.service.template.GetService;
 
 import java.util.List;

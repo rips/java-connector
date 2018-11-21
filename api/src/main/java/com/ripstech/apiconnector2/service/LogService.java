@@ -1,9 +1,9 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.Log;
+import com.ripstech.api.entity.send.LogSend;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.Log;
-import com.ripstech.apiconnector2.entity.send.LogSend;
 import com.ripstech.apiconnector2.service.queryparameter.Filter;
 import com.ripstech.apiconnector2.service.template.PostGetService;
 

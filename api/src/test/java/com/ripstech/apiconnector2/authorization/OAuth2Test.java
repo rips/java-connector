@@ -27,7 +27,7 @@ class OAuth2Test extends ApiSettings {
 	@Test
 	void connect() throws ApiException {
 		Api api = new Api.Builder(BASE_URL).withOAuthv2(USERNAME, PASSWORD).build();
-		assertEquals(USERNAME, api.status().get().orThrow(ApiException::new).getUser().getUsername());
+		assertEquals(USERNAME, api.status().get().orThrow(ApiException::new).getUser().getEmail());
 	}
 
 }

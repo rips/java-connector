@@ -1,8 +1,8 @@
 package com.ripstech.apiconnector2.service;
 
+import com.ripstech.api.entity.send.ApplicationSend;
 import com.ripstech.apiconnector2.Api;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.send.ApplicationSend;
 import com.ripstech.apiconnector2.exception.ApiException;
 import com.ripstech.apiconnector2.service.template.GenericService;
 import org.junit.jupiter.api.AfterAll;
@@ -36,7 +36,7 @@ class GetTest extends ApiSettings {
 	@BeforeAll
 	static void setUp() throws ApiException {
 		api = new Api.Builder(BASE_URL).withHttpClientConfig(HTTP_CLIENT_CONFIG).build();
-		appId = api.applications().post(ApplicationSend.createPost(GetTest.class.getCanonicalName())).orThrow(ApiException::new).getId();
+		appId = api.applications().post(new ApplicationSend.Post(GetTest.class.getCanonicalName())).orThrow(ApiException::new).getId();
 	}
 
 	@AfterAll
@@ -61,7 +61,6 @@ class GetTest extends ApiSettings {
 			servicesCache = new Reflections("com.ripstech.apiconnector2.service")
 					                .getSubTypesOf(GenericService.class).stream()
 					                .filter(aClass -> !aClass.toString().contains("template"))
-									.filter(aClass -> !aClass.toString().contains("CommentAllService"))
 					                .collect(Collectors.toList());
 		}
 		return servicesCache;

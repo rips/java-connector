@@ -4,12 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.ripstech.apiconnector2.authorization.HeaderAuthenticator;
+import com.ripstech.apiconnector2.config.Configuration;
+import com.ripstech.apiconnector2.exception.ApiException;
 import com.ripstech.apiconnector2.service.queryparameter.QueryParamerters;
 import com.ripstech.apiconnector2.service.template.GenericService.HttpMethod;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ApiRequest {
@@ -18,13 +22,15 @@ public class ApiRequest {
 	private ObjectMapper objectMapper;
 	private String baseUrl;
 	private String path;
-	private LinkedHashMap<String, String> queryParams = new LinkedHashMap<>();
+	private Map<String, String> queryParams = new HashMap<>();
 	private HttpMethod method = HttpMethod.GET;
 	private RequestBody body;
 	private JsonProcessingException exception;
 	private String acceptHeader = Objects.requireNonNull(MEDIA_TYPE_JSON).toString();
 	private OkHttpClient client = new OkHttpClient();
 	private boolean sendAuthHeader = true;
+	private int limit = Configuration.pageSize;
+	private int offset = 0;
 
 	ObjectMapper getObjectMapper() {
 		return objectMapper;
@@ -117,14 +123,33 @@ public class ApiRequest {
 		return this;
 	}
 
-	private Request.Builder builder() {
+	ApiRequest nextPage() {
+		offset += limit;
+		return this;
+	}
+
+	public boolean usePagination() {
+		return !(queryParams.containsKey("limit") || queryParams.containsKey("offset"));
+	}
+
+	private Request.Builder builder() throws ApiException {
 		if(path.startsWith("/")) {
-			path = path.substring(1, path.length());
+			path = path.substring(1);
 		}
-		HttpUrl.Builder urlBuilder = HttpUrl.parse(baseUrl)
-				                          .newBuilder()
+		if(baseUrl == null) {
+			throw new ApiException("Missing baseUrl");
+		}
+		final HttpUrl httpUrl = HttpUrl.parse(baseUrl);
+		if(httpUrl == null) {
+			throw new ApiException(baseUrl + " is not a valid URL");
+		}
+		HttpUrl.Builder urlBuilder = httpUrl.newBuilder()
 				                          .addPathSegments(path);
 		queryParams.forEach(urlBuilder::addQueryParameter);
+		if(usePagination()) {
+			urlBuilder.addQueryParameter("limit", String.valueOf(limit));
+			urlBuilder.addQueryParameter("offset", String.valueOf(offset));
+		}
 		Request.Builder request = new Request.Builder()
 				                          .url(urlBuilder.build())
 				                          .addHeader("Accept", acceptHeader);
@@ -137,7 +162,7 @@ public class ApiRequest {
 		return request;
 	}
 
-	Response execute() throws IOException {
+	public Response execute() throws IOException, ApiException {
 		if (exception != null)
 			throw exception;
 		Request.Builder builder = builder();
