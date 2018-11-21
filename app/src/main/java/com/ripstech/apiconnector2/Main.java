@@ -78,7 +78,7 @@ public class Main {
 
 		api.organizations().get().process(System.out::println, printError());
 		api.organizations()
-				.post(new OrganizationSend.Post("test orga").setTrialIssueTypes(Arrays.asList("123", "234")))
+				.post(new OrganizationSend.Post("test orga").setTrialIssueTypes(Arrays.asList(123L, 234L)))
 				.process(organisation -> {
 					System.out.println(organisation);
 					api.organizations().patch(organisation.getId(), new OrganizationSend.Patch()
