@@ -46,6 +46,8 @@ public class Main {
 				                   .map(List::size)
 				                   .orElse(0));
 
+		api.applications().get(new Filter().orderBy("name", "createdAt")).process(System.out::println, printError());
+
 		api.status().get(new Filter().json(JsonFilter.or(equal("name", "hallo")))).process(System.out::println, printError());
 
 		api.sources().get().process(System.out::println, printError());

@@ -2,15 +2,13 @@ package com.ripstech.apiconnector2.service.queryparameter;
 
 import com.ripstech.apiconnector2.entity.send.filter.Expression;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Filter extends QueryParamerters {
 
 	private Set<String> selects = new HashSet<>();
+	private List<OrderBy> orders = new ArrayList<>();
 
 	public Filter() {}
 
@@ -36,8 +34,18 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter orderBy(String name, Order value) {
-		and("orderBy", name, value.name().toLowerCase());
+	public Filter orderBy(String column, Order order) {
+		this.orders.add(new OrderBy(column, order));
+		return this;
+	}
+
+	public Filter orderBy(OrderBy... orders) {
+		this.orders.addAll(Arrays.asList(orders));
+		return this;
+	}
+
+	public Filter orderBy(String... orders) {
+		Arrays.stream(orders).map(OrderBy::new).forEach(this.orders::add);
 		return this;
 	}
 
@@ -88,11 +96,39 @@ public class Filter extends QueryParamerters {
 							    "[\"",
 							    "\"]")));
 		}
+		if(orders.size() > 0) {
+			and("orderBy",
+			    orders.stream()
+					    .map(Object::toString)
+					    .collect(Collectors.joining(
+					    		",",
+							    "{",
+							    "}")));
+		}
 	}
 
 	public enum Order {
 		ASC,
 		DESC
+	}
+
+	public class OrderBy {
+		private String columnName;
+		private Order order = Order.ASC;
+
+		public OrderBy(String columnName) {
+			this.columnName = columnName;
+		}
+
+		public OrderBy(String columnName, Order order) {
+			this.columnName = columnName;
+			this.order = order;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("\"%s\":\"%s\"", columnName, order.name().toLowerCase());
+		}
 	}
 
 }
