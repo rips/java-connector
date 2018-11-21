@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.ripstech.api.entity.receive.application.Scan;
 import com.ripstech.api.entity.receive.application.scan.Stats;
 import com.ripstech.api.entity.send.application.ScanSend;
+import com.ripstech.api.entity.send.application.scan.JavaSend;
 import com.ripstech.api.entity.send.application.scan.LibrarySend;
 import com.ripstech.api.entity.send.application.scan.PhpSend;
 import com.ripstech.apiconnector2.ApiResponse;
@@ -63,6 +64,7 @@ public class ScanService extends DeletePostGetService<Scan, ScanService.ScanSend
 		private ScanSend.Post scan;
 		private List<String> tags;
 		private PhpSend php;
+		private JavaSend java;
 		private List<LibrarySend> libraries;
 
 		public ScanSendPost(ScanSend.Post scan) {
@@ -93,6 +95,15 @@ public class ScanService extends DeletePostGetService<Scan, ScanService.ScanSend
 
 		public ScanSendPost setPhp(PhpSend php) {
 			this.php = php;
+			return this;
+		}
+
+		public JavaSend getJava() {
+			return java;
+		}
+
+		public ScanSendPost setJava(JavaSend java) {
+			this.java = java;
 			return this;
 		}
 
