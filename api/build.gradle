@@ -52,6 +52,17 @@ publishing {
     repositories {
         maven {
             url "https://nexus.internal.ripstech.com/repository/maven-rips-release/"
+            name = "ripsRelease"
+            if(project.hasProperty('nexusUser')) {
+                credentials {
+                    username nexusUser
+                    password nexusPassword
+                }
+            }
+        }
+        maven {
+            url "https://nexus.internal.ripstech.com/repository/maven-rips-snapshot/"
+            name = "ripsSnapshot"
             if(project.hasProperty('nexusUser')) {
                 credentials {
                     username nexusUser
@@ -66,6 +77,13 @@ publishing {
             groupId 'com.ripstech'
             artifactId 'api-connector-java2'
             version rootProject.version
+
+            from components.java
+        }
+        apiSnapshot(MavenPublication) {
+            groupId 'com.ripstech'
+            artifactId 'api-connector-java2'
+            version rootProject.version + "-SNAPSHOT"
 
             from components.java
         }
