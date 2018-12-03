@@ -24,8 +24,8 @@ public class IssuePath extends Path {
 	}
 
 	@SuppressWarnings("unused")
-	public MarkupService markups() {
-		MarkupService service = new MarkupService(baseUri, applicationId, scanId, issueId);
+	public ContextService contexts() {
+		ContextService service = new ContextService(baseUri, applicationId, scanId, issueId);
 		setPrefs(service);
 		return service;
 	}
