@@ -43,7 +43,7 @@ class ProfileServiceTest extends ApiSettings {
 	@Test
 	void postPatchDelete() throws ApiException {
 		ProfileService service = api.application(appId).profiles();
-		long profileId = service.post(new ProfileSend.Post("test")).orThrow(ApiException::new).getId();
+		long profileId = service.post(new ProfileSend.Post(1L, "test")).orThrow(ApiException::new).getId();
 		service.patch(profileId, new ProfileSend.Patch().setDefault_(true))
 				.process(profile -> assertTrue(profile.getDefault_()), (httpStatus, s) -> fail(s));
 		service.delete(profileId);
