@@ -29,7 +29,7 @@ public class DifferenceDetails {
 		private long id;
 		private List<String> comments = Collections.emptyList();
 		private List<String> summaries = Collections.emptyList();
-		private List<String> markups = Collections.emptyList();
+		private List<String> contexts = Collections.emptyList();
 		private Integer depth;
 		private List<String> reviews = Collections.emptyList();
 		private Boolean reviewed;
@@ -50,8 +50,8 @@ public class DifferenceDetails {
 			return this.summaries;
 		}
 
-		public List<String> getMarkups() {
-			return this.markups;
+		public List<String> getContexts() {
+			return this.contexts;
 		}
 
 		public Integer getDepth() {

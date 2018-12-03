@@ -22,8 +22,8 @@ public class ProfilePath extends Path {
 	}
 
 	@SuppressWarnings("unused")
-	public SanitiserService sanitisers() {
-		SanitiserService service = new SanitiserService(baseUri, applicationId, profileId);
+	public SanitizerService sanitizers() {
+		SanitizerService service = new SanitizerService(baseUri, applicationId, profileId);
 		setPrefs(service);
 		return service;
 	}

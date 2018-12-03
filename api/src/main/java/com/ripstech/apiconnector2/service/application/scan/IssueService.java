@@ -79,7 +79,7 @@ public class IssueService extends PostGetService<Issue, IssueService.IssueSendPo
 		ConcatSend.Post concat;
 		TaintSend.Post concatTaint;
 		EntrypointSend.Post entrypoint;
-		MarkupsSend markups;
+		ContextsSend contexts;
 		SummariesSend summaries;
 
 		public IssueSendPost(@NotNull IssueSend.Post issue) {
@@ -158,12 +158,12 @@ public class IssueService extends PostGetService<Issue, IssueService.IssueSendPo
 			return this;
 		}
 
-		public MarkupsSend getMarkups() {
-			return markups;
+		public ContextsSend getContexts() {
+			return contexts;
 		}
 
-		public IssueSendPost setMarkups(MarkupsSend markups) {
-			this.markups = markups;
+		public IssueSendPost setContexts(ContextsSend contexts) {
+			this.contexts = contexts;
 			return this;
 		}
 
