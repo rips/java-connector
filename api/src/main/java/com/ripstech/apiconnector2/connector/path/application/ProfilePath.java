@@ -15,8 +15,15 @@ public class ProfilePath extends Path {
 	}
 
 	@SuppressWarnings("unused")
-	public IgnoreService ignores() {
-		IgnoreService service = new IgnoreService(baseUri, applicationId, profileId);
+	public IgnoredCodesService ignoredCodes() {
+		IgnoredCodesService service = new IgnoredCodesService(baseUri, applicationId, profileId);
+		setPrefs(service);
+		return service;
+	}
+
+	@SuppressWarnings("unused")
+	public IgnoredLocationsService ignoredLocations() {
+		IgnoredLocationsService service = new IgnoredLocationsService(baseUri, applicationId, profileId);
 		setPrefs(service);
 		return service;
 	}
