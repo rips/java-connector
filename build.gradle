@@ -23,6 +23,6 @@ subprojects {
     }
 
     dependencies {
-        implementation group: 'com.ripstech.api', name: 'entity', version: '1.0-20181211.131704-17'
+        implementation group: 'com.ripstech.api', name: 'entity', version: '1.0-20181217.094004-22'
     }
 }

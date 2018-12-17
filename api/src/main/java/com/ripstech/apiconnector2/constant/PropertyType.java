@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 @SuppressWarnings("unused")
-public enum SourceType {
+public enum PropertyType {
 
 	METHOD_WITHOUT_PARAMETERS(1),
 	METHOD_WITH_PARAMETERS(2),
@@ -15,7 +15,7 @@ public enum SourceType {
 	private long apiId;
 
 	@JsonCreator
-	SourceType(long apiId) {
+	PropertyType(long apiId) {
 		this.apiId = apiId;
 	}
 
