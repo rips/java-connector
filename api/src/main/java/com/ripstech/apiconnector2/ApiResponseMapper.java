@@ -32,8 +32,7 @@ public class ApiResponseMapper<T> {
 		    && response.body() != null
 		    && response.body().contentLength() != 0
 		    && response.body().contentType() != null
-		    && response.body().contentType().subtype() != null
-		    && response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
+		    && response.body().contentType().subtype() != null) {
 			if (response.isSuccessful()) {
 				if(response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
 					return responseToObject(response, typeReference);
