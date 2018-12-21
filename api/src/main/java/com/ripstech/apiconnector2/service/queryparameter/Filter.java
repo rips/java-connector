@@ -60,7 +60,7 @@ public class Filter extends QueryParamerters {
 	}
 
 	public Filter readable() {
-		params.put("showIssueReadable", "1");
+		params.put("customFilter", "{\"readable\": {\"show\": true}}");
 		return this;
 	}
 
