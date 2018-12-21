@@ -40,7 +40,7 @@ class FilterTest {
 				.readable()
 				.getParams()
 				.forEach((s1, s2) -> s.append(s1).append("=").append(s2).append("&"));
-		Assertions.assertEquals("filter={\"__and\":[{\"__equal\":{\"test\":1}},{\"__equal\":{\"tset\":2}}]}&showIssueReadable=1&", s.toString());
+		Assertions.assertEquals("filter={\"__and\":[{\"__equal\":{\"test\":1}},{\"__equal\":{\"tset\":2}}]}&customFilter={\"readable\": {\"show\": true}}&", s.toString());
 	}
 
 }
