@@ -3,6 +3,7 @@ package com.ripstech.apiconnector2.service.application.scan.issue;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.ripstech.api.entity.receive.application.scan.issue.Type;
 import com.ripstech.apiconnector2.annotation.AuthRequired;
+import com.ripstech.apiconnector2.service.application.scan.issue.type.PatchService;
 import com.ripstech.apiconnector2.service.template.GetService;
 
 import java.util.List;
@@ -27,5 +28,11 @@ public class TypeService extends GetService<Type> {
 	@Override
 	protected String getPath() {
 		return "applications/scans/issues/types";
+	}
+
+	public PatchService patches() {
+		PatchService service = new PatchService(baseUri);
+		service.setHttpClientConfig(httpClientConfig);
+		return service;
 	}
 }
