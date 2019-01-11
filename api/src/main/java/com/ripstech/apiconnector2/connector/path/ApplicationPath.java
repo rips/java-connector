@@ -1,10 +1,10 @@
 package com.ripstech.apiconnector2.connector.path;
 
 import com.ripstech.apiconnector2.connector.Path;
-import com.ripstech.apiconnector2.connector.path.application.CustomPath;
+import com.ripstech.apiconnector2.connector.path.application.ProfilePath;
 import com.ripstech.apiconnector2.connector.path.application.ScanPath;
 import com.ripstech.apiconnector2.service.application.AclService;
-import com.ripstech.apiconnector2.service.application.CustomService;
+import com.ripstech.apiconnector2.service.application.ProfileService;
 import com.ripstech.apiconnector2.service.application.ScanService;
 import com.ripstech.apiconnector2.service.application.UploadService;
 
@@ -23,8 +23,9 @@ public class ApplicationPath extends Path {
 		return path;
 	}
 
-	public CustomPath custom(long customId) {
-		CustomPath path = new CustomPath(baseUri, applicationId, customId);
+	@SuppressWarnings("unused")
+	public ProfilePath profiles(long profileId) {
+		ProfilePath path = new ProfilePath(baseUri, applicationId, profileId);
 		path.setHttpClientConfig(httpClientConfig);
 		return path;
 	}
@@ -51,8 +52,8 @@ public class ApplicationPath extends Path {
 	}
 
 	@SuppressWarnings("unused")
-	public CustomService customs() {
-		CustomService service = new CustomService(baseUri, applicationId);
+	public ProfileService profiles() {
+		ProfileService service = new ProfileService(baseUri, applicationId);
 		setPrefs(service);
 		return service;
 	}

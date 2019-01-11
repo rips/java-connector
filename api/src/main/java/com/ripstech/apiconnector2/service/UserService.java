@@ -1,11 +1,9 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.User;
+import com.ripstech.api.entity.send.UserSend;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.User;
-import com.ripstech.apiconnector2.entity.send.UserSend;
-import com.ripstech.apiconnector2.entity.send.user.ui.InviteSend;
-import com.ripstech.apiconnector2.entity.send.user.ui.ResetSend;
 import com.ripstech.apiconnector2.service.template.DeletePostGetService;
 
 import java.util.List;
@@ -33,7 +31,7 @@ public class UserService extends DeletePostGetService<User, UserSend> {
 		return "users";
 	}
 
-	public ApiResponse<Void> resetUi(ResetSend reset) {
+	public ApiResponse<Void> resetUi(com.ripstech.api.entity.send.user.reset.UiSend reset) {
 		return new ApiResponse<>(getTarget(POST)
 				                         .appendPath("reset/ui")
 				                         .setJsonBody(reset)
@@ -41,7 +39,7 @@ public class UserService extends DeletePostGetService<User, UserSend> {
 		                         Void.class);
 	}
 
-	public ApiResponse<Void> inviteUi(InviteSend reset) {
+	public ApiResponse<Void> inviteUi(com.ripstech.api.entity.send.user.invite.UiSend reset) {
 		return new ApiResponse<>(getTarget(POST)
 				                         .appendPath("invite/ui")
 				                         .setJsonBody(reset)

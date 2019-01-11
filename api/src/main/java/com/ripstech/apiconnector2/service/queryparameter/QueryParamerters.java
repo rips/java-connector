@@ -10,7 +10,10 @@ public abstract class QueryParamerters {
 		this.params = new LinkedHashMap<>();
 	}
 
+	protected void finalizeParameters() {}
+
 	public LinkedHashMap<String, String> getParams() {
+		finalizeParameters();
 		return params;
 	}
 

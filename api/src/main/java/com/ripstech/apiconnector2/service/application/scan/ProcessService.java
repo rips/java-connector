@@ -1,11 +1,9 @@
 package com.ripstech.apiconnector2.service.application.scan;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.application.scan.Process;
+import com.ripstech.api.entity.send.application.scan.ProcessSend;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.application.scan.Process;
-import com.ripstech.apiconnector2.entity.send.application.scan.ProcessPatch;
-import com.ripstech.apiconnector2.entity.send.application.scan.ProcessPost;
-import com.ripstech.apiconnector2.entity.send.application.scan.ProcessSend;
 import com.ripstech.apiconnector2.service.template.PostGetService;
 
 import java.time.OffsetDateTime;
@@ -13,7 +11,7 @@ import java.util.List;
 
 import static com.ripstech.apiconnector2.service.template.GenericService.HttpMethod.PATCH;
 
-public class ProcessService extends PostGetService<Process, ProcessPost> {
+public class ProcessService extends PostGetService<Process, ProcessSend.Post> {
 
 	private final long applicationId;
 	private final long scanId;
@@ -39,7 +37,7 @@ public class ProcessService extends PostGetService<Process, ProcessPost> {
 		return String.format("applications/%d/scans/%d/processes", applicationId, scanId);
 	}
 
-	public ApiResponse<Process> patch(long processId, ProcessPatch finish) {
+	public ApiResponse<Process> patch(long processId, ProcessSend.Patch finish) {
 		return new ApiResponse<>(getTarget(PATCH)
 				                         .appendPath(processId)
 				                         .setJsonBody(finish),
@@ -47,7 +45,7 @@ public class ProcessService extends PostGetService<Process, ProcessPost> {
 	}
 
 	public ApiResponse<Process> patch(long processId, OffsetDateTime finish) {
-		return patch(processId, ProcessSend.createPatch().setFinish(finish));
+		return patch(processId, new ProcessSend.Patch().setFinishedAt(finish));
 	}
 
 }

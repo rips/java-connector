@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.ripstech'
-version '2.9.0'
+version '3.0.0'
 
 subprojects {
     apply plugin: 'java'
@@ -13,5 +13,16 @@ subprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
+        maven {
+            url = "https://nexus.internal.ripstech.com/repository/maven-rips-release/"
+        }
+        maven {
+            url = "https://nexus.internal.ripstech.com/repository/maven-rips-snapshot/"
+        }
+    }
+
+    dependencies {
+        implementation group: 'com.ripstech.api', name: 'entity', version: '1.0'
     }
 }

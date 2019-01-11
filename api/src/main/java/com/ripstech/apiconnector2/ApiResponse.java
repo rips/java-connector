@@ -1,15 +1,19 @@
 package com.ripstech.apiconnector2;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.ripstech.apiconnector2.entity.receive.ErrorMessage;
+import com.ripstech.apiconnector2.exception.ApiException;
+import com.ripstech.apiconnector2.exception.ErrorMessageException;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.*;
 
-import static com.ripstech.apiconnector2.ApiRequest.MEDIA_TYPE_JSON;
 import static java.net.HttpURLConnection.*;
 
 public class ApiResponse<T> {
@@ -18,79 +22,25 @@ public class ApiResponse<T> {
 	private HttpStatus status;
 	private String message;
 
-	public ApiResponse(ApiRequest request, Class<T> clazz) {
-		try {
-			Response response = request.execute();
-			status = new HttpStatus(response.code(), response.message());
-			if (!clazz.equals(Void.class)
-			    && response.body() != null
-			    && response.body().contentLength() != 0
-			    && response.body().contentType() != null
-			    && response.body().contentType().subtype() != null
-			    && response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
-				if (isOk()) {
-					if(response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
-						value = responseToObject(request, response, clazz);
-					} else if(clazz.equals(InputStream.class)) {
-						value = (T) clone(response.body().byteStream());
-					}
-				} else {
-					ErrorMessage errorMessage = responseToObject(request, response, ErrorMessage.class);
-					message = errorMessage.getMessageAndErrors();
-				}
+	private ApiRequest request;
+	private ApiResponseMapper<T> apiResponseMapper;
+
+	public ApiResponse(final @NotNull ApiRequest request, final @NotNull Class<T> clazz) {
+		this.request = request;
+		final TypeReference<T> typeReference = new TypeReference<T>() {
+			@Override
+			public Type getType() {
+				return clazz;
 			}
-			response.close();
-		} catch (IOException e) {
-			setException(e);
-		}
+		};
+		this.apiResponseMapper = new ApiResponseMapper<>(typeReference, request.getObjectMapper());
+		exec();
 	}
 
-	public ApiResponse(ApiRequest request, TypeReference<T> genericType) {
-		try {
-			Response response = request.execute();
-			status = new HttpStatus(response.code(), response.message());
-			if (!genericType.getType().equals(Void.class)
-			    && response.body() != null
-			    && response.body().contentLength() != 0
-			    && response.body().contentType() != null
-			    && response.body().contentType().subtype() != null
-			    && response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
-				if (isOk()) {
-					value = responseToObject(request, response, genericType);
-				} else {
-					ErrorMessage errorMessage = responseToObject(request, response, ErrorMessage.class);
-					message = errorMessage.getMessageAndErrors();
-				}
-			}
-			response.close();
-		} catch (IOException e) {
-			setException(e);
-		}
-	}
-
-	private <K> K responseToObject(ApiRequest request, Response response, TypeReference<K> genericType) throws IOException {
-		assert response.body() != null;
-		return request.getObjectMapper()
-				       .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-				       .readValue(response.body().byteStream(), genericType);
-	}
-
-	private <K> K responseToObject(ApiRequest request, Response response, Class<K> clazz) throws IOException {
-		assert response.body() != null;
-		return request.getObjectMapper()
-				       .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-				       .readValue(response.body().byteStream(), clazz);
-	}
-
-	private InputStream clone(InputStream stream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
-		int readLength = 0;
-		while ((readLength = stream.read(buffer)) != -1) {
-			baos.write(buffer, 0, readLength);
-		}
-		baos.flush();
-		return new ByteArrayInputStream(baos.toByteArray());
+	public ApiResponse(final @NotNull ApiRequest request, final @NotNull TypeReference<T> typeReference) {
+		this.request = request;
+		this.apiResponseMapper = new ApiResponseMapper<>(typeReference, request.getObjectMapper());
+		exec();
 	}
 
 	public ApiResponse(int status, String message) {
@@ -100,6 +50,31 @@ public class ApiResponse<T> {
 
 	public ApiResponse(Exception e) {
 		setException(e);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void exec() {
+		try (Response response = request.execute()) {
+			status = new HttpStatus(response.code(), response.message());
+			value = apiResponseMapper.getValue(response);
+			if (value instanceof Collection<?> && request.usePagination()) {
+				boolean nextPage = "1".equals(response.header("X-API-Pagination-More", "0"));
+				while (nextPage) {
+					try (Response nextResponse = request.nextPage().execute()) {
+						status = new HttpStatus(nextResponse.code(), nextResponse.message());
+						nextPage = "1".equals(nextResponse.header("X-API-Pagination-More", "0"));
+						final Collection nextItems = (Collection) apiResponseMapper.getValue(nextResponse);
+						if(nextItems != null) {
+							((Collection<?>) value).addAll(nextItems);
+						}
+					}
+				}
+			}
+		} catch (ApiException | IOException e) {
+			setException(e);
+		} catch (ErrorMessageException e) {
+			this.message = e.getErrorMessage().getMessageAndErrors();
+		}
 	}
 
 	private void setException(Exception e) {
@@ -122,7 +97,7 @@ public class ApiResponse<T> {
 	}
 
 	public boolean isOk() {
-		return status.getCode() == HTTP_OK;
+		return status.getCode() >= HTTP_OK && status.getCode() < HTTP_MULT_CHOICE;
 	}
 
 
@@ -184,10 +159,10 @@ public class ApiResponse<T> {
 	}
 
 	public <R> Optional<R> map(Function<? super T, ? extends R> mapper) {
-		if(isNotOk()) {
+		if(isNotOk() || this.value == null) {
 			return Optional.empty();
 		}
-		return Optional.of(mapper.apply(value));
+		return Optional.ofNullable(mapper.apply(value));
 	}
 
 }

@@ -22,11 +22,11 @@ public class OAuth2 extends HeaderAuthenticator {
 		this.accessToken = accessToken;
 	}
 
-	public OAuth2(String baseUri, String username, String password, HttpClientConfig httpClientConfig) throws ApiException {
-		this(baseUri, username, password, "ci", httpClientConfig);
+	public OAuth2(String baseUri, String email, String password, HttpClientConfig httpClientConfig) throws ApiException {
+		this(baseUri, email, password, "ci", httpClientConfig);
 	}
 
-	public OAuth2(String baseUri, String username, String password, String clientIdName, HttpClientConfig httpClientConfig) throws ApiException {
+	public OAuth2(String baseUri, String email, String password, String clientIdName, HttpClientConfig httpClientConfig) throws ApiException {
 		OAuthv2Service oAuthv2Service = new OAuthv2Service(baseUri);
 		oAuthv2Service.setHttpClientConfig(httpClientConfig);
 		Map<String, String> clientIds = oAuthv2Service.getGlobalClientIds().orThrow(ApiException::new);
@@ -34,7 +34,7 @@ public class OAuth2 extends HeaderAuthenticator {
 			throw new ClientIdMissingException("No client ID with name: " + clientIdName);
 		}
 		clientId = clientIds.get(clientIdName);
-		ClientIdSend postBody = ClientIdSend.toPost(clientId, username, password);
+		ClientIdSend postBody = ClientIdSend.toPost(clientId, email, password);
 		Token token = oAuthv2Service.getAuthToken(postBody).orThrow(ApiException::new);
 		accessToken = token.getAccessToken();
 		refreshToken = token.getRefreshToken();

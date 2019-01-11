@@ -12,19 +12,19 @@ class FilterTest {
 	void ordering() {
 		StringBuilder s = new StringBuilder();
 		new Filter()
-				.isEqual("abc", 4)
+				.json(equal("abc", 4))
 				.limit(2)
 				.getParams()
 				.forEach((s1, s2) -> s.append(s1).append("=").append(s2).append("&"));
-		Assertions.assertEquals("equal[abc]=4&limit=2&", s.toString());
+		Assertions.assertEquals("filter={\"__equal\":{\"abc\":4}}&limit=2&", s.toString());
 
 		StringBuilder s0 = new StringBuilder();
 		new Filter()
 				.limit(2)
-				.isEqual("abc", 4)
+				.json(equal("abc", 4))
 				.getParams()
 				.forEach((s1, s2) -> s0.append(s1).append("=").append(s2).append("&"));
-		Assertions.assertEquals("limit=2&equal[abc]=4&", s0.toString());
+		Assertions.assertEquals("limit=2&filter={\"__equal\":{\"abc\":4}}&", s0.toString());
 	}
 
 	@Test
@@ -40,7 +40,7 @@ class FilterTest {
 				.readable()
 				.getParams()
 				.forEach((s1, s2) -> s.append(s1).append("=").append(s2).append("&"));
-		Assertions.assertEquals("filter={\"__and\":[{\"__equal\":{\"test\":1}},{\"__equal\":{\"tset\":2}}]}&showIssueReadable=1&", s.toString());
+		Assertions.assertEquals("filter={\"__and\":[{\"__equal\":{\"test\":1}},{\"__equal\":{\"tset\":2}}]}&customFilter={\"readable\": {\"show\": true}}&", s.toString());
 	}
 
 }

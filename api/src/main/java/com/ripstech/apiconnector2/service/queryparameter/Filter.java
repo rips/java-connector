@@ -2,9 +2,23 @@ package com.ripstech.apiconnector2.service.queryparameter;
 
 import com.ripstech.apiconnector2.entity.send.filter.Expression;
 
-import java.time.OffsetDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Filter extends QueryParamerters {
+
+	private Set<String> selects = new HashSet<>();
+	private List<OrderBy> orders = new ArrayList<>();
+
+	public Filter() {}
+
+	public Filter(Expression expression) {
+		this.json(expression);
+	}
+
+	public Filter(JsonFilter jsonFilter) {
+		this.json(jsonFilter);
+	}
 
 	public static Filter empty() {
 		return new Filter();
@@ -20,124 +34,33 @@ public class Filter extends QueryParamerters {
 		return this;
 	}
 
-	public Filter orderBy(String name, Order value) {
-		and("orderBy", name, value.name().toLowerCase());
+	public Filter orderBy(String column, Order order) {
+		this.orders.add(new OrderBy(column, order));
 		return this;
 	}
 
-	public Filter isEqual(String name, String value) {
-		and("equal", name, value);
+	public Filter orderBy(OrderBy... orders) {
+		this.orders.addAll(Arrays.asList(orders));
 		return this;
 	}
 
-	public Filter isEqual(String name, long value) {
-		isEqual(name, Long.toString(value));
+	public Filter orderBy(String... orders) {
+		Arrays.stream(orders).map(OrderBy::new).forEach(this.orders::add);
 		return this;
 	}
 
-	public Filter isEqual(String name, OffsetDateTime value) {
-		isEqual(name, value.toString());
+	public Filter select(String... fields) {
+		selects.addAll(Arrays.asList(fields));
 		return this;
 	}
 
-	public Filter notEqual(String name, String value) {
-		and("notEqual", name, value);
-		return this;
-	}
-
-	public Filter notEqual(String name, long value) {
-		notEqual(name, Long.toString(value));
-		return this;
-	}
-
-	public Filter notEqual(String name, OffsetDateTime value) {
-		notEqual(name, value.toString());
-		return this;
-	}
-
-	public Filter nul(String name, String value) {
-		and("null", name, value);
-		return this;
-	}
-
-	public Filter notNull(String name, String value) {
-		and("notNull", name, value);
-		return this;
-	}
-
-	public Filter like(String name, String value) {
-		and("like", name, value);
-		return this;
-	}
-
-	public Filter notLike(String name, String value) {
-		and("notLike", name, value);
-		return this;
-	}
-
-	public Filter lessThan(String name, String value) {
-		and("lessThan", name, value);
-		return this;
-	}
-
-	public Filter lessThan(String name, OffsetDateTime value) {
-		and("lessThan", name, value.toString());
-		return this;
-	}
-
-	public Filter lessThan(String name, long value) {
-		and("lessThan", name, String.valueOf(value));
-		return this;
-	}
-
-	public Filter greaterThan(String name, String value) {
-		and("greaterThan", name, value);
-		return this;
-	}
-
-	public Filter greaterThan(String name, OffsetDateTime value) {
-		and("greaterThan", name, value.toString());
-		return this;
-	}
-
-	public Filter greaterThan(String name, long value) {
-		and("greaterThan", name, String.valueOf(value));
-		return this;
-	}
-
-	public Filter lessThanEqual(String name, String value) {
-		and("lessThanEqual", name, value);
-		return this;
-	}
-
-	public Filter lessThanEqual(String name, OffsetDateTime value) {
-		and("lessThanEqual", name, value.toString());
-		return this;
-	}
-
-
-	public Filter lessThanEqual(String name, long value) {
-		and("lessThanEqual", name, String.valueOf(value));
-		return this;
-	}
-
-	public Filter greaterThanEqual(String name, String value) {
-		and("greaterThanEqual", name, value);
-		return this;
-	}
-
-	public Filter greaterThanEqual(String name, OffsetDateTime value) {
-		and("greaterThanEqual", name, value.toString());
-		return this;
-	}
-
-	public Filter greaterThanEqual(String name, long value) {
-		and("greaterThanEqual", name, String.valueOf(value));
+	public Filter select(Collection<String> fields) {
+		selects.addAll(fields);
 		return this;
 	}
 
 	public Filter readable() {
-		params.put("showIssueReadable", "1");
+		params.put("customFilter", "{\"readable\": {\"show\": true}}");
 		return this;
 	}
 
@@ -163,9 +86,49 @@ public class Filter extends QueryParamerters {
 		params.put(String.format("%s[%s]", operator, name), value);
 	}
 
+	@Override
+	protected void finalizeParameters() {
+		if(selects.size() > 0) {
+			and("select",
+			    selects.stream()
+					    .collect(Collectors.joining(
+							    "\", \"",
+							    "[\"",
+							    "\"]")));
+		}
+		if(orders.size() > 0) {
+			and("orderBy",
+			    orders.stream()
+					    .map(Object::toString)
+					    .collect(Collectors.joining(
+					    		",",
+							    "{",
+							    "}")));
+		}
+	}
+
 	public enum Order {
 		ASC,
 		DESC
+	}
+
+	public class OrderBy {
+		private String columnName;
+		private Order order = Order.ASC;
+
+		public OrderBy(String columnName) {
+			this.columnName = columnName;
+		}
+
+		public OrderBy(String columnName, Order order) {
+			this.columnName = columnName;
+			this.order = order;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("\"%s\":\"%s\"", columnName, order.name().toLowerCase());
+		}
 	}
 
 }

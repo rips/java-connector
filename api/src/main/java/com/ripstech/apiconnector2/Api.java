@@ -29,7 +29,7 @@ public class Api {
 		private HttpClientConfig httpClientConfig;
 		private HeaderAuthenticator authenticator;
 		private String accessToken;
-		private String username;
+		private String email;
 		private String password;
 		private String clientIdName;
 
@@ -47,20 +47,20 @@ public class Api {
 			return this;
 		}
 
-		public Builder withOAuthv2(String username, String password) {
-			this.username = username;
+		public Builder withOAuthv2(String email, String password) {
+			this.email = email;
 			this.password = password;
 			return this;
 		}
 
-		public Builder withOAuthv2(String username, String password, String clientIdName) {
-			withOAuthv2(username, password);
+		public Builder withOAuthv2(String email, String password, String clientIdName) {
+			withOAuthv2(email, password);
 			this.clientIdName = clientIdName;
 			return this;
 		}
 
-		public Builder withXPassword(String username, String password) {
-			this.authenticator = new XPassword(username, password);
+		public Builder withXPassword(String email, String password) {
+			this.authenticator = new XPassword(email, password);
 			return this;
 		}
 
@@ -74,11 +74,11 @@ public class Api {
 				if(accessToken != null) {
 					authenticator = new OAuth2(accessToken);
 					accessToken = ((OAuth2) authenticator).getAccessToken();
-				} else if(username != null && password != null) {
+				} else if(email != null && password != null) {
 					if (clientIdName == null || clientIdName.isEmpty()) {
-						authenticator = new OAuth2(baseUri, username, password, httpClientConfig);
+						authenticator = new OAuth2(baseUri, email, password, httpClientConfig);
 					} else {
-						authenticator = new OAuth2(baseUri, username, password, clientIdName, httpClientConfig);
+						authenticator = new OAuth2(baseUri, email, password, clientIdName, httpClientConfig);
 					}
 					accessToken = ((OAuth2) authenticator).getAccessToken();
 				} else {
@@ -109,6 +109,20 @@ public class Api {
 	@SuppressWarnings("unused")
 	public StatusService status() {
 		StatusService service = new StatusService(baseUri);
+		setPrefs(service);
+		return service;
+	}
+
+	@SuppressWarnings("unused")
+	public LanguageService languages() {
+		LanguageService service = new LanguageService(baseUri);
+		setPrefs(service);
+		return service;
+	}
+
+	@SuppressWarnings("unused")
+	public CallbackService callbacks() {
+		CallbackService service = new CallbackService(baseUri);
 		setPrefs(service);
 		return service;
 	}
@@ -149,8 +163,8 @@ public class Api {
 	}
 
 	@SuppressWarnings("unused")
-	public OrganisationService organisations() {
-		OrganisationService service = new OrganisationService(baseUri);
+	public OrganizationService organizations() {
+		OrganizationService service = new OrganizationService(baseUri);
 		setPrefs(service);
 		return service;
 	}

@@ -1,9 +1,9 @@
 package com.ripstech.apiconnector2.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.entity.receive.Setting;
+import com.ripstech.api.entity.send.SettingSend;
 import com.ripstech.apiconnector2.ApiResponse;
-import com.ripstech.apiconnector2.entity.receive.Setting;
-import com.ripstech.apiconnector2.entity.send.SettingSend;
 import com.ripstech.apiconnector2.service.queryparameter.Filter;
 import com.ripstech.apiconnector2.service.template.SimpleGetListService;
 
@@ -47,7 +47,7 @@ public class SettingService extends SimpleGetListService<Setting> {
 	}
 
 	public ApiResponse<Setting> put(String key, String value) {
-		return put(key, SettingSend.createPut(value));
+		return put(key, new SettingSend.Put(value));
 	}
 
 	public ApiResponse<Setting> get(String key) {

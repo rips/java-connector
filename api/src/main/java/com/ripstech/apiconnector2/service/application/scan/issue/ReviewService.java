@@ -1,8 +1,8 @@
 package com.ripstech.apiconnector2.service.application.scan.issue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.ripstech.apiconnector2.entity.receive.application.scan.issue.Review;
-import com.ripstech.apiconnector2.entity.send.application.scan.issue.ReviewSend;
+import com.ripstech.api.entity.receive.application.scan.issue.Review;
+import com.ripstech.api.entity.send.application.scan.issue.ReviewSend;
 import com.ripstech.apiconnector2.service.template.PostGetService;
 
 import java.util.List;

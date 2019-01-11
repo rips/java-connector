@@ -3,6 +3,7 @@ package com.ripstech.apiconnector2.connector.path.application;
 import com.ripstech.apiconnector2.connector.Path;
 import com.ripstech.apiconnector2.connector.path.application.scan.IssueWoIdPath;
 import com.ripstech.apiconnector2.service.application.scan.AllService;
+import com.ripstech.apiconnector2.service.application.scan.PropertyTypeService;
 import com.ripstech.apiconnector2.service.application.scan.StatService;
 
 public class ScanWoIdPath extends Path {
@@ -31,6 +32,11 @@ public class ScanWoIdPath extends Path {
 		return service;
 	}
 
-
+	@SuppressWarnings("unused")
+	public PropertyTypeService propertyTypes() {
+		PropertyTypeService service = new PropertyTypeService(baseUri);
+		setPrefs(service);
+		return service;
+	}
 
 }

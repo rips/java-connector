@@ -1,10 +1,7 @@
 package com.ripstech.apiconnector2.connector.path.application.scan;
 
 import com.ripstech.apiconnector2.connector.Path;
-import com.ripstech.apiconnector2.service.application.scan.issue.CommentService;
-import com.ripstech.apiconnector2.service.application.scan.issue.MarkupService;
-import com.ripstech.apiconnector2.service.application.scan.issue.ReviewService;
-import com.ripstech.apiconnector2.service.application.scan.issue.SummaryService;
+import com.ripstech.apiconnector2.service.application.scan.issue.*;
 
 public class IssuePath extends Path {
 
@@ -27,8 +24,8 @@ public class IssuePath extends Path {
 	}
 
 	@SuppressWarnings("unused")
-	public MarkupService markups() {
-		MarkupService service = new MarkupService(baseUri, applicationId, scanId, issueId);
+	public ContextService contexts() {
+		ContextService service = new ContextService(baseUri, applicationId, scanId, issueId);
 		setPrefs(service);
 		return service;
 	}
@@ -43,6 +40,13 @@ public class IssuePath extends Path {
 	@SuppressWarnings("unused")
 	public SummaryService summaries() {
 		SummaryService service = new SummaryService(baseUri, applicationId, scanId, issueId);
+		setPrefs(service);
+		return service;
+	}
+
+	@SuppressWarnings("unused")
+	public PatchService patches() {
+		PatchService service = new PatchService(baseUri, applicationId, scanId, issueId);
 		setPrefs(service);
 		return service;
 	}
