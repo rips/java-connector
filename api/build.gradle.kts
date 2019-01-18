@@ -5,7 +5,7 @@ plugins {
 
 val includeInJar: Configuration by configurations.creating
 configurations {
-    api.get().extendsFrom(includeInJar)
+    compileOnly.get().extendsFrom(includeInJar)
 }
 
 dependencies {
@@ -24,7 +24,7 @@ dependencies {
 
 tasks {
     jar {
-        from(includeInJar)
+        from(zipTree(includeInJar.asPath))
     }
 }
 val sourcesJar by tasks.registering(Jar::class) {

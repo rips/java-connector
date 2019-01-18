@@ -32,7 +32,7 @@ application {
 }
 
 val generatedJar by tasks.registering(Jar::class) {
-    baseName = "entity-jar"
+    archiveBaseName.set("entities")
     from(project.the<SourceSetContainer>()["generated"].output)
 }
 
