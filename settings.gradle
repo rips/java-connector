@@ -1,4 +1,0 @@
-rootProject.name = 'apiconnector2'
-
-include 'api'
-include 'app'
