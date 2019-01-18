@@ -1,1 +1,1 @@
-include ("api", "api:app", "entity-gen")
+include ("api", "api:app", "entity-gen", "utils")

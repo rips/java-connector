@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.11"
+    kotlin("jvm")
     application
 }
 
@@ -29,10 +29,6 @@ dependencies {
 
 application {
     mainClassName = "com.ripstech.api.entity.MainKt"
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 val generatedJar by tasks.registering(Jar::class) {

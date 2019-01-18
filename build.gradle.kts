@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     base
     idea
@@ -7,6 +9,7 @@ plugins {
     id("org.sonarqube") version "2.7"
     id("org.ajoberstar.grgit") version "3.0.0"
     id("com.github.ben-manes.versions") version "0.20.0"
+    kotlin("jvm") version "1.3.11" apply false
 }
 
 fun RepositoryHandler.rips(action: MavenArtifactRepository.() -> Unit = {}) {
@@ -56,11 +59,19 @@ subprojects {
         testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
     }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-        testLogging {
-            events("passed", "skipped", "failed")
+    tasks {
+
+        withType<Test> {
+            useJUnitPlatform()
+            testLogging {
+                events("passed", "skipped", "failed")
+            }
         }
+
+        withType<KotlinCompile> {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+
     }
 
     publishing {
