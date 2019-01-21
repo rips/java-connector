@@ -11,6 +11,7 @@ dependencies {
     implementation("commons-validator:commons-validator:1.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0")
     compile(kotlin("stdlib-jdk8"))
+    testImplementation("org.mockito:mockito-core:2.23.4")
 }
 
 publishing {
