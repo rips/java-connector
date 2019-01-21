@@ -1,6 +1,3 @@
-gradlew.bat
-gradlew
-gradle/**/*.jar
 */build/
 /build/
 */out/
