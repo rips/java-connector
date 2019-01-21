@@ -2,9 +2,9 @@ package com.ripstech.api.utils.validation;
 
 import com.ripstech.api.entity.receive.Status;
 import com.ripstech.api.utils.ApiUtils;
-import com.ripstech.apiconnector2.Api;
-import com.ripstech.apiconnector2.exception.ApiException;
-import com.ripstech.apiconnector2.service.queryparameter.Filter;
+import com.ripstech.api.connector.Api;
+import com.ripstech.api.connector.exception.ApiException;
+import com.ripstech.api.connector.service.queryparameter.Filter;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

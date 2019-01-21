@@ -3,11 +3,11 @@ package com.ripstech.api.utils.file
 import com.ripstech.api.utils.kotlin.Failure
 import com.ripstech.api.utils.kotlin.Success
 import com.ripstech.api.utils.kotlin.result
-import com.ripstech.apiconnector2.Api
-import com.ripstech.apiconnector2.entity.send.filter.Expression
-import com.ripstech.apiconnector2.exception.ApiException
-import com.ripstech.apiconnector2.service.queryparameter.Filter
-import com.ripstech.apiconnector2.service.queryparameter.JsonFilter
+import com.ripstech.api.connector.Api
+import com.ripstech.api.connector.entity.send.filter.Expression
+import com.ripstech.api.connector.exception.ApiException
+import com.ripstech.api.connector.service.queryparameter.Filter
+import com.ripstech.api.connector.service.queryparameter.JsonFilter
 
 object FileExtension {
 

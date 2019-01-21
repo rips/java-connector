@@ -1,8 +1,8 @@
 package com.ripstech.api.utils.kotlin
 
 import com.ripstech.api.utils.MinimalLogging
-import com.ripstech.apiconnector2.ApiResponse
-import com.ripstech.apiconnector2.exception.ApiException
+import com.ripstech.api.connector.ApiResponse
+import com.ripstech.api.connector.exception.ApiException
 import java.util.function.Consumer
 
 sealed class ApiResult<T>

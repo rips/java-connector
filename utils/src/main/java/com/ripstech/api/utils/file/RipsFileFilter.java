@@ -1,7 +1,7 @@
 package com.ripstech.api.utils.file;
 
-import com.ripstech.apiconnector2.Api;
-import com.ripstech.apiconnector2.exception.ApiException;
+import com.ripstech.api.connector.Api;
+import com.ripstech.api.connector.exception.ApiException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

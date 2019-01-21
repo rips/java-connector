@@ -1,9 +1,9 @@
 package com.ripstech.api.utils;
 
 import com.ripstech.api.entity.receive.application.scan.issue.Type;
-import com.ripstech.apiconnector2.Api;
-import com.ripstech.apiconnector2.exception.ApiException;
-import com.ripstech.apiconnector2.service.queryparameter.Filter;
+import com.ripstech.api.connector.Api;
+import com.ripstech.api.connector.exception.ApiException;
+import com.ripstech.api.connector.service.queryparameter.Filter;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;

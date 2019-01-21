@@ -2,9 +2,9 @@ package com.ripstech.api.utils.scan.result;
 
 import com.ripstech.api.entity.receive.application.scan.File;
 import com.ripstech.api.utils.constant.Severity;
-import com.ripstech.apiconnector2.Api;
-import com.ripstech.apiconnector2.exception.ApiException;
-import com.ripstech.apiconnector2.service.queryparameter.Filter;
+import com.ripstech.api.connector.Api;
+import com.ripstech.api.connector.exception.ApiException;
+import com.ripstech.api.connector.service.queryparameter.Filter;
 
 import java.util.Map;
 import java.util.stream.Collectors;

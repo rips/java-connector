@@ -3,9 +3,10 @@ plugins {
 }
 
 application {
-    mainClassName = "com.ripstech.apiconnector2.Main"
+    mainClassName = "com.ripstech.api.connector.Main"
 }
 
 dependencies {
-    implementation(project(":api"))
+	implementation(project(path = ":entity-gen", configuration = "generatedEntities"))
+	implementation(project(":api"))
 }

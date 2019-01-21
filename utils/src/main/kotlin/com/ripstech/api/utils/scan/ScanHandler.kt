@@ -10,10 +10,10 @@ import com.ripstech.api.utils.issue.IssueHandler
 import com.ripstech.api.utils.kotlin.Failure
 import com.ripstech.api.utils.kotlin.Success
 import com.ripstech.api.utils.kotlin.result
-import com.ripstech.apiconnector2.Api
-import com.ripstech.apiconnector2.exception.ApiException
-import com.ripstech.apiconnector2.service.application.ScanService
-import com.ripstech.apiconnector2.service.queryparameter.Filter
+import com.ripstech.api.connector.Api
+import com.ripstech.api.connector.exception.ApiException
+import com.ripstech.api.connector.service.application.ScanService
+import com.ripstech.api.connector.service.queryparameter.Filter
 import java.io.File
 import java.nio.file.Path
 import java.util.function.Consumer

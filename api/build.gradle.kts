@@ -5,7 +5,8 @@ plugins {
 
 val includeInJar: Configuration by configurations.creating
 configurations {
-    compileOnly.get().extendsFrom(includeInJar)
+    compileClasspath.get().extendsFrom(includeInJar)
+    testImplementation.get().extendsFrom(includeInJar)
 }
 
 dependencies {

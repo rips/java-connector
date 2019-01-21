@@ -8,11 +8,11 @@ import com.ripstech.api.utils.kotlin.Success
 import com.ripstech.api.utils.kotlin.result
 import com.ripstech.api.utils.scan.result.ScanResult
 import com.ripstech.api.utils.scan.result.ScanResultParser
-import com.ripstech.apiconnector2.Api
-import com.ripstech.apiconnector2.Phase
-import com.ripstech.apiconnector2.exception.ApiException
-import com.ripstech.apiconnector2.service.queryparameter.Filter
-import com.ripstech.apiconnector2.service.queryparameter.JsonFilter.greaterThan
+import com.ripstech.api.connector.Api
+import com.ripstech.api.connector.Phase
+import com.ripstech.api.connector.exception.ApiException
+import com.ripstech.api.connector.service.queryparameter.Filter
+import com.ripstech.api.connector.service.queryparameter.JsonFilter.greaterThan
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

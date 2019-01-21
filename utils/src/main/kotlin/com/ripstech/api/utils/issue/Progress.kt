@@ -1,6 +1,6 @@
 package com.ripstech.api.utils.issue
 
-import com.ripstech.apiconnector2.Phase
+import com.ripstech.api.connector.Phase
 
 data class Progress(val percent: Int,  val phase: Phase) {
 
