@@ -12,8 +12,6 @@ sourceSets {
 val generatedImplementation by configurations.getting {}
 val generatedEntities = configurations.create("generatedEntities").name
 
-val genDir = "$rootDir/generated"
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.squareup", "javapoet", "1.11.1")
@@ -34,6 +32,10 @@ application {
 val generatedJar by tasks.registering(Jar::class) {
     archiveBaseName.set("entities")
     from(project.the<SourceSetContainer>()["generated"].output)
+}
+
+tasks.withType<Delete> {
+    delete.add(project.the<SourceSetContainer>()["generated"].allSource.sourceDirectories)
 }
 
 artifacts {
