@@ -18,7 +18,7 @@ object Log {
 }
 
 object IdHolder {
-    val className = ClassName.get("com.ripstech.api.helper", "IdHolder")!!
+    val className = ClassName.get("com.ripstech.api.entity.helper", "IdHolder")!!
     val javaFile = JavaFile.builder(
             className.packageName(),
             TypeSpec.classBuilder(className)

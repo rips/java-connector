@@ -1,7 +1,7 @@
 package com.ripstech.api.utils.application;
 
 import com.ripstech.api.entity.receive.Application;
-import com.ripstech.api.helper.IdHolder;
+import com.ripstech.api.entity.helper.IdHolder;
 import com.ripstech.api.connector.Api;
 import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
