@@ -21,4 +21,10 @@ publishing {
             from(components["java"])
         }
     }
+    publications {
+        create<MavenPublication>("utilsSnapshot") {
+            version += "-SNAPSHOT"
+            from(components["java"])
+        }
+    }
 }
