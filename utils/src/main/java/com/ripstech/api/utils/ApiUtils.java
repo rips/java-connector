@@ -5,10 +5,12 @@ import com.ripstech.api.connector.Api;
 import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -21,13 +23,50 @@ public final class ApiUtils {
         throw new UnsupportedOperationException();
     }
 
-	public static Api getApi(String url, String email, String password) throws MalformedURLException, ApiException {
-		return new Api.Builder(new URL(url).toString())
-				.withXPassword(email, password)
-				.build();
-		//TODO validation
-		//TODO fallback
+    public static Api getApiWithFallback(@NotNull String url,
+                                         @NotNull String email,
+                                         @NotNull String password) throws MalformedURLException, ApiException {
+        return getApiWithFallback(url, email, password, null);
+    }
+
+	public static Api getApiWithFallback(@NotNull String url,
+                                         @NotNull String email,
+                                         @NotNull String password,
+                                         @Nullable Consumer<Api.Builder> apiConfig
+                                        ) throws MalformedURLException, ApiException {
+        Api api;
+        try {
+            Api.Builder builder = new Api.Builder(new URL(url).toString())
+                    .withOAuthv2(email, password);
+            if(apiConfig != null) {
+                apiConfig.accept(builder);
+            }
+            api = builder.build();
+        } catch (ApiException e) {
+            api = getApiXPassword(url, email, password, apiConfig);
+        }
+        return api;
 	}
+
+    public static Api getApiXPassword(@NotNull String url,
+                                      @NotNull String email,
+                                      @NotNull String password
+                                     ) throws MalformedURLException, ApiException {
+        return getApiXPassword(url, email, password, null);
+    }
+
+    public static Api getApiXPassword(@NotNull String url,
+                                      @NotNull String email,
+                                      @NotNull String password,
+                                      @Nullable Consumer<Api.Builder> apiConfig
+                                     ) throws MalformedURLException, ApiException {
+            Api.Builder builder = new Api.Builder(new URL(url).toString())
+                    .withXPassword(email, password);
+            if(apiConfig != null) {
+                apiConfig.accept(builder);
+            }
+            return builder.build();
+    }
 
     @NotNull
     public static Map<Long, Integer> getIssueTypeSeverities(@NotNull final Api api) throws ApiException {

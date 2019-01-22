@@ -42,7 +42,7 @@ public class EndpointValidator {
 	public static boolean apiLogin(@NotNull String url,
 	                               @NotNull String email,
 	                               @NotNull String password) throws MalformedURLException, ApiException {
-		return ApiUtils.getApi(url, email, password)
+		return ApiUtils.getApiXPassword(url, email, password)
 				       .status()
 				       .get(new Filter().select("user"))
 				       .orThrow(ApiException::new)
