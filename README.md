@@ -4,10 +4,13 @@ A Java library to provide easy access to RIPS and all of its features.
 
 ## Installation
 
+The `utils` dependency is optional.
+
 ### Gradle
 
-```groovy
-implementation 'com.ripstech:api-connector-java2:2.5.0'
+```kotlin
+implementation("com.ripstech.api:connector:3.0.0")
+implementation("com.ripstech.api:utils:3.0.0")
 ```
 
 ### Maven
@@ -16,17 +19,22 @@ implementation 'com.ripstech:api-connector-java2:2.5.0'
 <dependencies>
   ...
   <dependency>
-    <groupId>com.ripstech</groupId>
-    <artifactId>api-connector-java2</artifactId>
-    <version>2.5.0</version>
+    <groupId>com.ripstech.api</groupId>
+    <artifactId>connector</artifactId>
+    <version>3.0.0</version>
   </dependency>
+    <dependency>
+      <groupId>com.ripstech.api</groupId>
+      <artifactId>utils</artifactId>
+      <version>3.0.0</version>
+    </dependency>
   ...
 </dependencies>
 ```
 
 ## Use locally
 ```bash
-gradle publishToMavenLocal
+./gradlew clean entity-gen:run api:publishToMavenLocal utils:publishToMavenLocal
 ```
 
 ## Usage
@@ -34,8 +42,8 @@ gradle publishToMavenLocal
 ### Create API-Connector
 
 ```java
-String baseUrl = "https://api-2.ripstech.com";
-String username = "";
+String baseUrl = "https://api-3.ripstech.com";
+String email = "";
 String password = "";
 
 Api api = new Api.Builder(baseUrl)
@@ -46,36 +54,23 @@ Api api = new Api.Builder(baseUrl)
 ### Upload and start scan
 
 ```java
-int appId = 0;
+long appId = 0;
 String scanName = "";
 File zipFile = ...;
 
-
-int uploadId = api.application(appId)
-                  .uploads()
-                  .post(zipFile)
-                  .orThrow(ApiException::new)
-                  .getId();
-
-int scanId = api.application(appId)
-                .scans()
-                .post(ScanPost.createPost(
-                  scan(scanName,
-                       upload(uploadId)))
-                .orThrow(ApiException::new)
-                .getId();
+ScanHandler scanHandler = new ScanHandler(api, appId);
+scanHandler.uploadFile(zipFile);
+long scanId = scanHandler.startScan(scanName).getId();
 ```
 
 ### Getting issues
 
 ```java
-int appId = 0;
-int scanId = 0;
-List<Issue> issues = ApiUtils.getScanIssues(api.application(appId).scans(),
-                                            api.application(appId).scan(scanId).issues(),
-                                            scanId,
-                                            System.out::println)
-                             .get(5, TimeUnit.HOURS);
+long appId = 0;
+long scanId = 0;
+List<Issue> issues = new IssueHandler(api, appId, scanId)
+                          .setLogger(System.out::println)
+                          .getAllIssues();
 ```
 
 ### Error handling
@@ -83,11 +78,14 @@ List<Issue> issues = ApiUtils.getScanIssues(api.application(appId).scans(),
 #### Exceptions
 
 ```java
-try {
-    String version = api.status().get().orThrow(ApiException::new).getVersion();
-} catch(ApiException e) {
-    e.printStackTrace();
-}
+String version = api.status().get().orThrow(ApiException::new).getVersion();
+
+```
+```kotlin
+val version = when(val result = api.status().get().result()) {
+                is Failure -> throw result.exception()
+                is Success -> result.value.getVersion()
+              }
 ```
 
 #### Functional Style
