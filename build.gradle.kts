@@ -14,32 +14,29 @@ plugins {
 
 fun RepositoryHandler.rips(action: MavenArtifactRepository.() -> Unit = {}) {
     maven {
-        url = uri("https://nexus.internal.ripstech.com/repository/maven-rips-release/")
-        name = "ripsRelease"
-        action.invoke(this)
-    }
-}
-
-fun RepositoryHandler.ripsSnapshot(action: MavenArtifactRepository.() -> Unit = {}) {
-    maven {
-        url = uri("https://nexus.internal.ripstech.com/repository/maven-rips-snapshot/")
-        name = "ripsSnapshot"
+        url = uri("https://nexus.internal.ripstech.com/repository/maven-rips-" +
+                  if(project.hasProperty("release"))
+                      "release"
+                  else
+                      "snapshot"
+        )
+        name = "rips"
         action.invoke(this)
     }
 }
 
 fun MavenArtifactRepository.credentialsFromProps() {
-    if (project.project.hasProperty("nexusUser")) {
+    if (project.hasProperty("nexusUser")) {
         credentials {
-            username = project.project.properties["nexusUser"] as String
-            password = project.project.properties["nexusPassword"] as String
+            username = project.properties["nexusUser"] as String
+            password = project.properties["nexusPassword"] as String
         }
     }
 }
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.0.0"
+    version = "3.0.0" + if(project.hasProperty("release")) "" else "-SNAPSHOT"
 }
 
 subprojects {
@@ -81,9 +78,6 @@ subprojects {
     publishing {
         repositories {
             rips {
-                credentialsFromProps()
-            }
-            ripsSnapshot{
                 credentialsFromProps()
             }
         }

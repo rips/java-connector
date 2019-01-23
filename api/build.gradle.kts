@@ -41,11 +41,4 @@ publishing {
             //artifact(sourcesJar.get())
         }
     }
-    publications {
-        create<MavenPublication>("connectorSnapshot") {
-            version += "-SNAPSHOT"
-            artifactId = "connector"
-            from(components["java"])
-        }
-    }
 }
