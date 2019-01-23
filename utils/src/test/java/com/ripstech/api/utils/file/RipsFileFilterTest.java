@@ -2,6 +2,7 @@ package com.ripstech.api.utils.file;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.spy;
 
+@Disabled
 public class RipsFileFilterTest {
 	private RipsFileFilter ripsFileFilter;
 	private List<File> files = Arrays.asList(new File("test.java"),
