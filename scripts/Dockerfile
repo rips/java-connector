@@ -1,6 +1,4 @@
-FROM gradle
+FROM openjdk:11-jdk-slim
 
-USER root
-# Drop privileges to "bamboo" user.
 RUN useradd -m oscar -u 999
 USER oscar

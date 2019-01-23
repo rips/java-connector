@@ -52,6 +52,10 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    repositories {
+        jcenter()
+    }
+
     dependencies {
         implementation("org.jetbrains:annotations:16.0.3")
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
