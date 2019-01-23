@@ -125,9 +125,11 @@ class IssueHandler @JvmOverloads constructor(
 					launch {
 						actionState = action.invoke(actionState)
 					}
-					if (progress.percent != lastPercent) {
-						log(progress.toString())
-						lastPercent = progress.percent
+					if (!(progress.isScanFinished() && lastPercent == -1)) {
+						if (progress.percent != lastPercent) {
+							log(progress.toString())
+							lastPercent = progress.percent
+						}
 					}
 				}
 				delay(Duration.ofSeconds(pollIntervalInSeconds).toMillis())
