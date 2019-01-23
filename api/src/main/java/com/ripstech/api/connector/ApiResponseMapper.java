@@ -28,21 +28,24 @@ public class ApiResponseMapper<T> {
 
 	@Nullable
 	public T getValue(final @NotNull Response response) throws ErrorMessageException, IOException {
-		if (!typeReference.getType().equals(Void.class)
-		    && response.body() != null
-		    && response.body().contentLength() != 0
-		    && response.body().contentType() != null
-		    && response.body().contentType().subtype() != null) {
-			if (response.isSuccessful()) {
-				if(response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
-					return responseToObject(response, typeReference);
-				} else if(typeReference.getType().equals(InputStream.class)) {
-					return  (T) clone(response.body().byteStream());
-				}
-			} else {
-				throw new ErrorMessageException(responseToObject(response, new TypeReference<ErrorMessage>() {}));
-			}
+		if(!response.isSuccessful()) {
+			throw new ErrorMessageException(responseToObject(response, new TypeReference<ErrorMessage>() {}));
 		}
+
+		if(typeReference.getType().equals(Void.class)) {
+			return null;
+		} else if (typeReference.getType().equals(InputStream.class)) {
+			return (T) clone(response.body().byteStream());
+		}
+
+		if(response.body() != null
+				&& response.body().contentLength() != 0
+				&& response.body().contentType() != null
+				&& response.body().contentType().subtype() != null
+				&& response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
+			return responseToObject(response, typeReference);
+		}
+
 		return null;
 	}
 
