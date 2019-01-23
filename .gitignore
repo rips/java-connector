@@ -1,10 +1,8 @@
-gradlew.bat
-gradlew
-gradle/**/*.jar
-*/build/
+**/build/
 /build/
 */out/
 api/**/*.properties
 app/**/*.properties
 .gradle/
 .idea/
+*/src/generated/java/*
