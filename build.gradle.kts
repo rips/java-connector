@@ -7,6 +7,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("org.sonarqube") version "2.7"
+	id("net.ltgt.errorprone") version "0.6.1"
     id("org.ajoberstar.grgit") version "3.0.0"
     id("com.github.ben-manes.versions") version "0.20.0"
     kotlin("jvm") version "1.3.11" apply false
@@ -43,6 +44,7 @@ subprojects {
 
     apply(plugin = "java")
     apply(plugin = "maven-publish")
+    apply(plugin = "net.ltgt.errorprone")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -55,6 +57,7 @@ subprojects {
 
     dependencies {
         implementation("org.jetbrains:annotations:16.0.3")
+        errorprone("com.google.errorprone:error_prone_core:2.3.2")
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
         testCompile("org.junit.jupiter:junit-jupiter-params:5.3.2")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
