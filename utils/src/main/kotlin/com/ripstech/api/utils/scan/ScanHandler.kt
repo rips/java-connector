@@ -51,10 +51,21 @@ class ScanHandler @JvmOverloads constructor(
 	}
 
 	@Throws(ApiException::class)
-	fun uploadFile(path: Path): Upload {
-		val archiver = Archiver(RipsFileFilter(api, appId))
-			.setLogger(logger)
-		val file = archiver.createZip(path)
+	@JvmOverloads
+	fun uploadFile(
+		path: Path,
+		archivePrefix: String = "source",
+		basePath: Path? = null,
+		includeHidden: Boolean = false
+	): Upload {
+		val ripsFileFilter = RipsFileFilter(api, appId).apply {
+			setIncludeHidden(includeHidden)
+		}
+		val archiver = when(basePath) {
+			null -> Archiver(ripsFileFilter)
+			else -> Archiver(ripsFileFilter, basePath)
+		}.setLogger(logger)
+		val file = archiver.createZip(path, archivePrefix)
 		val uploadFile = uploadFile(file)
 		archiver.removeZipFile()
 		return uploadFile
