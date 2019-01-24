@@ -10,7 +10,7 @@ plugins {
 	id("net.ltgt.errorprone") version "0.6.1"
     id("org.ajoberstar.grgit") version "3.0.0"
     id("com.github.ben-manes.versions") version "0.20.0"
-    kotlin("jvm") version "1.3.11" apply false
+    kotlin("jvm") version "1.3.20" apply false
 }
 
 fun RepositoryHandler.rips(action: MavenArtifactRepository.() -> Unit = {}) {
