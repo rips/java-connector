@@ -36,7 +36,7 @@ class ArchiverTest {
   @Test
   void createAndDeleteZipInDirectory() throws IOException {
 
-    archiver.createZip(Paths.get("src"), Paths.get("/tmp").toFile());
+    archiver.createZip(Paths.get("src"), Paths.get("/tmp").toFile(), "prefix");
 
 
     Assertions.assertTrue(archiver.checkIfZipExists());

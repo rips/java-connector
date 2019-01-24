@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class RipsFileFilter implements FileFilter {
 
 	private final Set<String> extensions;
+	private boolean includeHidden = false;
 
 	public RipsFileFilter(Set<String> extensions) {
 		this.extensions = extensions;
@@ -27,9 +28,16 @@ public class RipsFileFilter implements FileFilter {
 		this.extensions = FileExtension.getByLang(api, language);
 	}
 
+	public void setIncludeHidden(boolean includeHidden) {
+		this.includeHidden = includeHidden;
+	}
+
 	@Override
 	public boolean accept(File file) {
 		if(!file.isFile()) {
+			return false;
+		}
+		if(!includeHidden && file.isHidden()) {
 			return false;
 		}
 		return extensions.stream().anyMatch(s -> file.getName().endsWith("." + s));
