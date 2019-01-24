@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -82,14 +83,15 @@ public class Archiver extends MinimalLogging {
 			sourceCode = sanitizePath(sourceCode);
 
 			try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(archive))) {
-				List<Path> pathList = Files.walk(sourceCode)
-				                          .filter(path -> fileFilter.accept(path.toFile()))
-				                          .collect(Collectors.toList());
-				for(Path path: pathList) {
-					ZipEntry zipEntry = new ZipEntry(sourceCode.relativize(path).toString());
-					zipOutputStream.putNextEntry(zipEntry);
-					Files.copy(path, zipOutputStream);
-					zipOutputStream.closeEntry();
+				try (Stream<Path> stream = Files.walk(sourceCode)) {
+					List<Path> pathList = stream.filter(path -> fileFilter.accept(path.toFile()))
+					                            .collect(Collectors.toList());
+					for (Path path : pathList) {
+						ZipEntry zipEntry = new ZipEntry(sourceCode.relativize(path).toString());
+						zipOutputStream.putNextEntry(zipEntry);
+						Files.copy(path, zipOutputStream);
+						zipOutputStream.closeEntry();
+					}
 				}
 			}
 
