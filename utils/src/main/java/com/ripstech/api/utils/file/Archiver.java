@@ -95,7 +95,7 @@ public class Archiver extends MinimalLogging {
 				}
 			}
 
-			log("Created archive %s with extensions: %s", archive.getAbsolutePath(), fileFilter.getExtensions());
+			log("Created archive %s with extensions: %s", archive.getName(), fileFilter.getExtensions());
 			return archive;
 		}
 		else {
