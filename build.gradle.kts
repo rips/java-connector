@@ -37,7 +37,7 @@ fun MavenArtifactRepository.credentialsFromProps() {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.0.0" + if(project.hasProperty("release")) "" else "-SNAPSHOT"
+    version = "3.1.0" + if(project.hasProperty("release")) "" else "-SNAPSHOT"
 }
 
 subprojects {

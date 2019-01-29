@@ -9,8 +9,8 @@ The `utils` dependency is optional.
 ### Gradle
 
 ```kotlin
-implementation("com.ripstech.api:connector:3.0.0")
-implementation("com.ripstech.api:utils:3.0.0")
+implementation("com.ripstech.api:connector:3.1.0")
+implementation("com.ripstech.api:utils:3.1.0")
 ```
 
 ### Maven
@@ -21,12 +21,12 @@ implementation("com.ripstech.api:utils:3.0.0")
   <dependency>
     <groupId>com.ripstech.api</groupId>
     <artifactId>connector</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
   </dependency>
     <dependency>
       <groupId>com.ripstech.api</groupId>
       <artifactId>utils</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
     </dependency>
   ...
 </dependencies>
