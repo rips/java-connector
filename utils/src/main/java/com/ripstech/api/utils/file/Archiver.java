@@ -5,16 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -76,81 +76,55 @@ public class Archiver extends MinimalLogging {
 	 * @return the created ZIP file or null if already exists
 	 * @throws IOException Can be thrown if creation of the file fails.
 	 */
-	@Nullable
-	public File createZip(Path sourceCode, @Nullable File targetDir ) throws IOException{
+	public File createZip(Path sourceCode, @Nullable File targetDir, @NotNull String archivePrefix) throws IOException{
 		if (!checkIfZipExists()) {
-			archive = File.createTempFile("sources" ,".zip", targetDir);
+			archive = File.createTempFile(archivePrefix,".zip", targetDir);
 
 			sourceCode = sanitizePath(sourceCode);
-			File sourceCodeFile = sourceCode.toFile();
 
-			FileOutputStream fileOutputStream = new FileOutputStream(archive);
-			ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+			try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(archive))) {
+				try (Stream<Path> stream = Files.walk(sourceCode)) {
+					List<Path> pathList = stream.filter(path -> fileFilter.accept(path.toFile()))
+					                            .collect(Collectors.toList());
+					for (Path path : pathList) {
+						ZipEntry zipEntry = new ZipEntry(sourceCode.relativize(path).toString());
+						zipOutputStream.putNextEntry(zipEntry);
+						Files.copy(path, zipOutputStream);
+						zipOutputStream.closeEntry();
+					}
+				}
+			}
 
-			zipFile(sourceCodeFile, sourceCode.getFileName().toString(), zipOutputStream);
-			log("Created archive %s with extensions: %s", archive.getAbsolutePath(), fileFilter.getExtensions());
-
-
-			zipOutputStream.close();
-			fileOutputStream.close();
-
+			log("Created archive %s with extensions: %s", archive.getName(), fileFilter.getExtensions());
 			return archive;
 		}
 		else {
 			log("Found zip file in archive");
-			return null;
+			return archive;
 		}
 	}
 
 	/**
-	 *
-	 *
 	 * @param sourceCode Relative path to the source code to zip.
 	 * @return the created ZIP file or null if already exists
 	 * @throws IOException
 	 */
 	public File createZip(Path sourceCode) throws IOException {
-		return createZip(sourceCode, null);
+		return createZip(sourceCode, null, "source");
+	}
+
+	/**
+	 * @param sourceCode Relative path to the source code to zip.
+	 * @param buildToolIdentifier String which will be used as archive prefix
+	 * @return the created ZIP file or null if already exists
+	 * @throws IOException
+	 */
+	public File createZip(Path sourceCode, String buildToolIdentifier) throws IOException {
+		return createZip(sourceCode, null, buildToolIdentifier);
 	}
 
 	public File getArchive() {
 		return archive;
-	}
-
-	/**
-	 * Zips a file or a directory. Traverses sub-directories recursively
-	 * @param sourceFile File to zip.
-	 * @param fileName Desired output file name.
-	 * @param zipOut Zip output stream.
-	 * @throws IOException Throws an exception if sourceCode is an invalid path.
-	 */
-	private void zipFile(File sourceFile, String fileName, ZipOutputStream zipOut) throws IOException {
-		if (sourceFile.isDirectory()) {
-			File[] children = sourceFile.listFiles();
-			if (null != children) {
-				List<File> childrenList = Arrays.asList(children);
-				List<File> dirs = childrenList.stream().filter(File::isDirectory).collect(Collectors.toList());
-				List<File> filteredChildren = fileFilter.filter(childrenList);
-				filteredChildren.addAll(dirs);
-
-				for (File child : filteredChildren) {
-					zipFile(child, fileName + "/" + child.getName(), zipOut);
-				}
-			}
-			return;
-		}
-
-		FileInputStream fis = new FileInputStream(sourceFile);
-		ZipEntry zipEntry = new ZipEntry(fileName);
-		zipOut.putNextEntry(zipEntry);
-		byte[] bytes = new byte[1024];
-		int length;
-
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
-		}
-		fis.close();
-
 	}
 
 	/**
@@ -168,6 +142,6 @@ public class Archiver extends MinimalLogging {
 			                               "Only paths within the current working directory are allowed");
 		}
 
-		return path;
+		return path.normalize();
 	}
 }
