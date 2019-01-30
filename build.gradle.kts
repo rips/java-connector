@@ -55,4 +55,33 @@ subprojects {
 
     }
 
+    afterEvaluate {
+        if (plugins.hasPlugin(MavenPublishPlugin::class)) {
+            extensions.configure<PublishingExtension> {
+                publications.forEach {
+                    if (it is MavenPublication) {
+                        it.pom {
+
+                            name.set("RIPS API Java Connector")
+                            url.set("https://ripstech.com")
+
+                            licenses {
+                                license {
+                                    name.set("BSD-3-Clause")
+                                    url.set("https://github.com/rips/java-connector/blob/master/LICENSE")
+                                    distribution.set("repo")
+                                }
+                            }
+
+                            scm {
+                                url.set("https://github.com/rips/java-connector")
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
