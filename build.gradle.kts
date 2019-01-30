@@ -63,7 +63,7 @@ subprojects {
                         it.pom {
 
                             name.set("RIPS API Java Connector")
-                            url.set("https://ripstech.com")
+                            url.set("https://www.ripstech.com")
 
                             licenses {
                                 license {
