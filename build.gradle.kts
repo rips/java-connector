@@ -13,37 +13,14 @@ plugins {
     kotlin("jvm") version "1.3.20" apply false
 }
 
-fun RepositoryHandler.rips(action: MavenArtifactRepository.() -> Unit = {}) {
-    maven {
-        url = uri("https://nexus.internal.ripstech.com/repository/maven-rips-" +
-                  if(project.hasProperty("release"))
-                      "release"
-                  else
-                      "snapshot"
-        )
-        name = "rips"
-        action.invoke(this)
-    }
-}
-
-fun MavenArtifactRepository.credentialsFromProps() {
-    if (project.hasProperty("nexusUser")) {
-        credentials {
-            username = project.properties["nexusUser"] as String
-            password = project.properties["nexusPassword"] as String
-        }
-    }
-}
-
 allprojects {
     group = "com.ripstech.api"
-    version = "3.1.0" + if(project.hasProperty("release")) "" else "-SNAPSHOT"
+    version = "3.1.0"
 }
 
 subprojects {
 
     apply(plugin = "java")
-    apply(plugin = "maven-publish")
     apply(plugin = "net.ltgt.errorprone")
 
     java {
@@ -76,14 +53,6 @@ subprojects {
             kotlinOptions.jvmTarget = "1.8"
         }
 
-    }
-
-    publishing {
-        repositories {
-            rips {
-                credentialsFromProps()
-            }
-        }
     }
 
 }
