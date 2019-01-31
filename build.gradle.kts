@@ -18,6 +18,10 @@ allprojects {
     version = "3.1.0"
 }
 
+tasks.filter { it.name.startsWith("publishTo") }.forEach {
+    it.dependsOn(":entity-gen:run")
+}
+
 subprojects {
 
     apply(plugin = "java")
