@@ -1,6 +1,5 @@
 package com.ripstech.api.utils.file;
 
-import com.ripstech.api.utils.constant.RipsDefault;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -8,8 +7,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-
-import static org.mockito.Mockito.spy;
 
 
 public class RipsFileFilterTest {
