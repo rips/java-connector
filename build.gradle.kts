@@ -73,8 +73,19 @@ subprojects {
                                 }
                             }
 
+                            developers {
+                                developer {
+                                    name.set("Malena Ebert")
+                                    email.set("mebert@ripstech.com")
+                                    organization.set("RIPS Technologies GmbH")
+                                    organizationUrl.set("https://ripstech.com")
+                                }
+                            }
+
                             scm {
-                                url.set("https://github.com/rips/java-connector")
+                                connection.set("scm:git:git://github.com/rips/java-connector.git")
+                                developerConnection.set("scm:git:ssh://github.com:rips/java-connector.git")
+                                url.set("https://github.com/rips/java-connector/tree/master")
                             }
 
                         }
