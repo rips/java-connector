@@ -15,7 +15,11 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.1.0"
+    version = "3.1.1"
+}
+
+tasks.filter { it.name.startsWith("publishTo") }.forEach {
+    it.dependsOn(":entity-gen:run")
 }
 
 subprojects {
@@ -73,8 +77,19 @@ subprojects {
                                 }
                             }
 
+                            developers {
+                                developer {
+                                    name.set("Malena Ebert")
+                                    email.set("mebert@ripstech.com")
+                                    organization.set("RIPS Technologies GmbH")
+                                    organizationUrl.set("https://ripstech.com")
+                                }
+                            }
+
                             scm {
-                                url.set("https://github.com/rips/java-connector")
+                                connection.set("scm:git:git://github.com/rips/java-connector.git")
+                                developerConnection.set("scm:git:ssh://github.com:rips/java-connector.git")
+                                url.set("https://github.com/rips/java-connector/tree/master")
                             }
 
                         }

@@ -1,5 +1,6 @@
 plugins {
     `maven-publish`
+    signing
     `java-library`
 }
 
@@ -39,6 +40,9 @@ publishing {
             artifactId = "connector"
             from(components["java"])
             //artifact(sourcesJar.get())
+            pom {
+                description.set("A library to connect to the RIPS API.")
+            }
         }
     }
 }

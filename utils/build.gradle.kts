@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    signing
     kotlin("jvm")
 }
 
@@ -18,6 +19,9 @@ publishing {
     publications {
         create<MavenPublication>("utils") {
             from(components["java"])
+            pom {
+                description.set("A library which provides utils for scan management.")
+            }
         }
     }
 }
