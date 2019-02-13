@@ -34,12 +34,18 @@ val sourcesJar by tasks.registering(Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(tasks.javadoc)
+}
+
 publishing {
     publications {
         create<MavenPublication>("connector") {
             artifactId = "connector"
             from(components["java"])
-            //artifact(sourcesJar.get())
+            artifact(sourcesJar.get())
+	        artifact(javadocJar.get())
             pom {
                 description.set("A library to connect to the RIPS API.")
             }
