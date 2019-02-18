@@ -56,4 +56,10 @@ public class RipsFileFilter implements FileFilter {
 	public Set<String> getExtensions() {
 		return extensions;
 	}
+
+	public String getGlob() {
+		return extensions.stream()
+		                 .map(ext -> "**/*." + ext)
+		                 .collect(Collectors.joining(","));
+	}
 }
