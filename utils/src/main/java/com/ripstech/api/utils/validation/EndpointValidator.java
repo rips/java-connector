@@ -5,6 +5,7 @@ import com.ripstech.api.utils.ApiUtils;
 import com.ripstech.api.connector.Api;
 import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
+import com.ripstech.api.utils.exception.IncompatibleApiVersionException;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -21,14 +22,16 @@ import java.util.Arrays;
 
 public class EndpointValidator {
 
+	@Deprecated
 	public static boolean compatibleWithApiVersion(@NotNull Api api, @NotNull ApiVersion supportedVersion) throws ApiException {
 		ApiVersion apiVersion = ApiVersion.parse(api.status()
 		                                            .get(new Filter().select("version"))
 		                                            .orThrow(ApiException::new)
 		                                            .getVersion());
-		return apiVersion.compareTo(supportedVersion) >= 0;
+		return supportedVersion.isCompatible(apiVersion);
 	}
 
+	@Deprecated
 	@Nullable
 	public static String api(@NotNull String url) throws MalformedURLException, ApiException {
 		return new Api.Builder(new URL(url).toString())
@@ -37,6 +40,19 @@ public class EndpointValidator {
 				       .get(new Filter().select("version"))
 				       .map(Status::getVersion)
 				       .orElse(null);
+	}
+
+	@Nullable
+	public static String api(@NotNull String url, @NotNull ApiVersion requiredVersion)
+			throws MalformedURLException, ApiException {
+		String version = api(url);
+		if(version != null) {
+			ApiVersion foundVersion = ApiVersion.parse(version);
+			if(!requiredVersion.isCompatible(foundVersion)) {
+				throw new IncompatibleApiVersionException(requiredVersion, foundVersion);
+			}
+		}
+		return version;
 	}
 
 	public static boolean apiLogin(@NotNull String url,

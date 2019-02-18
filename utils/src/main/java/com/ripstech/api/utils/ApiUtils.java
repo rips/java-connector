@@ -4,6 +4,8 @@ import com.ripstech.api.entity.receive.application.scan.issue.Type;
 import com.ripstech.api.connector.Api;
 import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
+import com.ripstech.api.utils.validation.ApiVersion;
+import com.ripstech.api.utils.validation.EndpointValidator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,13 +25,17 @@ public final class ApiUtils {
         throw new UnsupportedOperationException();
     }
 
+    @Deprecated
+    @NotNull
     public static Api getApiWithFallback(@NotNull String url,
                                          @NotNull String email,
                                          @NotNull String password) throws MalformedURLException, ApiException {
-        return getApiWithFallback(url, email, password, null);
+        return getApiWithFallback(url, email, password, builder -> { });
     }
 
-	public static Api getApiWithFallback(@NotNull String url,
+    @Deprecated
+    @NotNull
+    public static Api getApiWithFallback(@NotNull String url,
                                          @NotNull String email,
                                          @NotNull String password,
                                          @Nullable Consumer<Api.Builder> apiConfig
@@ -47,6 +53,26 @@ public final class ApiUtils {
         }
         return api;
 	}
+
+	@NotNull
+    public static Api getApiWithFallback(@NotNull String url,
+                                         @NotNull String email,
+                                         @NotNull String password,
+                                         @NotNull ApiVersion requiredVersion
+                                        ) throws MalformedURLException, ApiException {
+        return getApiWithFallback(url, email, password, requiredVersion,null);
+    }
+
+    @NotNull
+    public static Api getApiWithFallback(@NotNull String url,
+                                         @NotNull String email,
+                                         @NotNull String password,
+                                         @NotNull ApiVersion requiredVersion,
+                                         @Nullable Consumer<Api.Builder> apiConfig
+                                        ) throws MalformedURLException, ApiException {
+        EndpointValidator.api(url, requiredVersion);
+        return getApiWithFallback(url, email, password, apiConfig);
+    }
 
     public static Api getApiXPassword(@NotNull String url,
                                       @NotNull String email,
