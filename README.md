@@ -1,3 +1,4 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.ripstech.api/connector.svg?style=flat-square)](https://search.maven.org/search?q=g:%22com.ripstech.api%22%20AND%20(a:%22connector%22%20OR%20a:%22utils%22))
 # RIPS Java Connector
 
 A Java library to provide easy access to RIPS and all of its features.
