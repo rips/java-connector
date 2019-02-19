@@ -11,6 +11,7 @@ class ApiVersionTest {
 	private ApiVersion api2_13_dev_0 = ApiVersion.parse("2.13-dev-0");
 	private ApiVersion api3_0_0 = ApiVersion.parse("3.0.0");
 	private ApiVersion api3_0_dev_0 = ApiVersion.parse("3.0-dev-0");
+	private ApiVersion api4_0_0 = ApiVersion.parse("4.0.0");
 
 	@Test
 	void compareTo() {
@@ -24,5 +25,23 @@ class ApiVersionTest {
 	void isGreaterEqualThan() {
 		assertFalse(api2_13.isGreaterEqualThan(api3_0_0));
 		assertTrue(api3_0_0.isGreaterEqualThan(api3_0_0));
+		assertTrue(api4_0_0.isGreaterEqualThan(api3_0_0));
+		assertFalse(api3_0_0.isGreaterEqualThan(api4_0_0));
+	}
+
+	@Test
+	void isCompatible() {
+		ApiVersion requiredByTheIntegration = ApiVersion.parse("3.0.0");
+		assertFalse(requiredByTheIntegration.isCompatible(ApiVersion.parse("2.8.0")));
+		assertTrue(requiredByTheIntegration.isCompatible(ApiVersion.parse("3.0.0")));
+		assertTrue(requiredByTheIntegration.isCompatible(ApiVersion.parse("3.0.6")));
+		assertTrue(requiredByTheIntegration.isCompatible(ApiVersion.parse("3.2.0")));
+		assertFalse(requiredByTheIntegration.isCompatible(ApiVersion.parse("4.0.0")));
+		requiredByTheIntegration = ApiVersion.parse("3.1.0");
+		assertFalse(requiredByTheIntegration.isCompatible(ApiVersion.parse("2.8.0")));
+		assertFalse(requiredByTheIntegration.isCompatible(ApiVersion.parse("3.0.0")));
+		assertFalse(requiredByTheIntegration.isCompatible(ApiVersion.parse("3.0.6")));
+		assertTrue(requiredByTheIntegration.isCompatible(ApiVersion.parse("3.2.0")));
+		assertFalse(requiredByTheIntegration.isCompatible(ApiVersion.parse("4.0.0")));
 	}
 }

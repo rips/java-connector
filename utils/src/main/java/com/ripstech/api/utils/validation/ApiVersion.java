@@ -144,6 +144,13 @@ final public class ApiVersion implements Comparable<ApiVersion> {
 		return this.compareTo(apiVersion) < 0;
 	}
 
+	public boolean isCompatible(@NotNull ApiVersion apiVersion) {
+		if(this.majorPart != apiVersion.majorPart) {
+			return false;
+		}
+		return apiVersion.isGreaterEqualThan(this);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
@@ -159,6 +166,11 @@ final public class ApiVersion implements Comparable<ApiVersion> {
 	@Override
 	public int hashCode() {
 		return version.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return version;
 	}
 
 	public boolean isValid() {
