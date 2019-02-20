@@ -1,5 +1,6 @@
 package com.ripstech.api.utils.application;
 
+import com.ripstech.api.entity.receive.Application;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -28,16 +29,12 @@ public class UserApplications {
 	}
 
 	public static class Entry implements Comparable<Entry> {
-		private final String name;
+		private final Application application;
 		private final String language;
 
-		public Entry(String name, String language) {
-			this.name = name;
+		Entry(Application application, String language) {
+			this.application = application;
 			this.language = language;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		public String getDisplayName(long id) {
@@ -45,16 +42,25 @@ public class UserApplications {
 		}
 
 		public String getDisplayName() {
-			return String.format("%s [%s]", name, language);
+			return String.format("%s [%s]", application.getName(), language);
 		}
 
 		public String getLanguage() {
 			return language;
 		}
 
+		public Application getEntity() {
+			return application;
+		}
+
 		@Override
 		public int compareTo(@NotNull UserApplications.Entry entry) {
-			return name.compareToIgnoreCase(entry.name);
+			return application.getName().compareToIgnoreCase(entry.application.getName());
+		}
+
+		@Override
+		public String toString() {
+			return getDisplayName();
 		}
 	}
 }

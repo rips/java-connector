@@ -42,7 +42,7 @@ public class ApplicationHandler {
 					                    .map(IdHolder::getId)
 					                    .map(langId -> langMapping.getOrDefault(langId, "unknown"))
 					                    .orElse("unknown");
-					   return new UserApplications.Entry(app.getName(), lang);
+					   return new UserApplications.Entry(app, lang);
 				   })));
 	}
 
