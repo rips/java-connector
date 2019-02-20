@@ -21,4 +21,6 @@ public class RipsDefault {
 
 	public final static String VERSION_PATTERN = "{isoDateTime}";
 
+	public final static int DEFAULT_ANALYSIS_DEPTH = 5;
+
 }
