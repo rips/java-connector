@@ -1,11 +1,13 @@
 package com.ripstech.api.utils.profiles;
 
+import com.ripstech.api.entity.receive.application.Profile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AnalysisProfiles {
@@ -13,8 +15,8 @@ public class AnalysisProfiles {
 	private final Map<Long, Entry> entries;
 	private final Long defaultId;
 
-	public AnalysisProfiles(Map<Long, Entry> entries, @Nullable Long defaultId) {
-		this.entries = entries;
+	AnalysisProfiles(Set<Profile> profiles, @Nullable Long defaultId) {
+		this.entries = profiles.stream().collect(Collectors.toMap(Profile::getId, Entry::new));
 		this.defaultId = defaultId;
 	}
 
@@ -31,7 +33,7 @@ public class AnalysisProfiles {
 	public Map<Long, Integer> getDepths() {
 		return entries.entrySet()
 		              .stream()
-		              .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().depth));
+		              .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDepth()));
 	}
 
 	public Map<Long, Entry> getEntries() {
@@ -43,36 +45,41 @@ public class AnalysisProfiles {
 		return defaultId;
 	}
 
-	public static class Entry implements Comparable<Entry> {
-		private final String name;
-		private final boolean global;
-		private final int depth;
+	public class Entry implements Comparable<Entry> {
+		private final Profile profile;
 
-		public Entry(String name, boolean global, int depth) {
-			this.name = name;
-			this.global = global;
-			this.depth = depth;
-		}
-
-		public String getName() {
-			return name;
+		Entry(Profile profile) {
+			this.profile = profile;
 		}
 
 		public String getDisplayName() {
-			return name + (global ? " (Global)" : "");
+			return profile.getName() + (isGlobal() ? " (Global)" : "");
 		}
 
 		public boolean isGlobal() {
-			return global;
+			return profile.getApplication() == null;
 		}
 
 		public int getDepth() {
-			return depth;
+			return profile.getSetting().getAnalysisDepth();
+		}
+
+		public boolean isSuperDefault() {
+			return profile.getId().equals(AnalysisProfiles.this.getDefaultId());
+		}
+
+		public Profile getEntity() {
+			return profile;
 		}
 
 		@Override
 		public int compareTo(@NotNull AnalysisProfiles.Entry entry) {
-			return name.compareToIgnoreCase(entry.name);
+			return profile.getName().compareToIgnoreCase(entry.profile.getName());
+		}
+
+		@Override
+		public String toString() {
+			return getDisplayName();
 		}
 	}
 }
