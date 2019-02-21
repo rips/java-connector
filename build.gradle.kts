@@ -15,7 +15,7 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.2.0"
+    version = "3.3.0"
 }
 
 tasks.filter { it.name.startsWith("publishTo") }.forEach {
