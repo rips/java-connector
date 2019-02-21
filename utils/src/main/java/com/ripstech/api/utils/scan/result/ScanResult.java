@@ -2,6 +2,7 @@ package com.ripstech.api.utils.scan.result;
 
 import com.ripstech.api.utils.constant.Severity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -72,19 +73,25 @@ public class ScanResult {
 		return lowSeverityIssues;
 	}
 
+	private String formatPart(int amount, @Nullable Integer threshold) {
+		String formatted = String.format("%d", amount);
+		if(threshold != null) {
+			formatted = String.format("%s/%d", formatted, threshold);
+		}
+		return formatted;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("critical: %d, high: %d, medium: %d, low: %d, new: %d",
-		                     criticalSeverityIssues, highSeverityIssues, mediumSeverityIssues, lowSeverityIssues,
-		                     newIssues);
+		return toString(new Thresholds());
 	}
 
 	public String toString(Thresholds thresholds) {
-		return String.format("critical: %d/%d, high: %d/%d, medium: %d/%d, low: %d/%d, new: %d/%d",
-		                     criticalSeverityIssues, thresholds.getSeverity(Severity.CRITICAL),
-		                     highSeverityIssues, thresholds.getSeverity(Severity.HIGH),
-		                     mediumSeverityIssues, thresholds.getSeverity(Severity.MEDIUM),
-		                     lowSeverityIssues, thresholds.getSeverity(Severity.LOW),
-		                     newIssues, thresholds.getNew());
+		return String.format("critical: %s, high: %s, medium: %s, low: %s, new: %s",
+		                     formatPart(criticalSeverityIssues, thresholds.getSeverity(Severity.CRITICAL)),
+		                     formatPart(highSeverityIssues, thresholds.getSeverity(Severity.HIGH)),
+		                     formatPart(mediumSeverityIssues, thresholds.getSeverity(Severity.MEDIUM)),
+		                     formatPart(lowSeverityIssues, thresholds.getSeverity(Severity.LOW)),
+		                     formatPart(newIssues, thresholds.getNew()));
 	}
 }

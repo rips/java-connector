@@ -12,6 +12,14 @@ public class Thresholds {
 	private final Integer lowThreshold;
 	private final Integer newThreshold;
 
+	public Thresholds() {
+		this.criticalThreshold = null;
+		this.highThreshold = null;
+		this.mediumThreshold = null;
+		this.lowThreshold = null;
+		this.newThreshold = null;
+	}
+
 	public Thresholds(Integer criticalThreshold, Integer highThreshold, Integer mediumThreshold, Integer lowThreshold,
 	                  Integer newThreshold) {
 		this.criticalThreshold = criticalThreshold;
@@ -56,6 +64,11 @@ public class Thresholds {
 	@Nullable
 	Integer getNew() {
 		return newThreshold;
+	}
+
+	boolean isEmpty() {
+		return criticalThreshold == null && highThreshold == null && mediumThreshold == null && lowThreshold == null &&
+				newThreshold == null;
 	}
 
 }
