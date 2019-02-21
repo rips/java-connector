@@ -1,11 +1,14 @@
 package com.ripstech.api.utils.profiles;
 
+import com.ripstech.api.entity.receive.application.Profile;
+import com.ripstech.api.utils.constant.RipsDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AnalysisProfiles {
@@ -13,8 +16,10 @@ public class AnalysisProfiles {
 	private final Map<Long, Entry> entries;
 	private final Long defaultId;
 
-	public AnalysisProfiles(Map<Long, Entry> entries, @Nullable Long defaultId) {
-		this.entries = entries;
+	AnalysisProfiles(Set<Profile> profiles, @Nullable Long defaultId) {
+		this.entries = profiles.stream().collect(Collectors.toMap(Profile::getId, Entry::new));
+		this.entries.put(-1L, new AutomaticSelectionEntry());
+		// Will be used internally only
 		this.defaultId = defaultId;
 	}
 
@@ -31,48 +36,115 @@ public class AnalysisProfiles {
 	public Map<Long, Integer> getDepths() {
 		return entries.entrySet()
 		              .stream()
-		              .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().depth));
+		              .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getDepth()));
 	}
 
 	public Map<Long, Entry> getEntries() {
 		return entries;
 	}
 
-	@Nullable
 	public Long getDefaultId() {
-		return defaultId;
+		return -1L; // auto selection is the default option
 	}
 
-	public static class Entry implements Comparable<Entry> {
-		private final String name;
-		private final boolean global;
-		private final int depth;
+	public class Entry implements Comparable<Entry> {
+		private final Profile profile;
 
-		public Entry(String name, boolean global, int depth) {
-			this.name = name;
-			this.global = global;
-			this.depth = depth;
+		Entry(Profile profile) {
+			this.profile = profile;
 		}
 
-		public String getName() {
-			return name;
+		public Long getId() {
+			return profile.getId();
 		}
 
 		public String getDisplayName() {
-			return name + (global ? " (Global)" : "");
+			return profile.getName() + (isGlobal() ? " (Global)" : "") + (isSuperDefault() ? " *" : "");
 		}
 
 		public boolean isGlobal() {
-			return global;
+			return profile.getApplication() == null;
 		}
 
 		public int getDepth() {
-			return depth;
+			return profile.getSetting().getAnalysisDepth();
+		}
+
+		public boolean isSuperDefault() {
+			return profile.getId().equals(AnalysisProfiles.this.defaultId);
+		}
+
+		public Profile getEntity() {
+			return profile;
 		}
 
 		@Override
 		public int compareTo(@NotNull AnalysisProfiles.Entry entry) {
-			return name.compareToIgnoreCase(entry.name);
+			if(entry instanceof AutomaticSelectionEntry) {
+				return 1;
+			}
+			return profile.getName().compareToIgnoreCase(entry.profile.getName());
+		}
+
+		@Override
+		public String toString() {
+			return getDisplayName();
 		}
 	}
+
+	public class AutomaticSelectionEntry extends Entry {
+
+		AutomaticSelectionEntry() {
+			super(null);
+		}
+
+		@Override
+		public Long getId() {
+			return -1L;
+		}
+
+		@Override
+		public String getDisplayName() {
+			return "-- automatic selection --";
+		}
+
+		@Override
+		public boolean isGlobal() {
+			return false;
+		}
+
+		@Override
+		public int getDepth() {
+			if(defaultId == null) {
+				return RipsDefault.DEFAULT_ANALYSIS_DEPTH;
+			} else {
+				return AnalysisProfiles.this.entries
+						.entrySet()
+						.stream()
+						.filter(e -> e.getKey().equals(defaultId))
+						.findFirst()
+						.map(Map.Entry::getValue)
+						.map(Entry::getDepth)
+						.orElse(RipsDefault.DEFAULT_ANALYSIS_DEPTH);
+			}
+		}
+
+		@Override
+		public boolean isSuperDefault() {
+			return super.isSuperDefault();
+		}
+
+		@Nullable
+		@Override
+		public Profile getEntity() {
+			return super.getEntity();
+		}
+
+		@Override
+		public int compareTo(@NotNull Entry entry) {
+			return -1;
+		}
+
+	}
+
 }

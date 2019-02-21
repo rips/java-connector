@@ -77,6 +77,11 @@ public class ScanService extends DeletePostGetService<Scan, ScanService.ScanSend
 
 		public ScanSendPost setScan(ScanSend.Post scan) {
 			this.scan = scan;
+			// The profile with the id -1 is the "autoselection profile".
+			// The api can not handle the value -1, but null will be handled the same.
+			if(scan.getProfile().isPresent() && scan.getProfile().get() == -1L) {
+				scan.setProfile(null);
+			}
 			return this;
 		}
 
