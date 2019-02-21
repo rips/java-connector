@@ -54,7 +54,7 @@ public class ApiException extends Exception {
 		public static ProblemType findProblemTypeOrUnknown(int httpCode, String responseMessage) {
 			return Arrays.stream(ProblemType.values())
 			             .filter(p -> p.httpCode == httpCode)
-			             .filter(msg -> msg.responseMessage.contains(responseMessage))
+			             .filter(p -> responseMessage.contains(p.responseMessage))
 			             .findFirst()
 			             .orElse(UNKNOWN);
 		}
