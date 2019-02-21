@@ -35,8 +35,11 @@ public class ApiException extends Exception {
 	public enum ProblemType {
 		INVALID_INPUT(400, "Invalid input"),
 		TOO_MANY_ISSUES_OF_THIS_TYPE(400, "Too many issues of this type"),
+		YOU_HAVE_TO_SET_PATH_OR_UPLOAD(400, "You have to set path or upload"),
 		NO_PARENT_SCAN_FOUND(400, "No parent scan found"),
+		INVALID_CREDENTIALS(401, "Invalid credentials"),
 		MISSING_PERMISSIONS(403, "Missing permissions"),
+		NOT_AUTHORIZED_TO_PERFORM_THIS_ACTION(403, "Not authorized to perform this action"),
 		NOT_FOUND(404, "Not found"),
 		ANOTHER_EXPORT_IS_CURRENTLY_RUNNING(423, "Another export is currently running"),
 		TOO_MANY_CREATE_ATTEMPTS(429, "Too many create attempts"),
