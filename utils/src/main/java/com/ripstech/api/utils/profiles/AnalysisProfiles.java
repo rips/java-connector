@@ -1,6 +1,7 @@
 package com.ripstech.api.utils.profiles;
 
 import com.ripstech.api.entity.receive.application.Profile;
+import com.ripstech.api.utils.constant.RipsDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +18,8 @@ public class AnalysisProfiles {
 
 	AnalysisProfiles(Set<Profile> profiles, @Nullable Long defaultId) {
 		this.entries = profiles.stream().collect(Collectors.toMap(Profile::getId, Entry::new));
+		this.entries.put(-1L, new AutomaticSelectionEntry());
+		// Will be used internally only
 		this.defaultId = defaultId;
 	}
 
@@ -40,9 +43,8 @@ public class AnalysisProfiles {
 		return entries;
 	}
 
-	@Nullable
 	public Long getDefaultId() {
-		return defaultId;
+		return -1L; // auto selection is the default option
 	}
 
 	public class Entry implements Comparable<Entry> {
@@ -52,8 +54,12 @@ public class AnalysisProfiles {
 			this.profile = profile;
 		}
 
+		public Long getId() {
+			return profile.getId();
+		}
+
 		public String getDisplayName() {
-			return profile.getName() + (isGlobal() ? " (Global)" : "");
+			return profile.getName() + (isGlobal() ? " (Global)" : "") + (isSuperDefault() ? " *" : "");
 		}
 
 		public boolean isGlobal() {
@@ -65,7 +71,7 @@ public class AnalysisProfiles {
 		}
 
 		public boolean isSuperDefault() {
-			return profile.getId().equals(AnalysisProfiles.this.getDefaultId());
+			return profile.getId().equals(AnalysisProfiles.this.defaultId);
 		}
 
 		public Profile getEntity() {
@@ -74,6 +80,9 @@ public class AnalysisProfiles {
 
 		@Override
 		public int compareTo(@NotNull AnalysisProfiles.Entry entry) {
+			if(entry instanceof AutomaticSelectionEntry) {
+				return 1;
+			}
 			return profile.getName().compareToIgnoreCase(entry.profile.getName());
 		}
 
@@ -82,4 +91,60 @@ public class AnalysisProfiles {
 			return getDisplayName();
 		}
 	}
+
+	public class AutomaticSelectionEntry extends Entry {
+
+		AutomaticSelectionEntry() {
+			super(null);
+		}
+
+		@Override
+		public Long getId() {
+			return -1L;
+		}
+
+		@Override
+		public String getDisplayName() {
+			return "-- automatic selection --";
+		}
+
+		@Override
+		public boolean isGlobal() {
+			return false;
+		}
+
+		@Override
+		public int getDepth() {
+			if(defaultId == null) {
+				return RipsDefault.DEFAULT_ANALYSIS_DEPTH;
+			} else {
+				return AnalysisProfiles.this.entries
+						.entrySet()
+						.stream()
+						.filter(e -> e.getKey().equals(defaultId))
+						.findFirst()
+						.map(Map.Entry::getValue)
+						.map(Entry::getDepth)
+						.orElse(RipsDefault.DEFAULT_ANALYSIS_DEPTH);
+			}
+		}
+
+		@Override
+		public boolean isSuperDefault() {
+			return super.isSuperDefault();
+		}
+
+		@Nullable
+		@Override
+		public Profile getEntity() {
+			return super.getEntity();
+		}
+
+		@Override
+		public int compareTo(@NotNull Entry entry) {
+			return -1;
+		}
+
+	}
+
 }
