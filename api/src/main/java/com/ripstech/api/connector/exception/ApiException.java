@@ -8,19 +8,23 @@ import java.util.Arrays;
 public class ApiException extends Exception {
 
 	private final ProblemType problemType;
+	private final String plainMessage;
 
 	public ApiException(String message) {
 		super(message);
+		plainMessage = message;
 		problemType = ProblemType.UNKNOWN;
 	}
 
 	public ApiException(HttpStatus status, String message) {
 		super(String.format("%s: %s", status.toString(), message));
+		plainMessage = message;
 		problemType = ProblemType.findProblemTypeOrUnknown(status.getCode(), message);
 	}
 
 	public ApiException(Integer status, String message) {
 		super(String.format("%d: %s", status, message));
+		plainMessage = message;
 		problemType = ProblemType.findProblemTypeOrUnknown(status, message);
 	}
 
@@ -30,6 +34,10 @@ public class ApiException extends Exception {
 
 	public ProblemType getProblemType() {
 		return problemType;
+	}
+
+	public String getPlainMessage() {
+		return plainMessage;
 	}
 
 	public enum ProblemType {
