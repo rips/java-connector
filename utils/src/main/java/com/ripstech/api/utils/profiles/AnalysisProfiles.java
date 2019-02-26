@@ -5,10 +5,7 @@ import com.ripstech.api.utils.constant.RipsDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnalysisProfiles {
@@ -21,6 +18,10 @@ public class AnalysisProfiles {
 		this.entries.put(-1L, new AutomaticSelectionEntry());
 		// Will be used internally only
 		this.defaultId = defaultId;
+	}
+
+	public static AnalysisProfiles empty() {
+		return new AnalysisProfiles(Collections.emptySet(), null);
 	}
 
 	public Map<Long, String> getNames() {
