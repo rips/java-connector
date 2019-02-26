@@ -4,6 +4,7 @@ import com.ripstech.api.entity.receive.application.scan.issue.Type;
 import com.ripstech.api.connector.Api;
 import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
+import com.ripstech.api.utils.exception.InvalidApiCredentialsException;
 import com.ripstech.api.utils.validation.ApiVersion;
 import com.ripstech.api.utils.validation.EndpointValidator;
 import org.jetbrains.annotations.NotNull;
@@ -47,11 +48,10 @@ public final class ApiUtils {
             if(apiConfig != null) {
                 apiConfig.accept(builder);
             }
-            api = builder.build();
+            return builder.build();
         } catch (ApiException e) {
-            api = getApiXPassword(url, email, password, apiConfig);
+            return getApiXPassword(url, email, password, apiConfig);
         }
-        return api;
 	}
 
 	@NotNull
@@ -86,12 +86,15 @@ public final class ApiUtils {
                                       @NotNull String password,
                                       @Nullable Consumer<Api.Builder> apiConfig
                                      ) throws MalformedURLException, ApiException {
-            Api.Builder builder = new Api.Builder(new URL(url).toString())
-                    .withXPassword(email, password);
-            if(apiConfig != null) {
-                apiConfig.accept(builder);
-            }
-            return builder.build();
+        if(!EndpointValidator.apiLogin(url, email, password)) {
+            throw new InvalidApiCredentialsException();
+        }
+        Api.Builder builder = new Api.Builder(new URL(url).toString())
+                .withXPassword(email, password);
+        if(apiConfig != null) {
+            apiConfig.accept(builder);
+        }
+        return builder.build();
     }
 
     @NotNull

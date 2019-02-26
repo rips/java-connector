@@ -6,6 +6,7 @@ import com.ripstech.api.connector.Api;
 import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
 import com.ripstech.api.utils.exception.IncompatibleApiVersionException;
+import com.ripstech.api.utils.exception.InvalidApiCredentialsException;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -58,13 +59,15 @@ public class EndpointValidator {
 	public static boolean apiLogin(@NotNull String url,
 	                               @NotNull String email,
 	                               @NotNull String password) throws MalformedURLException, ApiException {
-		return ApiUtils.getApiXPassword(url, email, password)
-				       .status()
-				       .get(new Filter().select("user"))
-				       .orThrow(ApiException::new)
-				       .getUser()
-				       .getEmail()
-				       .equalsIgnoreCase(email);
+		return new Api.Builder(new URL(url).toString())
+				.withXPassword(email, password)
+				.build()
+				.status()
+				.get(new Filter().select("user"))
+				.orThrow(InvalidApiCredentialsException::new)
+				.getUser()
+				.getEmail()
+				.equalsIgnoreCase(email);
 	}
 
 	@Contract("null -> false")
