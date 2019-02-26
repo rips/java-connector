@@ -44,6 +44,10 @@ public class AnalysisProfiles {
 		return entries;
 	}
 
+	public Entry getDefaultEntry() {
+		return entries.getOrDefault(getDefaultId(), new AutomaticSelectionEntry());
+	}
+
 	public Long getDefaultId() {
 		return -1L; // auto selection is the default option
 	}
