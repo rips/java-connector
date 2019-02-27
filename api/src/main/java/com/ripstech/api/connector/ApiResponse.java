@@ -21,6 +21,7 @@ public class ApiResponse<T> {
 	private T value;
 	private HttpStatus status;
 	private String message;
+	private Exception causedBy;
 
 	private ApiRequest request;
 	private ApiResponseMapper<T> apiResponseMapper;
@@ -79,9 +80,8 @@ public class ApiResponse<T> {
 
 	private void setException(Exception e) {
 		status = new HttpStatus(-1, "Exception");
-		StringWriter sw = new StringWriter();
-		e.printStackTrace(new PrintWriter(sw));
-		this.message = String.format("%s\n%s", e.getMessage(), sw.toString());
+		this.message = e.getMessage();
+		this.causedBy = e;
 	}
 
 	public int getStatus() {
@@ -141,7 +141,9 @@ public class ApiResponse<T> {
 		if(isOk()) {
 			return value;
 		} else {
-			throw throwable.get();
+			X x = throwable.get();
+			x.initCause(causedBy);
+			throw x;
 		}
 	}
 
@@ -149,7 +151,9 @@ public class ApiResponse<T> {
 		if(isOk()) {
 			return value;
 		} else {
-			throw function.apply(status, message);
+			X x = function.apply(status, message);
+			x.initCause(causedBy);
+			throw x;
 		}
 	}
 
