@@ -74,6 +74,7 @@ public final class ApiUtils {
         return getApiWithFallback(url, email, password, apiConfig);
     }
 
+    @NotNull
     public static Api getApiXPassword(@NotNull String url,
                                       @NotNull String email,
                                       @NotNull String password
@@ -81,6 +82,7 @@ public final class ApiUtils {
         return getApiXPassword(url, email, password, null);
     }
 
+    @NotNull
     public static Api getApiXPassword(@NotNull String url,
                                       @NotNull String email,
                                       @NotNull String password,
@@ -95,6 +97,70 @@ public final class ApiUtils {
             apiConfig.accept(builder);
         }
         return builder.build();
+    }
+
+    @NotNull
+    public static Api getApiOauthV2(@NotNull String url,
+                                    @NotNull String email,
+                                    @NotNull String password,
+                                    @NotNull ApiVersion requiredVersion,
+                                    @Nullable String clientIdName,
+                                    @Nullable Consumer<Api.Builder> apiConfig
+                                   ) throws MalformedURLException, ApiException {
+        EndpointValidator.api(url, requiredVersion);
+        Api.Builder builder = new Api.Builder(new URL(url).toString());
+        if (clientIdName == null) {
+            builder.withOAuthv2(email, password);
+        } else {
+            builder.withOAuthv2(email, password, clientIdName);
+        }
+
+        if(apiConfig != null) {
+            apiConfig.accept(builder);
+        }
+        return builder.build();
+    }
+
+    @NotNull
+    public static Api getApiOauthV2(@NotNull String url,
+                                    @NotNull String email,
+                                    @NotNull String password,
+                                    @NotNull ApiVersion requiredVersion,
+                                    @Nullable String accessToken
+                                   ) throws MalformedURLException, ApiException {
+        return getApiOauthV2(url, email, password, requiredVersion, accessToken, null);
+    }
+
+    @NotNull
+    public static Api getApiOauthV2(@NotNull String url,
+                                    @NotNull String email,
+                                    @NotNull String password,
+                                    @NotNull ApiVersion requiredVersion
+                                   ) throws MalformedURLException, ApiException {
+        return getApiOauthV2(url, email, password, requiredVersion, null, null);
+    }
+
+    @NotNull
+    public static Api getApiOauthV2(@NotNull String url,
+                                    @NotNull String oauthToken,
+                                    @NotNull ApiVersion requiredVersion,
+                                    @Nullable Consumer<Api.Builder> apiConfig
+                                   ) throws MalformedURLException, ApiException {
+        EndpointValidator.api(url, requiredVersion);
+        Api.Builder builder = new Api.Builder(new URL(url).toString())
+                                        .withOAuthv2(oauthToken);
+        if (apiConfig != null) {
+            apiConfig.accept(builder);
+        }
+        return builder.build();
+    }
+
+    @NotNull
+    public static Api getApiOauthV2(@NotNull String url,
+                                    @NotNull String oauthToken,
+                                    @NotNull ApiVersion requiredVersion
+                                   ) throws MalformedURLException, ApiException {
+        return getApiOauthV2(url, oauthToken, requiredVersion, null);
     }
 
     @NotNull
