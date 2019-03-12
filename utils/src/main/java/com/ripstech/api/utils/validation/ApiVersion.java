@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 final public class ApiVersion implements Comparable<ApiVersion> {
-	// \p{Alpha} matches an alphabetic character
-	private static final Pattern VERSION_PATTERN = Pattern.compile("((\\d+)(\\.\\d+)+)(-(\\p{Alpha}+)(-([a-z]?\\p{XDigit}+))?)?");
+	// \p{Alnum} matches an alphabetic character or a digit [a-zA-Z0-9]
+	private static final Pattern VERSION_PATTERN = Pattern.compile("((\\d+)(\\.\\d+)+)(-(\\p{Alnum}+)(-([a-z]?\\p{XDigit}+))?)?");
 
 	private static final int STAGE_MILESTONE = 0;
 
