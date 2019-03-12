@@ -12,6 +12,7 @@ class ApiVersionTest {
 	private ApiVersion api3_0_0 = ApiVersion.parse("3.0.0");
 	private ApiVersion api3_0_dev_0 = ApiVersion.parse("3.0-dev-0");
 	private ApiVersion api4_0_0 = ApiVersion.parse("4.0.0");
+	private ApiVersion api3_0_git_version = ApiVersion.parse("3.0.0-47-g12321321");
 
 	@Test
 	void compareTo() {
@@ -27,6 +28,8 @@ class ApiVersionTest {
 		assertTrue(api3_0_0.isGreaterEqualThan(api3_0_0));
 		assertTrue(api4_0_0.isGreaterEqualThan(api3_0_0));
 		assertFalse(api3_0_0.isGreaterEqualThan(api4_0_0));
+		assertTrue(api3_0_0.isGreaterEqualThan(api3_0_git_version));
+		assertFalse(api2_13.isGreaterEqualThan(api3_0_git_version));
 	}
 
 	@Test
