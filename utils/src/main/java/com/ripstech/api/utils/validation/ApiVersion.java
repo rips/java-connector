@@ -8,15 +8,14 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 final public class ApiVersion implements Comparable<ApiVersion> {
-	// \p{Alpha} matches an alphabetic character
-	private static final Pattern VERSION_PATTERN = Pattern.compile("((\\d+)(\\.\\d+)+)(-(\\p{Alpha}+)(-([a-z]?\\p{XDigit}+))?)?");
+	// \p{Alnum} matches an alphabetic character or a digit [a-zA-Z0-9]
+	private static final Pattern VERSION_PATTERN = Pattern.compile("((\\d+)(\\.\\d+)+)(.*)?");
 
 	private static final int STAGE_MILESTONE = 0;
 
 	private final String version;
 	private int majorPart;
 	private String versionPart;
-	private Stage stage;
 
 	/**
 	 * Creates a new ApiVersion object, throws IllegalArgumentException if the parse String doesn't match the pattern.
@@ -44,32 +43,6 @@ final public class ApiVersion implements Comparable<ApiVersion> {
 		versionPart = matcher.group(1);
 		majorPart = Integer.parseInt(matcher.group(2), 10);
 
-		if (matcher.group(4) != null) {
-			int stageNumber;
-			switch (matcher.group(5)) {
-				case "milestone":
-					stageNumber = STAGE_MILESTONE;
-					break;
-				case "preview":
-					stageNumber = 2;
-					break;
-				case "rc":
-					stageNumber = 3;
-					break;
-				default:
-					stageNumber = 1;
-					break;
-			}
-			String stageString = matcher.group(7);
-			if (stageString != null) {
-				stage = new Stage(stageNumber, stageString);
-			} else {
-				stage = null;
-			}
-		} else {
-			stage = null;
-		}
-
 	}
 
 	public String getVersion() {
@@ -84,16 +57,10 @@ final public class ApiVersion implements Comparable<ApiVersion> {
 	 * @return The parse base
 	 */
 	public ApiVersion getBaseVersion() {
-		if (stage == null) {
-			return this;
-		}
 		return parse(versionPart);
 	}
 
 	public ApiVersion getNextMajor() {
-		if (stage != null && stage.stage == STAGE_MILESTONE) {
-			return parse(majorPart + ".0");
-		}
 		return parse((majorPart + 1) + ".0");
 	}
 
@@ -117,19 +84,6 @@ final public class ApiVersion implements Comparable<ApiVersion> {
 			return 1;
 		}
 		if (majorVersionParts.length < otherMajorVersionParts.length) {
-			return -1;
-		}
-
-		if (stage != null && apiVersion.stage != null) {
-			int diff = stage.compareTo(apiVersion.stage);
-			if (diff != 0) {
-				return diff;
-			}
-		}
-		if (stage == null && apiVersion.stage != null) {
-			return 1;
-		}
-		if (stage != null && apiVersion.stage == null) {
 			return -1;
 		}
 
@@ -175,52 +129,6 @@ final public class ApiVersion implements Comparable<ApiVersion> {
 
 	public boolean isValid() {
 		return versionPart != null;
-	}
-
-	static final class Stage implements Comparable<Stage> {
-		final int stage;
-		final int number;
-		final Character patchNo;
-
-		Stage(int stage, String number) {
-			this.stage = stage;
-			Matcher m = Pattern.compile("(\\d+)([a-z])?").matcher(number);
-			try {
-				m.matches();
-				this.number = Integer.parseInt(m.group(1));
-			} catch (Exception e) {
-				throw new RuntimeException("Invalid stage small number: " + number, e);
-			}
-
-			if (m.groupCount() == 2 && m.group(2) != null) {
-				this.patchNo = m.group(2).charAt(0);
-			} else {
-				this.patchNo = '_';
-			}
-		}
-
-		@Override
-		public int compareTo(Stage other) {
-			if (stage > other.stage) {
-				return 1;
-			}
-			if (stage < other.stage) {
-				return -1;
-			}
-			if (number > other.number) {
-				return 1;
-			}
-			if (number < other.number) {
-				return -1;
-			}
-			if (patchNo > other.patchNo) {
-				return 1;
-			}
-			if (patchNo < other.patchNo) {
-				return -1;
-			}
-			return 0;
-		}
 	}
 
 }
