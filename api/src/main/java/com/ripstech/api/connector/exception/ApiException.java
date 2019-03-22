@@ -5,6 +5,8 @@ import com.ripstech.api.connector.HttpStatus;
 
 import java.util.Arrays;
 
+import static com.ripstech.api.connector.HttpStatus.NON_HTTP_ERROR;
+
 public class ApiException extends Exception {
 
 	private final ProblemType problemType;
@@ -23,7 +25,7 @@ public class ApiException extends Exception {
 	}
 
 	public ApiException(Integer status, String message) {
-		super(String.format("%d: %s", status, message));
+		super((status != NON_HTTP_ERROR) ? String.format("%d: %s", status, message) : message);
 		plainMessage = message;
 		problemType = ProblemType.findProblemTypeOrUnknown(status, message);
 	}
@@ -37,6 +39,9 @@ public class ApiException extends Exception {
 	}
 
 	public String getPlainMessage() {
+		if(plainMessage.isEmpty()) {
+			return getMessage();
+		}
 		return plainMessage;
 	}
 

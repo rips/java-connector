@@ -10,6 +10,10 @@ configurations {
     testImplementation.get().extendsFrom(includeInJar)
 }
 
+repositories {
+    maven("https://jitpack.io")
+}
+
 dependencies {
     includeInJar(project(path = ":entity-gen", configuration = "generatedEntities"))
     implementation("com.fasterxml.jackson.core:jackson-core:2.9.8")
@@ -22,6 +26,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:3.12.1")
 
     testCompile("org.reflections:reflections:0.9.11")
+    testImplementation("com.github.JensPiegsa:wiremock-extension:0.4.0")
 }
 
 tasks {

@@ -1,6 +1,9 @@
 package com.ripstech.api.connector;
 
 public class HttpStatus {
+
+	public static final int NON_HTTP_ERROR = -1;
+
 	private final int code;
 	private String reason;
 
@@ -19,6 +22,10 @@ public class HttpStatus {
 
 	@Override
 	public String toString() {
-		return String.format("%d (%s)", code, reason);
+		if(code != NON_HTTP_ERROR) {
+			return String.format("%d (%s)", code, reason);
+		} else {
+			return reason;
+		}
 	}
 }

@@ -7,13 +7,14 @@ import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
+import static com.ripstech.api.connector.HttpStatus.NON_HTTP_ERROR;
 import static java.net.HttpURLConnection.*;
 
 public class ApiResponse<T> {
@@ -50,7 +51,9 @@ public class ApiResponse<T> {
 	}
 
 	public ApiResponse(Exception e) {
-		setException(e);
+		status = new HttpStatus(-1, "Exception");
+		this.message = e.getMessage();
+		this.causedBy = e;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,17 +74,17 @@ public class ApiResponse<T> {
 					}
 				}
 			}
-		} catch (ApiException | IOException e) {
-			setException(e);
+		} catch (ApiException e) {
+			status = new HttpStatus(NON_HTTP_ERROR, e.getClass().getSimpleName());
+			this.message = e.getMessage();
+			this.causedBy = e;
+		} catch (IOException e) {
+			status = new HttpStatus(NON_HTTP_ERROR, e.getClass().getSimpleName());
+			this.message = Arrays.stream(e.getMessage().split("\n", 2)).limit(1).collect(Collectors.joining());
+			this.causedBy = e;
 		} catch (ErrorMessageException e) {
 			this.message = e.getErrorMessage().getMessageAndErrors();
 		}
-	}
-
-	private void setException(Exception e) {
-		status = new HttpStatus(-1, "Exception");
-		this.message = e.getMessage();
-		this.causedBy = e;
 	}
 
 	public int getStatus() {
@@ -97,7 +100,7 @@ public class ApiResponse<T> {
 	}
 
 	public boolean isOk() {
-		return status.getCode() >= HTTP_OK && status.getCode() < HTTP_MULT_CHOICE;
+		return message == null && causedBy == null && status.getCode() >= HTTP_OK && status.getCode() < HTTP_MULT_CHOICE;
 	}
 
 
