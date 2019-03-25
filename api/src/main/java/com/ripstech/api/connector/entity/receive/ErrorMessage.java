@@ -13,6 +13,14 @@ public class ErrorMessage {
 		return ret;
 	}
 
+	public void setCode(Integer code) {
+		this.code = code;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 	public Integer getCode() {
 		return this.code;
 	}
