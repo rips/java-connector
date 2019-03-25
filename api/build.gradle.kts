@@ -11,7 +11,11 @@ configurations {
 }
 
 repositories {
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") {
+        content {
+            includeModule("com.github.JensPiegsa", "wiremock-extension")
+        }
+    }
 }
 
 dependencies {
