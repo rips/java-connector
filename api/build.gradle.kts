@@ -34,7 +34,6 @@ dependencies {
 }
 
 tasks {
-
     setOf(compileJava, compileTestJava)
         .map { it.get() }
         .forEach {
