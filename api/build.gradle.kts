@@ -34,6 +34,13 @@ dependencies {
 }
 
 tasks {
+    setOf(compileJava, compileTestJava)
+        .map { it.get() }
+        .forEach {
+            it.dependsOn(":entity-gen:run")
+            it.mustRunAfter(":entity-gen:run")
+        }
+
     jar {
         from(zipTree(includeInJar.asPath))
     }
