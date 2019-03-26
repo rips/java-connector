@@ -40,7 +40,39 @@ paths:
     get:
       description: |
         Get all language objects
+
+        #### Available Filters
+          | Column  | Restrictions |
+          | ------- | ------------ |
+          | id      |              |
+          | name    |              |
       operationId: getLanguages
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
       responses:
         200:
           description: Successful
@@ -1283,10 +1315,31 @@ paths:
           | createdBy |              |
       operationId: getcallbacks
       parameters:
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
       security:
       - email: []
         password: []
@@ -1310,10 +1363,31 @@ paths:
           | createdBy |              |
       operationId: deleteMultiplecallbacks
       parameters:
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
       security:
       - email: []
         password: []
@@ -5421,6 +5495,7 @@ paths:
           | sans          |              |
           | pcidss        |              |
           | asvs301       |              |
+          | asvs401       |              |
           | category      |              |
           | parent        |              |
           | inactive      |              |
@@ -10554,6 +10629,9 @@ definitions:
       asvs301:
         type: string
         example: "11.8"
+      asvs401:
+        type: string
+        example: "11.9"
       category:
         type: string
         example: "client_vulnerability"
@@ -11009,6 +11087,9 @@ definitions:
       protocol_version:
         type: integer
         example: 3
+      expired_accounts:
+        type: string
+        example: "remove"
 
   Post.Sub.License:
     type: object
@@ -11041,7 +11122,7 @@ definitions:
     properties:
       value:
         type: string
-        maxLength: 180
+        maxLength: 1000000
     required:
       - value
 
@@ -12698,6 +12779,13 @@ definitions:
         type: integer
         example: 3
         default: 3
+      expiredAccounts:
+        type: string
+        example: remove
+        default: disable
+        enum:
+          - remove
+          - disable
 
 # SECURITY
 # ---------------------------------------------------------------------------
