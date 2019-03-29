@@ -15,11 +15,7 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.4.0"
-}
-
-tasks.filter { it.name.startsWith("publishTo") }.forEach {
-    it.dependsOn(":entity-gen:run")
+    version = "3.5.0"
 }
 
 subprojects {

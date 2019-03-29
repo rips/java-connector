@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "3.0.0"
+  version: "3"
   title: "RIPS API"
   description: |
     RIPS is a static code analysis tool to automatically detect taint-style vulnerabilities in PHP and Java applications.
@@ -40,7 +40,39 @@ paths:
     get:
       description: |
         Get all language objects
+
+        #### Available Filters
+          | Column  | Restrictions |
+          | ------- | ------------ |
+          | id      |              |
+          | name    |              |
       operationId: getLanguages
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
       responses:
         200:
           description: Successful
@@ -1283,10 +1315,31 @@ paths:
           | createdBy |              |
       operationId: getcallbacks
       parameters:
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
       security:
       - email: []
         password: []
@@ -1310,10 +1363,31 @@ paths:
           | createdBy |              |
       operationId: deleteMultiplecallbacks
       parameters:
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
       security:
       - email: []
         password: []
@@ -4046,6 +4120,9 @@ paths:
           | finishedAt |              |
           | version    |              |
           | memory     |              |
+          | phase      |              |
+          | percent    |              |
+          | weight     |              |
       operationId: getApplicationScanProcesses
       security:
         - email: []
@@ -5418,6 +5495,7 @@ paths:
           | sans          |              |
           | pcidss        |              |
           | asvs301       |              |
+          | asvs401       |              |
           | category      |              |
           | parent        |              |
           | inactive      |              |
@@ -5872,7 +5950,7 @@ paths:
           | typeSeverity       |              |
           | typeName           |              |
           | typeCategory       |              |
-      operationId: getApplicationScanExportsPdfs
+      operationId: getApplicationScanExportPdfs
       security:
         - email: []
           password: []
@@ -5932,6 +6010,10 @@ paths:
           required: false
           type: integer
           default: 500
+        - name: pdf[profile]
+          in: query
+          required: false
+          type: string
         - name: filter
           in: query
           type: string
@@ -5966,6 +6048,254 @@ paths:
           description: Missing permissions
         423:
           description: Another export is currently running
+
+  /applications/{applicationId}/scans/{scanId}/exports/pdfs/queues:
+    post:
+      description: |
+        Create a pdf asynchronous
+
+        #### Available Filters
+          | Column             | Restrictions |
+          | ------------------ | ------------ |
+          | id                 |              |
+          | origin             |              |
+          | originName         |              |
+          | depth              |              |
+          | lastReview         |              |
+          | lastReviewType     |              |
+          | reviewed           |              |
+          | negativelyReviewed |              |
+          | concat             |              |
+          | entrypoint         |              |
+          | scan               |              |
+          | parent             |              |
+          | cve                |              |
+          | sink               |              |
+          | sinkName           |              |
+          | sinkFilePath       |              |
+          | source             |              |
+          | sourceName         |              |
+          | sourceParameter    |              |
+          | type               |              |
+          | typeSeverity       |              |
+          | typeName           |              |
+          | typeCategory       |              |
+      operationId: postApplicationScanExportPdfQueue
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      produces:
+        - application/pdf
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: pdf[projectName]
+          in: query
+          required: false
+          type: string
+        - name: pdf[chapterSummary]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[issueBreakdown]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[issueDetails]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[codeSummary]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[context]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[vulnerabilityDescription]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[comments]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[maxIssuesPerType]
+          in: query
+          required: false
+          type: integer
+          default: 500
+        - name: pdf[profile]
+          in: query
+          required: false
+          type: string
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Scan.Export.Pdf.Queue'
+        403:
+          description: Missing permissions
+
+  /applications/{applicationId}/scans/{scanId}/exports/pdfs/queues/{queueId}:
+    get:
+      description: |
+        Get information about queued pdf
+
+      operationId: getApplicationScanExportPdfQueue
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: queueId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Scan.Export.Pdf.Queue'
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
+  /applications/{applicationId}/scans/{scanId}/exports/pdfs/queues/{queueId}/downloads:
+    get:
+      description: |
+        Download queued pdf
+
+      operationId: getApplicationScanExportPdfQueueDownload
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      produces:
+        - application/pdf
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: queueId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: file
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
+  /applications/profiles/all:
+    get:
+      description: |
+        Get all profiles
+
+        #### Available Filters
+          | Column      | Restrictions |
+          | ------      | ------------ |
+          | id          |              |
+          | name        |              |
+          | default     |              |
+          | application |              |
+          | language    |              |
+      operationId: getAllApplicationScanProfiles
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Profile'
 
   /applications/{applicationId}/profiles:
     get:
@@ -8183,7 +8513,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Client'
+              $ref: '#/definitions/OAuth2.Client'
         404:
           description: Not found
     post:
@@ -8202,7 +8532,7 @@ paths:
             type: object
             properties:
               client:
-                $ref: '#/definitions/Post.Client'
+                $ref: '#/definitions/Post.Sub.OAuth2.Client'
             required:
               - client
       responses:
@@ -8210,7 +8540,7 @@ paths:
           description: Successful
           schema:
             type: object
-            $ref: '#/definitions/Client'
+            $ref: '#/definitions/OAuth2.Client'
         400:
           description: Bad request
 
@@ -8233,7 +8563,7 @@ paths:
           description: Successful
           schema:
             type: object
-            $ref: '#/definitions/Client'
+            $ref: '#/definitions/OAuth2.Client'
     delete:
       description: |
         Delete the client with the given id with permissions for the current user
@@ -8272,7 +8602,7 @@ paths:
             type: object
             properties:
               client:
-                $ref: '#/definitions/Put.Client'
+                $ref: '#/definitions/Put.Sub.OAuth2.Client'
             required:
               - client
       responses:
@@ -8280,10 +8610,66 @@ paths:
           description: Successful
           schema:
             type: object
-            $ref: '#/definitions/Client'
+            $ref: '#/definitions/OAuth2.Client'
         400:
           description: Bad request
 
+  /systems/ldap:
+    get:
+      description: |
+        Get LDAP configuration
+      operationId: getSystemLdap
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/System.Ldap'
+    put:
+      description: |
+        Update LDAP settings
+      operationId: putSystemLdap
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: put.System.Ldap
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              ldap:
+                $ref: '#/definitions/Put.Sub.System.Ldap'
+            required:
+              - ldap
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: object
+            $ref: '#/definitions/System.Ldap'
+        400:
+          description: Bad request
+
+  /systems/ldap/sync:
+    post:
+      description: |
+        Synchronize local users with LDAP directory
+      operationId: postClients
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
 
 # DEFINITIONS
 # ---------------------------------------------------------------------------
@@ -9254,6 +9640,8 @@ definitions:
             type: integer
             format: int64
             example: 1
+          path:
+            type: string
 
   Application.Scan.Function:
     type: object
@@ -9297,6 +9685,8 @@ definitions:
             type: integer
             format: int64
             example: 1
+          path:
+            type: string
       class:
         type: object
         properties:
@@ -9628,6 +10018,22 @@ definitions:
       name:
         type: string
         example: "php-engine"
+
+  Application.Scan.Export.Pdf.Queue:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      started_at:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
+      finished_at:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
 
   Application.Scan.Issue:
     type: object
@@ -10223,6 +10629,9 @@ definitions:
       asvs301:
         type: string
         example: "11.8"
+      asvs401:
+        type: string
+        example: "11.9"
       category:
         type: string
         example: "client_vulnerability"
@@ -10501,12 +10910,9 @@ definitions:
       parameter:
         type: string
       type:
-        type: object
-        properties:
-          id:
-            type: integer
-            format: int64
-            example: 1
+        type: integer
+        format: int64
+        example: 1
 
   Application.Profile.Source:
     type: object
@@ -10619,6 +11025,72 @@ definitions:
         format: int64
         example: 15
 
+  OAuth2.Client:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      random_id:
+        type: string
+      secret:
+        type: string
+      redirect_uris:
+        type: array
+        items:
+          type: string
+      allowed_grant_types:
+        type: array
+        items:
+          type: string
+
+  System.Ldap:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      enabled:
+        type: boolean
+        example: false
+      search_dn:
+        type: string
+        example: "cn=reader,dc=example,dc=com"
+      search_query:
+        type: string
+        example: "({emailKey}={email})"
+      base_dn:
+        type: string
+        example: "dc=example,dc=com"
+      email_key:
+        type: string
+        example: "mail"
+      user_dn:
+        type: string
+        example: "mail={email},dc=example,dc=com"
+      last_sync_at:
+        type: string
+        format: date-time
+        example: "2019-02-16T11:52:26+0100"
+      host:
+        type: string
+        example: "ldap.example.com"
+      port:
+        type: integer
+        example: 389
+      encryption:
+        type: string
+        example: "none"
+      protocol_version:
+        type: integer
+        example: 3
+      expired_accounts:
+        type: string
+        example: "remove"
+
   Post.Sub.License:
     type: object
     properties:
@@ -10650,7 +11122,7 @@ definitions:
     properties:
       value:
         type: string
-        maxLength: 180
+        maxLength: 1000000
     required:
       - value
 
@@ -11040,6 +11512,7 @@ definitions:
       plainPassword:
         type: string
         example: "you wish"
+        maxLength: 72
       email:
         type: string
         format: email
@@ -11294,7 +11767,7 @@ definitions:
       uploadRemoved:
         type: boolean
         example: false
-        default: false
+        default: true
       historyInherited:
         type: boolean
         example: true
@@ -11410,12 +11883,12 @@ definitions:
       minorVersion:
         type: string
         example: 0
-        default: 0
+        default: "*"
         maxLength: 32
       releaseVersion:
         type: string
         example: 0
-        default: 0
+        default: "*"
         maxLength: 32
       implementation:
         type: string
@@ -11994,7 +12467,7 @@ definitions:
       uploadRemoved:
         type: boolean
         example: false
-        default: false
+        default: true
       fullCodeCompared:
         type: boolean
         example: false
@@ -12224,58 +12697,95 @@ definitions:
         format: int64
         example: 10
 
-  Client:
+  Post.Sub.OAuth2.Client:
     type: object
     properties:
-      id:
+      name:
+        type: string
+      allowed_grant_types:
+        type: array
+        items:
+          type: string
+      redirect_uris:
+        type: array
+        items:
+          type: string
+    required:
+      - name
+
+  Put.Sub.OAuth2.Client:
+    type: object
+    properties:
+      name:
+        type: string
+      allowed_grant_types:
+        type: array
+        items:
+          type: string
+      redirect_uris:
+        type: array
+        items:
+          type: string
+    required:
+      - name
+
+  Put.Sub.System.Ldap:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        example: true
+        default: false
+      searchDn:
+        type: string
+        example: "cn=reader,dc=example,dc=com"
+        maxLength: 250
+      searchPassword:
+        type: string
+        maxLength: 250
+      searchQuery:
+        type: string
+        example: "({emailKey}={email})"
+        maxLength: 250
+      baseDn:
+        type: string
+        example: "dc=example,dc=com"
+        maxLength: 250
+      emailKey:
+        type: string
+        example: "mail"
+        maxLength: 250
+      userDn:
+        type: string
+        example: "mail={email},dc=example,dc=com"
+        maxLength: 250
+      host:
+        type: string
+        example: "ldap.example.com"
+        maxLength: 250
+      port:
         type: integer
-        format: int64
-      name:
+        example: 6655
+        default: 389
+      encryption:
         type: string
-      random_id:
+        example: tls
+        default: none
+        enum:
+          - none
+          - ssl
+          - tls
+      protocolVersion:
+        type: integer
+        example: 3
+        default: 3
+      expiredAccounts:
         type: string
-      secret:
-        type: string
-      redirect_uris:
-        type: array
-        items:
-          type: string
-      allowed_grant_types:
-        type: array
-        items:
-          type: string
-
-  Post.Client:
-    type: object
-    properties:
-      name:
-        type: string
-      allowed_grant_types:
-        type: array
-        items:
-          type: string
-      redirect_uris:
-        type: array
-        items:
-          type: string
-    required:
-      - name
-
-  Put.Client:
-    type: object
-    properties:
-      name:
-        type: string
-      allowed_grant_types:
-        type: array
-        items:
-          type: string
-      redirect_uris:
-        type: array
-        items:
-          type: string
-    required:
-      - name
+        example: remove
+        default: disable
+        enum:
+          - remove
+          - disable
 
 # SECURITY
 # ---------------------------------------------------------------------------

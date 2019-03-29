@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.ripstech.api.connector.entity.receive.ErrorMessage;
 import com.ripstech.api.connector.exception.ErrorMessageException;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static com.ripstech.api.connector.ApiRequest.MEDIA_TYPE_JSON;
+import static com.ripstech.api.connector.HttpStatus.NON_HTTP_ERROR;
 
 public class ApiResponseMapper<T> {
 
@@ -29,7 +31,7 @@ public class ApiResponseMapper<T> {
 	@Nullable
 	public T getValue(final @NotNull Response response) throws ErrorMessageException, IOException {
 		if(!response.isSuccessful()) {
-			throw new ErrorMessageException(responseToObject(response, new TypeReference<ErrorMessage>() {}));
+			throw new ErrorMessageException(responseToObject(response, new TypeReference<ErrorMessage>() {}, true));
 		}
 
 		if(typeReference.getType().equals(Void.class)) {
@@ -38,25 +40,31 @@ public class ApiResponseMapper<T> {
 			return (T) clone(response.body().byteStream());
 		}
 
-		if(response.body() != null
-				&& response.body().contentLength() != 0
-				&& response.body().contentType() != null
-				&& response.body().contentType().subtype() != null
-				&& response.body().contentType().subtype().equals(MEDIA_TYPE_JSON.subtype())) {
-			return responseToObject(response, typeReference);
-		}
-
-		return null;
+		return responseToObject(response, typeReference, false);
 	}
 
 	@Nullable
 	private <K> K responseToObject(@NotNull final Response response,
-	                               @NotNull final TypeReference<K> typeReference) throws IOException {
-		if(response.body() == null) {
+	                               @NotNull final TypeReference<K> typeReference,
+	                               boolean errorHandling) throws IOException, ErrorMessageException {
+		ResponseBody body = response.body();
+		if(body == null) {
 			return null;
 		}
-		return objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-				       .readValue(response.body().byteStream(), typeReference);
+
+		if(body.contentLength() != 0) {
+			if(body.contentType() == null || body.contentType().subtype() == null) {
+				throw new ErrorMessageException(NON_HTTP_ERROR, "Unknown media type to display more information");
+			}
+			String subtype = body.contentType().subtype();
+			if(subtype.equals(MEDIA_TYPE_JSON.subtype())) {
+				return objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+				                   .readValue(body.byteStream(), typeReference);
+			} else if(errorHandling && "text".equals(body.contentType().type())) {
+				throw new ErrorMessageException(response.code(), "");
+			}
+		}
+		return null;
 	}
 
 	private InputStream clone(InputStream stream) throws IOException {
