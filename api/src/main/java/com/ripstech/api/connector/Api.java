@@ -32,6 +32,7 @@ public class Api {
 		private String email;
 		private String password;
 		private String clientIdName;
+		private String clientId;
 
 		public Builder(String baseUri) {
 			this.baseUri = baseUri;
@@ -59,6 +60,12 @@ public class Api {
 			return this;
 		}
 
+		public Builder withOAuthv2ClientId(String email, String password, String clientId) {
+			withOAuthv2(email, password);
+			this.clientId = clientId;
+			return this;
+		}
+
 		public Builder withXPassword(String email, String password) {
 			this.authenticator = new XPassword(email, password);
 			return this;
@@ -75,10 +82,12 @@ public class Api {
 					authenticator = new OAuth2(accessToken);
 					accessToken = ((OAuth2) authenticator).getAccessToken();
 				} else if(email != null && password != null) {
-					if (clientIdName == null || clientIdName.isEmpty()) {
-						authenticator = new OAuth2(baseUri, email, password, httpClientConfig);
-					} else {
+					if (clientIdName != null && clientId == null) {
 						authenticator = new OAuth2(baseUri, email, password, clientIdName, httpClientConfig);
+					} else if (clientId != null && clientIdName == null) {
+						authenticator = new OAuth2(baseUri, email, password, clientId, httpClientConfig, true);
+					} else {
+						authenticator = new OAuth2(baseUri, email, password, httpClientConfig);
 					}
 					accessToken = ((OAuth2) authenticator).getAccessToken();
 				} else {
