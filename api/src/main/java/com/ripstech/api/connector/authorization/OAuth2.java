@@ -27,13 +27,21 @@ public class OAuth2 extends HeaderAuthenticator {
 	}
 
 	public OAuth2(String baseUri, String email, String password, String clientIdName, HttpClientConfig httpClientConfig) throws ApiException {
+		this(baseUri, email, password, clientIdName, httpClientConfig, false);
+	}
+
+	public OAuth2(String baseUri, String email, String password, String clientIdName, HttpClientConfig httpClientConfig, boolean doNotFetchClientId) throws ApiException {
 		OAuthv2Service oAuthv2Service = new OAuthv2Service(baseUri);
 		oAuthv2Service.setHttpClientConfig(httpClientConfig);
 		Map<String, String> clientIds = oAuthv2Service.getGlobalClientIds().orThrow(ApiException::new);
-		if(!clientIds.containsKey(clientIdName)) {
-			throw new ClientIdMissingException("No client ID with name: " + clientIdName);
+		if(doNotFetchClientId) {
+			clientId = clientIdName;
+		} else {
+			if (!clientIds.containsKey(clientIdName)) {
+				throw new ClientIdMissingException("No client ID with name: " + clientIdName);
+			}
+			clientId = clientIds.get(clientIdName);
 		}
-		clientId = clientIds.get(clientIdName);
 		ClientIdSend postBody = ClientIdSend.toPost(clientId, email, password);
 		Token token = oAuthv2Service.getAuthToken(postBody).orThrow(ApiException::new);
 		accessToken = token.getAccessToken();
