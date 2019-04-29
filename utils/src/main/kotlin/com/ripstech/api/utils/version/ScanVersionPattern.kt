@@ -39,7 +39,7 @@ class ScanVersionPattern @JvmOverloads constructor(
 		projectName?.let { returnPattern = returnPattern.replace(PROJECT_NAME, it) }
 		projectKey?.let { returnPattern = returnPattern.replace(PROJECT_KEY, it) }
 		branch?.let { returnPattern = returnPattern.replace(BRANCH, it) }
-		longCommit?.let { returnPattern = returnPattern.replace(COMMIT, it.slice(0..6)) }
+		longCommit?.let { returnPattern = returnPattern.replace(COMMIT, it.take(7)) }
 		longCommit?.let { returnPattern = returnPattern.replace(LONG_COMMIT, it) }
 		return returnPattern
 	}
