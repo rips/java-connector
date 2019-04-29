@@ -1,3 +1,4 @@
+import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -7,7 +8,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("org.sonarqube") version "2.7"
-	id("net.ltgt.errorprone") version "0.6.1"
+	id("net.ltgt.errorprone") version "0.7.1"
     id("org.ajoberstar.grgit") version "3.0.0"
     id("com.github.ben-manes.versions") version "0.20.0"
     kotlin("jvm") version "1.3.20" apply false
@@ -15,10 +16,7 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.6.0"
-}
-
-subprojects {
+    version = "3.6.1"
 
     apply(plugin = "java")
     apply(plugin = "net.ltgt.errorprone")
@@ -53,8 +51,17 @@ subprojects {
             kotlinOptions.jvmTarget = "1.8"
         }
 
-    }
+        withType<JavaCompile> {
+            with(options.errorprone) {
+                //allDisabledChecksAsWarnings = true //is buggy right now
+                disableWarningsInGeneratedCode = true
+            }
+        }
 
+    }
+}
+
+subprojects {
     afterEvaluate {
         if (plugins.hasPlugin(MavenPublishPlugin::class)) {
             extensions.configure<PublishingExtension> {
