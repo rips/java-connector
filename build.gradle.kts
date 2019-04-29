@@ -16,7 +16,7 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.6.0"
+    version = "3.6.1"
 
     apply(plugin = "java")
     apply(plugin = "net.ltgt.errorprone")
