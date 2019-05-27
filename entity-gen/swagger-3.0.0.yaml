@@ -12412,51 +12412,47 @@ definitions:
       - type
 
   Post.Sub.Application.Scan.Issue.Patch:
-    type: array
-    items:
-      type: object
-      properties:
-        type:
-          type: integer
-          format: int64
-          example: 1
-      required:
-        - type
+    type: object
+    properties:
+      type:
+        type: integer
+        format: int64
+        example: 1
+    required:
+      - type
 
   Post.Sub.Application.Scan.Issue.Patch.Modification:
-    type: array
-    items:
-      type: object
-      properties:
-        virtualLine:
-          type: integer
-          format: int32
-          example: 5
-        originalLine:
-          type: integer
-          format: int32
-          example: 6
-        columnStart:
-          type: integer
-          format: int32
-          example: 13
-        columnEnd:
-          type: integer
-          format: int32
-          example: 15
-        content:
-          type: string
-          example: "None"
-        originalContent:
-          type: string
-          example: "None"
-        file:
-          type: integer
-          format: int64
-          example: 1
-      required:
-        - content
-        - file
+    type: object
+    properties:
+      virtualLine:
+        type: integer
+        format: int32
+        example: 5
+      originalLine:
+        type: integer
+        format: int32
+        example: 6
+      columnStart:
+        type: integer
+        format: int32
+        example: 13
+      columnEnd:
+        type: integer
+        format: int32
+        example: 15
+      content:
+        type: string
+        example: "None"
+      originalContent:
+        type: string
+        example: "None"
+      file:
+        type: integer
+        format: int64
+        example: 1
+    required:
+      - content
+      - file
 
   Post.Sub.Application.Profile:
     type: object
