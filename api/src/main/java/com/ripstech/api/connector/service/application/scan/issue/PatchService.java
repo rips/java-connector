@@ -19,6 +19,7 @@ public class PatchService extends PostGetService<Patch, PatchService.PatchSendPo
 		this.applicationId = applicationId;
 		this.scanId = scanId;
 		this.issueId = issueId;
+		withRootName = false;
 	}
 
 	@Override
