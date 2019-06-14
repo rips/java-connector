@@ -1715,6 +1715,7 @@ paths:
           | lastLogin        |                       |
           | organization     | - Requires ROLE_ADMIN |
           | organizationName | - Requires ROLE_ADMIN |
+          | team             |                       |
       operationId: getUsers
       parameters:
         - name: filter
@@ -1769,6 +1770,7 @@ paths:
           | lastLogin        |                       |
           | organization     | - Requires ROLE_ADMIN |
           | organizationName | - Requires ROLE_ADMIN |
+          | team             |                       |
       operationId: deleteMultipleUsers
       parameters:
         - name: filter
@@ -3800,6 +3802,56 @@ paths:
         404:
           description: Not found
 
+  /applications/{applicationId}/scans/{scanId}/filebrowser:
+    get:
+      description: |
+        Get files of one scan, limited by path provided
+
+      operationId: getApplicationScanFilebrowser
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: path
+          in: query
+          required: true
+          type: string
+          description: The path that should be retrieved. Must have the first and last slashes ("/")
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                loc:
+                  type: integer
+                  format: int32
+                path:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - file
+                    - folder
+        403:
+          description: Missing permissions
+        404:
+          description: Path not found
+
   /applications/{applicationId}/scans/{scanId}/files:
     get:
       description: |
@@ -4101,6 +4153,100 @@ paths:
           description: Successful
           schema:
             $ref: '#/definitions/Application.Scan.Source'
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
+  /applications/{applicationId}/scans/{scanId}/pitfalls:
+    get:
+      description: |
+        Get all pitfalls of one scan
+
+        #### Available Filters
+          | Column   | Restrictions |
+          | -------- | ------------ |
+          | id       |              |
+          | line     |              |
+          | file     |              |
+          | function |              |
+          | class    |              |
+      operationId: getApplicationScanPitfalls
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Pitfall'
+        403:
+          description: Missing permissions
+
+  /applications/{applicationId}/scans/{scanId}/pitfalls/{pitfallId}:
+    get:
+      description: |
+        Get a specific pitfall
+      operationId: getApplicationScanPitfall
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: pitfallId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Scan.Pitfall'
         403:
           description: Missing permissions
         404:
@@ -4702,6 +4848,8 @@ paths:
                 $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Taint'
               entrypoint:
                 $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Entrypoint'
+              pitfalls:
+                $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Pitfalls'
               contexts:
                 $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Contexts'
               summaries:
@@ -5762,7 +5910,7 @@ paths:
           | tag      |              |
           | name     |              |
           | negative |              |
-      operationId: getApplicationsScansReviewsTypes
+      operationId: getApplicationsScansIssuesReviewsTypes
       parameters:
         - name: filter
           in: query
@@ -5801,7 +5949,7 @@ paths:
     get:
       description: |
         Get a specific review type
-      operationId: getApplicationsScansReviewsType
+      operationId: getApplicationsScansIssuesReviewsType
       parameters:
         - name: typeId
           in: path
@@ -5826,7 +5974,7 @@ paths:
           | id       |              |
           | tag      |              |
           | name     |              |
-      operationId: getApplicationsScansPatchesTypes
+      operationId: getApplicationsScansIssuesPatchesTypes
       parameters:
       - name: filter
         in: query
@@ -5844,7 +5992,7 @@ paths:
     get:
       description: |
         Get a specific review type
-      operationId: getApplicationsScansPatchesType
+      operationId: getApplicationsScansIssuesPatchesType
       parameters:
       - name: typeId
         in: path
@@ -5855,6 +6003,50 @@ paths:
           description: Successful
           schema:
             $ref: '#/definitions/Application.Scan.Issue.Patch.Type'
+        404:
+          description: Not found
+
+
+  /applications/scans/pitfalls/types:
+    get:
+      description: |
+        Get all pitfall types
+
+        #### Available Filters
+          | Column   | Restrictions |
+          | -------- | ------------ |
+          | id       |              |
+          | tag      |              |
+          | name     |              |
+      operationId: getApplicationsScansPitfallTypes
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Pitfall.Type'
+
+  /applications/scans/pitfalls/types/{typeId}:
+    get:
+      description: |
+        Get a specific pitfall type
+      operationId: getApplicationsScansPitfallsType
+      parameters:
+        - name: typeId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Scan.Pitfall.Type'
         404:
           description: Not found
 
@@ -6030,6 +6222,11 @@ paths:
           required: false
           type: boolean
           default: true
+        - name: pdf[patches]
+          in: query
+          required: false
+          type: boolean
+          default: true
         - name: pdf[maxIssuesPerType]
           in: query
           required: false
@@ -6156,6 +6353,11 @@ paths:
           type: boolean
           default: true
         - name: pdf[comments]
+          in: query
+          required: false
+          type: boolean
+          default: true
+        - name: pdf[patches]
           in: query
           required: false
           type: boolean
@@ -8704,15 +8906,18 @@ definitions:
     properties:
       scans:
         type: integer
+        default: 0
         format: int64
         example: 10
       issues:
         type: integer
         format: int64
+        default: 0
         example: 1000
       loc:
         type: integer
-        format: bigint
+        format: int64
+        default: 0
         example: 2500
 
   Status:
@@ -8725,10 +8930,11 @@ definitions:
         properties:
           id:
             type: integer
-            format: int32
+            format: int64
             example: 5
           name:
             type: string
+            maxLength: 180
           valid_until:
             type: string
             format: date-time
@@ -8750,6 +8956,7 @@ definitions:
         example: true
       maintenance:
         type: boolean
+        default: false
         example: true
       hardware_id:
         type: string
@@ -8811,6 +9018,7 @@ definitions:
         example: "2017-02-16T11:52:25+0100"
       quota_distributed:
         type: boolean
+        default: false
         example: false
       created_by:
         type: object
@@ -8819,6 +9027,24 @@ definitions:
             type: integer
             format: int64
             example: 1
+      parent:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+      child:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+      organization:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
 
   Log:
     type: object
@@ -8837,15 +9063,21 @@ definitions:
       channel:
         type: string
         example: "request"
+        maxLength: 20
       request_uri:
         type: string
+        default: ""
         example: "/test"
       request_method:
         type: string
+        default: ""
         example: "GET"
+        maxLength: 20
       ip:
         type: string
+        default: ""
         example: "8.8.8.8"
+        maxLength: 100
       created_by:
         type: object
         properties:
@@ -8855,7 +9087,9 @@ definitions:
             example: 1
       email:
         type: string
+        default: ""
         example: "foo@bar.com"
+        maxLength: 180
       organization:
         type: object
         properties:
@@ -8865,9 +9099,12 @@ definitions:
             example: 1
       organization_name:
         type: string
+        default: ""
         example: "testorg"
+        maxLength: 180
       context:
         type: string
+        default: ""
       created_at:
         type: string
         format: date-time
@@ -8885,9 +9122,33 @@ definitions:
         example: 1
       type:
         type: string
+        maxLength: 100
         example: "create_comment"
       context:
         type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+          created_at:
+            type: string
+            format: date-time
+          comment:
+            type: string
+          issue:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+          scan:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+              version:
+                type: string
       application:
         type: object
         properties:
@@ -8897,6 +9158,7 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 180
       created_by:
         type: object
         properties:
@@ -8907,6 +9169,8 @@ definitions:
           email:
             type: string
             format: email
+            minLength: 3
+            maxLength: 180
       created_at:
         type: string
         format: date-time
@@ -8917,9 +9181,11 @@ definitions:
     properties:
       key:
         type: string
+        maxLength: 180
         example: "ui.test"
       value:
         type: string
+        maxLength: 1000000
         example: "zero"
       created_at:
         type: string
@@ -8937,6 +9203,8 @@ definitions:
         type: string
         format: email
         example: "none@example.com"
+        minLength: 3
+        maxLength: 180
       last_login:
         type: string
         format: date-time
@@ -8946,23 +9214,51 @@ definitions:
         items:
           type: string
           example: "ROLE_CHIEF"
+      confirmation_token:
+        type: string
+        maxLength: 180
+      reset_token:
+        type: string
+        maxLength: 180
       firstname:
         type: string
+        default: ""
         example: "Hans"
+        maxLength: 180
       lastname:
         type: string
+        default: ""
         example: "Peter"
+        maxLength: 180
       enabled:
         type: boolean
         example: true
       root:
         type: boolean
+        default: false
         example: true
       whitelisted_ips:
         type: array
         items:
           type: string
           example: "127.0.0.*"
+      email_confirmed:
+        type: boolean
+        default: true
+      salt:
+        type: string
+      organization:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+      ldap:
+        type: boolean
+        default: false
+      ldap_identifier:
+        type: string
+        maxLength: 180
 
   Organization:
     type: object
@@ -8974,6 +9270,7 @@ definitions:
       name:
         type: string
         example: "Bobs"
+        maxLength: 180
       quotas:
         type: array
         items:
@@ -8994,11 +9291,16 @@ definitions:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
               example: 1
       disabled:
         type: boolean
+        default: false
         example: false
+      concurrent_scans:
+        type: integer
+        format: int32
+        example: 5
 
   Quota:
     type: object
@@ -9009,15 +9311,18 @@ definitions:
         example: 1
       current_application:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 1
       current_scan:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 2
       current_user:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 3
       max_applications:
         type: integer
@@ -9051,6 +9356,7 @@ definitions:
         example: 20
       public:
         type: boolean
+        default: false
         example: false
       organization:
         type: object
@@ -9061,6 +9367,7 @@ definitions:
             example: 1
       notify:
         type: boolean
+        default: false
         example: true
       created_at:
         type: string
@@ -9085,13 +9392,19 @@ definitions:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
               example: 1
+      issue_type_limit:
+        type: integer
+        format: int32
+        minimum: 1
       update_only:
         type: boolean
+        default: false
         example: false
       flexible_applications:
         type: boolean
+        default: false
         example: true
 
   Quota.Acl:
@@ -9102,6 +9415,7 @@ definitions:
         format: int64
         example: 1
       owner_user:
+        type: object
         properties:
           id:
             type: integer
@@ -9110,7 +9424,10 @@ definitions:
           email:
             type: string
             format: email
+            minLength: 3
+            maxLength: 180
       owner_team:
+        type: object
         properties:
           id:
             type: integer
@@ -9118,25 +9435,33 @@ definitions:
             example: 1
           name:
             type: string
-        type: boolean
-        example: true
+            maxLength: 180
       delete:
         type: boolean
+        default: false
         example: true
       create:
         type: boolean
+        default: false
         example: true
+      view:
+        type: boolean
+        default: false
       edit:
         type: boolean
+        default: false
         example: true
       use:
         type: boolean
+        default: false
         example: true
       manage:
         type: boolean
+        default: false
         example: true
       immutable:
         type: boolean
+        default: false
         example: true
       created_by:
         type: object
@@ -9145,6 +9470,12 @@ definitions:
             type: integer
             format: int64
             example: 1
+      quota:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
 
   Callback:
     type: object
@@ -9153,6 +9484,9 @@ definitions:
         type: integer
         format: int64
         example: 1
+      internal:
+        type: boolean
+        default: false
       url:
         type: string
         example: "http://foo/bar"
@@ -9160,6 +9494,15 @@ definitions:
         type: array
         items:
           type: string
+          enum:
+            - UPDATE_USER
+            - DELETE_USER
+            - CREATE_SCAN
+            - UPDATE_SCAN
+            - FINISH_SCAN
+            - CREATE_COMMENT
+            - CREATE_REVIEW
+            - DELETE_COMMENT
           example: "CREATE_COMMENT"
       applications:
         type: array
@@ -9210,6 +9553,7 @@ definitions:
       name:
         type: string
         example: "Team A"
+        maxLength: 180
       organization:
         type: object
         properties:
@@ -9248,9 +9592,11 @@ definitions:
       name:
         type: string
         example: "DVWA"
+        maxLength: 180
       current_scan:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 3
       charged_quota:
         type: object
@@ -9271,6 +9617,8 @@ definitions:
                   type: integer
                   format: int64
                   example: 1
+                name:
+                  type: string
       created_at:
         type: string
         format: date-time
@@ -9291,6 +9639,7 @@ definitions:
             example: 1
       auto_renew:
         type: boolean
+        default: false
         example: true
 
   Application.Acl:
@@ -9301,6 +9650,7 @@ definitions:
         format: int64
         example: 1
       owner_user:
+        type: object
         properties:
           id:
             type: integer
@@ -9309,7 +9659,10 @@ definitions:
           email:
             type: string
             format: email
+            maxLength: 180
+            minLength: 3
       owner_team:
+        type: object
         properties:
           id:
             type: integer
@@ -9317,26 +9670,40 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 180
+      application:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
       view:
         type: boolean
+        default: false
         example: true
       delete:
         type: boolean
+        default: false
         example: true
       create:
         type: boolean
+        default: false
         example: true
       edit:
         type: boolean
+        default: false
         example: true
       scan:
         type: boolean
+        default: false
         example: true
       manage:
         type: boolean
+        default: false
         example: true
       immutable:
         type: boolean
+        default: false
         example: true
       created_by:
         type: object
@@ -9360,12 +9727,14 @@ definitions:
       name:
         type: string
         example: "dvwa.zip"
+        maxLength: 255
       file:
         type: string
         example: "1234567890abcdef.zip"
       extension:
         type: string
         example: "zip"
+        maxLength: 255
       size:
         type: integer
         format: int32
@@ -9384,6 +9753,15 @@ definitions:
             type: integer
             format: int64
             example: 1
+      loc:
+        type: array
+        items:
+          type: integer
+          format: int32
+      checksum:
+        type: string
+        maxLength: 64
+        example: a94de6ff40b515e07196c177fb63325e7bf64b608d6c0d9eb5dff1e1299fbf62
 
   Application.Scan:
     type: object
@@ -9395,6 +9773,9 @@ definitions:
       version:
         type: string
         example: "1.2.3"
+        maxLength: 180
+      path:
+        type: string
       started_at:
         type: string
         format: date-time
@@ -9430,16 +9811,18 @@ definitions:
         example: 1000
       code_stored:
         type: boolean
+        default: true
         example: true
       upload_removed:
         type: boolean
+        default: false
         example: false
       source_type:
         type: string
         example: "upload"
-      full_code_compared:
-        type: boolean
-        example: false
+        enum:
+          - upload
+          - local_directory
       php:
         $ref: '#/definitions/Application.Scan.Php'
       java:
@@ -9457,6 +9840,7 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 255
       created_by:
         type: object
         properties:
@@ -9473,6 +9857,7 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 180
       profile:
         type: object
         properties:
@@ -9482,6 +9867,7 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 180
           application:
             type: object
             properties:
@@ -9491,6 +9877,7 @@ definitions:
                 example: 1
               name:
                 type: string
+                maxLength: 180
       issue_types:
         type: array
         items:
@@ -9498,7 +9885,7 @@ definitions:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
               example: 1
       parent:
         type: object
@@ -9509,15 +9896,107 @@ definitions:
             example: 1
           version:
             type: string
+            maxLength: 180
       severity_distributions:
         type: object
-        additionalProperties:
-          type: integer
-          format: int64
+        properties:
+          client_vulnerability:
+            type: object
+            properties:
+              low:
+                type: integer
+                format: int32
+              medium:
+                type: integer
+                format: int32
+              high:
+                type: integer
+                format: int32
+              critical:
+                type: integer
+                format: int32
+          server_vulnerability:
+            type: object
+            properties:
+              low:
+                type: integer
+                format: int32
+              medium:
+                type: integer
+                format: int32
+              high:
+                type: integer
+                format: int32
+              critical:
+                type: integer
+                format: int32
+          code_quality:
+            type: object
+            properties:
+              low:
+                type: integer
+                format: int32
+              medium:
+                type: integer
+                format: int32
+              high:
+                type: integer
+                format: int32
+              critical:
+                type: integer
+                format: int32
+          misconfiguration:
+            type: object
+            properties:
+              low:
+                type: integer
+                format: int32
+              medium:
+                type: integer
+                format: int32
+              high:
+                type: integer
+                format: int32
+              critical:
+                type: integer
+                format: int32
+          new:
+            type: object
+            properties:
+              low:
+                type: integer
+                format: int32
+              medium:
+                type: integer
+                format: int32
+              high:
+                type: integer
+                format: int32
+              critical:
+                type: integer
+                format: int32
+          total:
+            type: object
+            properties:
+              low:
+                type: integer
+                format: int32
+              medium:
+                type: integer
+                format: int32
+              high:
+                type: integer
+                format: int32
+              critical:
+                type: integer
+                format: int32
       analysis_depth:
         type: integer
         format: int32
+        default: 5
         example: 5
+        minimum: 1
+        maximum: 5
       tags:
         type: array
         items:
@@ -9528,11 +10007,7 @@ definitions:
               format: int64
             name:
               type: string
-      file_extensions:
-        type: array
-        items:
-          type: string
-          example: "php"
+              maxLength: 255
       max_issues_per_type:
         type: integer
         format: int32
@@ -9540,12 +10015,7 @@ definitions:
       libraries:
         type: array
         items:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-              example: 1
+          $ref: '#/definitions/Application.Scan.Library'
       languages:
         type: array
         items:
@@ -9560,6 +10030,7 @@ definitions:
       source:
         type: string
         example: "bamboo"
+        maxLength: 100
 
   Application.Scan.Php:
     type: object
@@ -9570,28 +10041,64 @@ definitions:
         example: 1
       major_version:
         type: string
+        default: 5
         example: 5
+        maxLength: 32
       minor_version:
         type: string
+        default: 6
         example: 4
+        maxLength: 32
       release_version:
         type: string
+        default: "*"
         example: 22
+        maxLength: 32
       magic_quotes_gpc:
         type: boolean
+        default: false
         example: false
       register_globals:
         type: boolean
+        default: false
         example: false
       allow_url_fopen:
         type: boolean
+        default: true
+        example: true
+      framework_hinting:
+        type: boolean
+        default: true
         example: true
       allow_url_include:
         type: boolean
+        default: false
         example: false
       filter_default:
         type: string
+        default: unsafe_raw
         example: "unsafe_raw"
+        enum:
+          - unsafe_raw
+          - magic_quotes
+          - special_chars
+      setting:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+      second_orders:
+        type: array
+        items:
+          type: string
+          enum:
+            - FILE
+            - SQL
+            - SESSION
+            - TEMPLATE
+            - POP
+          default: []
 
   Application.Scan.Java:
     type: object
@@ -9602,16 +10109,29 @@ definitions:
         example: 1
       major_version:
         type: string
+        default: 8
         example: 8
+        maxLength: 32
       minor_version:
         type: string
+        default: "*"
         example: 0
+        maxLength: 32
       release_version:
         type: string
+        default: "*"
         example: 0
-      filter_default:
+        maxLength: 32
+      implementation:
         type: string
-        example: "openjdk"
+        default: ""
+        maxLength: 255
+      setting:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
 
   Application.Scan.Library:
     type: object
@@ -9623,12 +10143,21 @@ definitions:
       name:
         type: string
         example: "symfony"
+        maxLength: 180
       version:
         type: string
         example: "2.6.3"
+        maxLength: 80
       type:
         type: string
         example: "cms"
+        maxLength: 50
+      implementation:
+        type: string
+        maxLength: 120
+      group:
+        type: string
+        maxLength: 120
 
   Application.Scan.Class:
     type: object
@@ -9772,6 +10301,12 @@ definitions:
             example: 1
       taint:
         $ref: '#/definitions/Application.Scan.Taint'
+      type:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
 
   Application.Scan.Entrypoint:
     type: object
@@ -9815,6 +10350,12 @@ definitions:
             type: integer
             format: int64
             example: 1
+      type:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
 
   Application.Scan.File:
     type: object
@@ -9888,6 +10429,7 @@ definitions:
       name:
         type: string
         example: "Do"
+        maxLength: 255
       file:
         type: object
         properties:
@@ -9916,7 +10458,7 @@ definitions:
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
       taint:
         $ref: '#/definitions/Application.Scan.Taint'
@@ -9951,9 +10493,11 @@ definitions:
       name:
         type: string
         example: "Do"
+        maxLength: 255
       parameter:
         type: string
         example: "odd"
+        maxLength: 255
       file:
         type: object
         properties:
@@ -9982,10 +10526,68 @@ definitions:
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
       taint:
         $ref: '#/definitions/Application.Scan.Taint'
+
+  Application.Scan.Pitfall:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      line:
+        type: integer
+        format: int32
+        example: 10
+      start_line:
+        type: integer
+        format: int32
+        example: 1
+      end_line:
+        type: integer
+        format: int32
+        example: 15
+      start_column:
+        type: integer
+        format: int32
+        example: 7
+      end_column:
+        type: integer
+        format: int32
+        example: 10
+      file:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          path:
+            type: string
+      function:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+      class:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+      type:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
+            example: 1
 
   Application.Scan.Process:
     type: object
@@ -9996,7 +10598,7 @@ definitions:
         example: 1
       pid:
         type: integer
-        format: int64
+        format: int32
         example: 10
       started_at:
         type: string
@@ -10008,6 +10610,7 @@ definitions:
         example: "2017-02-16T11:52:26+0100"
       finished:
         type: boolean
+        default: false
         example: true
       memory:
         type: integer
@@ -10015,6 +10618,8 @@ definitions:
       phase:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 11
         example: 0
         description: |
           | Value  | Description                  |
@@ -10032,17 +10637,28 @@ definitions:
       percent:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 100
         example: 100
       weight:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 100
         example: 50
       version:
         type: string
         example: "2.0.0"
+        maxLength: 50
       name:
         type: string
         example: "php-engine"
+        maxLength: 50
+        enum:
+          - php-engine
+          - java-engine
+          - php-preparser
+          - php-patchgen
 
   Application.Scan.Export.Pdf.Queue:
     type: object
@@ -10072,7 +10688,7 @@ definitions:
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
       depth:
         type: integer
@@ -10083,7 +10699,7 @@ definitions:
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
       source:
         type: object
@@ -10094,8 +10710,10 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 255
           parameter:
             type: string
+            maxLength: 255
           start_line:
             type: integer
             format: int32
@@ -10129,12 +10747,14 @@ definitions:
                 type: integer
                 format: int64
                 example: 1
+              path:
+                type: string
           type:
             type: object
             properties:
               id:
                 type: integer
-                format: int64
+                format: int32
                 example: 1
           taint:
             $ref: '#/definitions/Application.Scan.Taint'
@@ -10147,6 +10767,7 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 255
           start_line:
             type: integer
             format: int32
@@ -10180,12 +10801,14 @@ definitions:
                 type: integer
                 format: int64
                 example: 1
+              path:
+                type: string
           type:
             type: object
             properties:
               id:
                 type: integer
-                format: int64
+                format: int32
                 example: 1
           taint:
             $ref: '#/definitions/Application.Scan.Taint'
@@ -10229,6 +10852,8 @@ definitions:
                 type: integer
                 format: int64
                 example: 1
+              path:
+                type: string
           taint:
             $ref: '#/definitions/Application.Scan.Taint'
       entrypoint:
@@ -10265,10 +10890,68 @@ definitions:
                 type: integer
                 format: int64
                 example: 1
+              path:
+                type: string
+      pitfalls:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 1
+            start_line:
+              type: integer
+              format: int32
+            end_line:
+              type: integer
+              format: int32
+            start_column:
+              type: integer
+              format: int32
+            end_column:
+              type: integer
+              format: int32
+            class:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  example: 1
+            function:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  example: 1
+            file:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  example: 1
+                path:
+                  type: string
+            type:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int32
+                  example: 1
       readable:
         type: object
-        additionalProperties:
-          type: string
+        properties:
+          source:
+            type: string
+          concat:
+            type: string
+          sink:
+            type: string
       parent:
         type: object
         properties:
@@ -10288,13 +10971,15 @@ definitions:
             properties:
               id:
                 type: integer
-                format: int64
+                format: int32
                 example: 1
       reviewed:
         type: boolean
+        default: false
         example: true
       negatively_reviewed:
         type: boolean
+        default: false
         example: false
       effort:
         type: integer
@@ -10302,15 +10987,19 @@ definitions:
         example: 30
       complete:
         type: boolean
+        default: false
         example: true
       uuid:
         type: string
+        maxLength: 32
       cve:
         type: string
         example: "CVE-2017-100025"
+        maxLength: 50
       hash:
         type: string
         example: "d3b07384d113edec49eaa6238ad5ff00"
+        maxLength: 32
       directly_called:
         type: boolean
         example: true
@@ -10347,9 +11036,11 @@ definitions:
             example: 1
           uuid:
             type: string
+            maxLength: 32
       source:
         type: string
         example: "jira"
+        maxLength: 60
 
   Application.Scan.Issue.Context:
     type: object
@@ -10368,11 +11059,16 @@ definitions:
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       type:
         type: string
         example: "TEXT"
+        enum:
+          - TEXT
+          - INJECTION
+          - INJECTION_SAFE
+          - INJECTION_UNKNOWN
       content:
         type: string
         example: "foo"
@@ -10393,7 +11089,7 @@ definitions:
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
       created_by:
         type: object
@@ -10411,9 +11107,11 @@ definitions:
             example: 1
           uuid:
             type: string
+            maxLength: 32
       source:
         type: string
         example: "jira"
+        maxLength: 60
 
   Application.Scan.Issue.Summary:
     type: object
@@ -10450,11 +11148,11 @@ definitions:
             example: 1
           name:
             type: string
-          startLine:
+          start_line:
             type: integer
             format: int32
             example: 1
-          endLine:
+          end_line:
             type: integer
             format: int32
             example: 10
@@ -10467,11 +11165,11 @@ definitions:
             example: 1
           name:
             type: string
-          startLine:
+          start_line:
             type: integer
             format: int32
             example: 1
-          endLine:
+          end_line:
             type: integer
             format: int32
             example: 10
@@ -10484,29 +11182,40 @@ definitions:
         format: int64
         example: 1
       type:
+        type: object
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
+          name:
+            type: string
+            maxLength: 255
       modifications:
         type: array
         items:
           $ref: '#/definitions/Application.Scan.Issue.Patch.Modification'
+      confidence:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
 
   Application.Scan.Issue.Patch.Type:
     type: object
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       name:
         type: string
         example: "Foo"
+        maxLength: 255
       tag:
         type: string
         example: "BAR"
+        maxLength: 50
 
   Application.Scan.Issue.Patch.Modification:
     type: object
@@ -10539,6 +11248,8 @@ definitions:
         example: "<span>//</span> Code"
       original_content:
         type: string
+      highlighted_original_content:
+        type: string
       file:
         type: object
         properties:
@@ -10566,13 +11277,21 @@ definitions:
         type: string
         format: date-time
         example: "2017-02-16T11:52:26+0100"
+      languages:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
 
   Application.Scan.Issue.Type.Patch:
     type: object
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       description:
         type: string
@@ -10592,36 +11311,42 @@ definitions:
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
-          name:
-            type: string
       parent:
-        type: object
-        properties:
-          id:
-            type: integer
-            format: int64
-            example: 1
+        $ref: '#/definitions/Application.Scan.Issue.Type.Patch'
+
+  Application.Profile.Extension:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      extension:
+        type: string
+        maxLength: 180
 
   Application.Scan.Issue.Type:
     type: object
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       tag:
         type: string
         example: "XSS"
+        maxLength: 50
       description:
         type: string
       name:
         type: string
         example: "Cross-Site Scripting"
+        maxLength: 150
       markup:
         type: string
         example: "HTML"
+        maxLength: 50
       severity:
         type: integer
         format: int32
@@ -10632,33 +11357,43 @@ definitions:
         example: 15
       second_order:
         type: boolean
+        default: true
         example: true
       cwe:
         type: string
         example: "79"
+        maxLength: 50
       owasp2010:
         type: string
         example: "A3"
+        maxLength: 50
       owasp2013:
         type: string
         example: "A3"
+        maxLength: 50
       owasp2017:
         type: string
         example: "A3"
+        maxLength: 50
       sans:
         type: string
         example: "4"
+        maxLength: 50
       pcidss:
         type: string
         example: "6.5.1"
+        maxLength: 50
       asvs301:
         type: string
         example: "11.8"
+        maxLength: 50
       asvs401:
         type: string
         example: "11.9"
+        maxLength: 50
       category:
         type: string
+        maxLength: 50
         example: "client_vulnerability"
         enum:
           - client_vulnerability
@@ -10670,14 +11405,10 @@ definitions:
         items:
           $ref: '#/definitions/Application.Scan.Issue.Type.Resource'
       parent:
-        type: object
-        properties:
-          id:
-            type: integer
-            format: int64
-            example: 1
+        $ref: '#/definitions/Application.Scan.Issue.Type'
       inactive:
         type: boolean
+        default: false
         example: false
       languages:
         type: array
@@ -10703,45 +11434,72 @@ definitions:
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       tag:
         type: string
         example: "DIRECT"
+        maxLength: 50
       name:
         type: string
         example: "Direct"
+        maxLength: 50
 
   Application.Scan.Property.Type:
     type: object
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       tag:
         type: string
         example: "PROPERTY"
+        maxLength: 50
       name:
         type: string
         example: "property"
+        maxLength: 50
+
 
   Application.Scan.Issue.Review.Type:
     type: object
     properties:
       id:
         type: integer
-        format: int64
+        format: int32
         example: 1
       tag:
         type: string
         example: "NOT_REVIEWED"
+        maxLength: 50
       name:
         type: string
         example: "Not reviewed"
+        maxLength: 50
       negative:
         type: boolean
+        default: false
         example: false
+
+  Application.Scan.Pitfall.Type:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      name:
+        type: string
+        example: "Foo"
+        maxLength: 255
+      tag:
+        type: string
+        example: "BAR"
+        maxLength: 50
+      description:
+        type: string
+        example: "This is a pitfall."
 
   Application.Profile:
     type: object
@@ -10753,6 +11511,7 @@ definitions:
       name:
         type: string
         example: "DVWA"
+        maxLength: 180
       sources:
         type: array
         items:
@@ -10798,7 +11557,25 @@ definitions:
               type: integer
               format: int64
               example: 1
-      ignores:
+      ignored_codes:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 1
+      ignored_locations:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 1
+      extensions:
         type: array
         items:
           type: object
@@ -10811,6 +11588,7 @@ definitions:
         $ref: '#/definitions/Application.Profile.Setting'
       default:
         type: boolean
+        default: false
         example: false
       application:
         type: object
@@ -10821,6 +11599,16 @@ definitions:
             example: 1
           name:
             type: string
+            maxLength: 180
+      created_at:
+        type: string
+        format: date-time
+      created_by:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
       language:
         type: object
         properties:
@@ -10843,24 +11631,31 @@ definitions:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
               example: 1
       code_stored:
         type: boolean
+        default: true
         example: true
       upload_removed:
         type: boolean
+        default: true
         example: false
       full_code_compared:
         type: boolean
+        default: false
         example: false
       history_inherited:
         type: boolean
+        default: true
         example: true
       analysis_depth:
         type: integer
         format: int32
+        default: 5
         example: 5
+        minimum: 1
+        maximum: 5
       max_issues_per_type:
         type: integer
         format: int32
@@ -10879,10 +11674,15 @@ definitions:
         example: 1
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       exclude:
         type: string
+        enum:
+          - CALL
+          - RETURN
 
   Application.Profile.IgnoredLocation:
     type: object
@@ -10891,12 +11691,22 @@ definitions:
         type: integer
         format: int64
         example: 1
-      patch:
+      path:
         type: string
       match:
         type: string
+        enum:
+          - PARTIAL
+          - START
+          - REGEX
       exclude:
         type: string
+        enum:
+          - SECURITY
+          - QUALITY
+          - MISCONFIGURATION
+          - PATCH
+          - ANALYSIS
 
   Application.Profile.Sanitizer:
     type: object
@@ -10907,18 +11717,22 @@ definitions:
         example: 1
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       characters:
         type: string
+        maxLength: 180
       issue_type:
         type: object
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
 
   Application.Profile.Sink:
@@ -10930,16 +11744,19 @@ definitions:
         example: 1
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: object
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
 
   Application.Profile.Source:
@@ -10951,14 +11768,19 @@ definitions:
         example: 1
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       property:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: string
+        maxLength: 180
 
   Application.Profile.Controller:
     type: object
@@ -10969,12 +11791,16 @@ definitions:
         example: 1
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: string
+        maxLength: 180
 
   Application.Profile.Validator:
     type: object
@@ -10985,18 +11811,22 @@ definitions:
         example: 1
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       characters:
         type: string
+        maxLength: 180
       issue_type:
         type: object
         properties:
           id:
             type: integer
-            format: int64
+            format: int32
             example: 1
 
   Application.Scan.Stats:
@@ -11105,41 +11935,73 @@ definitions:
         example: 1
       enabled:
         type: boolean
+        default: false
         example: false
       search_dn:
         type: string
+        default: ""
         example: "cn=reader,dc=example,dc=com"
+        maxLength: 250
       search_query:
         type: string
+        default: ""
         example: "({emailKey}={email})"
+        maxLength: 250
       base_dn:
         type: string
+        default: ""
         example: "dc=example,dc=com"
+        maxLength: 250
       email_key:
         type: string
+        default: ""
         example: "mail"
+        maxLength: 250
+      identifier_key:
+        type: string
+        default: ""
+        maxLength: 250
       user_dn:
         type: string
+        default: ""
         example: "mail={email},dc=example,dc=com"
+        maxLength: 250
       last_sync_at:
         type: string
         format: date-time
         example: "2019-02-16T11:52:26+0100"
       host:
         type: string
+        default: ""
         example: "ldap.example.com"
+        maxLength: 250
       port:
         type: integer
+        format: int32
+        default: 389
         example: 389
       encryption:
         type: string
+        default: none
         example: "none"
+        enum:
+          - ssl
+          - none
+          - tls
       protocol_version:
         type: integer
+        format: int32
+        default: 3
         example: 3
       expired_accounts:
         type: string
+        default: disable
         example: "remove"
+        enum:
+          - remove
+          - disable
+      ca_certificate:
+        type: string
 
   Post.Sub.License:
     type: object
@@ -11160,6 +12022,7 @@ definitions:
         type: string
       context:
         type: string
+        default: ""
       level:
         type: integer
         format: int32
@@ -11191,12 +12054,16 @@ definitions:
         type: array
         items:
           type: integer
-          format: int64
+          format: int32
           example: 5
       disabled:
         type: boolean
         example: true
         default: false
+      concurrentScans:
+        type: integer
+        format: int32
+        example: 5
     required:
       - name
 
@@ -11215,31 +12082,35 @@ definitions:
         type: array
         items:
           type: integer
-          format: int64
+          format: int32
           example: 5
       disabled:
         type: boolean
         example: true
         default: false
+      concurrentScans:
+        type: integer
+        format: int32
+        example: 5
 
   Post.Sub.Quota:
     type: object
     properties:
       currentApplication:
         type: integer
-        format: int64
-        example: 1
+        format: int32
         default: 0
+        example: 1
       currentScan:
         type: integer
-        format: int64
-        example: 2
+        format: int32
         default: 0
+        example: 2
       currentUser:
         type: integer
-        format: int64
-        example: 3
+        format: int32
         default: 0
+        example: 3
       maxApplications:
         type: integer
         format: int32
@@ -11254,9 +12125,8 @@ definitions:
         example: 5
       maxLoc:
         type: integer
-        format: int64
+        format: int32
         example: 1000000
-        default: 1000
       validFrom:
         type: string
         format: date-time
@@ -11268,6 +12138,8 @@ definitions:
       allowedMisses:
         type: integer
         format: int32
+        minimum: 1
+        maximum: 100
         example: 20
       public:
         type: boolean
@@ -11289,30 +12161,38 @@ definitions:
           example: 1
       updateOnly:
         type: boolean
+        default: false
         example: true
       flexibleApplications:
         type: boolean
+        default: false
         example: true
     required:
       - validFrom
       - validUntil
       - organization
       - languages
+      - currentApplication
+      - currentScan
+      - currentUser
 
   Patch.Sub.Quota:
     type: object
     properties:
       currentApplication:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 1
       currentScan:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 2
       currentUser:
         type: integer
-        format: int64
+        format: int32
+        default: 0
         example: 3
       maxApplications:
         type: integer
@@ -11328,7 +12208,7 @@ definitions:
         example: 5
       maxLoc:
         type: integer
-        format: int64
+        format: int32
         example: 1000000
       validFrom:
         type: string
@@ -11341,13 +12221,20 @@ definitions:
       allowedMisses:
         type: integer
         format: int32
+        minimum: 1
+        maximum: 100
         example: 20
+      public:
+        type: boolean
+        example: false
+        default: false
       organization:
         type: integer
         format: int64
         example: 1
       notify:
         type: boolean
+        default: false
         example: true
       languages:
         type: array
@@ -11357,9 +12244,11 @@ definitions:
           example: 1
       updateOnly:
         type: boolean
+        default: false
         example: true
       flexibleApplications:
         type: boolean
+        default: false
         example: true
 
   Post.Sub.Quota.Acl:
@@ -11375,28 +12264,28 @@ definitions:
         example: 1
       view:
         type: boolean
-        example: false
         default: false
+        example: false
       delete:
         type: boolean
-        example: false
         default: false
+        example: false
       create:
         type: boolean
-        example: false
         default: false
+        example: false
       edit:
         type: boolean
-        example: false
         default: false
+        example: false
       use:
         type: boolean
-        example: false
         default: false
+        example: false
       manage:
         type: boolean
-        example: false
         default: false
+        example: false
 
   Patch.Sub.Quota.Acl:
     type: object
@@ -11411,21 +12300,27 @@ definitions:
         example: 1
       view:
         type: boolean
+        default: false
         example: 1
       delete:
         type: boolean
+        default: false
         example: 1
       create:
         type: boolean
+        default: false
         example: 1
       edit:
         type: boolean
+        default: false
         example: 1
       use:
         type: boolean
+        default: false
         example: 1
       manage:
         type: boolean
+        default: false
         example: 1
 
   Post.Sub.Callback:
@@ -11465,12 +12360,16 @@ definitions:
           type: integer
           format: int64
           example: 1
+      internal:
+        type: boolean
+        default: false
       organization:
         type: integer
         format: int64
         example: 1
       observeOrganization:
         type: boolean
+        default: false
     required:
       - url
 
@@ -11485,7 +12384,6 @@ definitions:
         items:
           type: string
           enum:
-            - DELETE_ORGANIZATION
             - UPDATE_USER
             - DELETE_USER
             - CREATE_SCAN
@@ -11493,6 +12391,7 @@ definitions:
             - FINISH_SCAN
             - CREATE_COMMENT
             - CREATE_REVIEW
+            - DELETE_COMMENT
       applications:
         type: array
         items:
@@ -11511,12 +12410,16 @@ definitions:
           type: integer
           format: int64
           example: 1
+      internal:
+        type: boolean
+        default: false
       organization:
         type: integer
         format: int64
         example: 1
       observeOrganization:
         type: boolean
+        default: false
 
   Post.Sub.Team:
     type: object
@@ -11567,13 +12470,16 @@ definitions:
         type: string
         format: email
         example: "none@example.com"
+        minLength: 3
         maxLength: 180
       firstname:
         type: string
+        default: ""
         example: "Hans"
         maxLength: 180
       lastname:
         type: string
+        default: ""
         example: "Peter"
         maxLength: 180
       roles:
@@ -11584,7 +12490,6 @@ definitions:
       enabled:
         type: boolean
         example: true
-        default: false
       organization:
         type: integer
         format: int64
@@ -11598,9 +12503,13 @@ definitions:
         items:
           type: string
           example: "127.0.0.*"
+      root:
+        type: boolean
+        default: false
+        example: true
     required:
-      - plainPassword
       - email
+      - organization
 
   Patch.Sub.User:
     type: object
@@ -11608,17 +12517,21 @@ definitions:
       plainPassword:
         type: string
         example: "you wish"
+        maxLength: 72
       email:
         type: string
         format: email
         example: "none@example.com"
+        minLength: 3
         maxLength: 180
       firstname:
         type: string
+        default: ""
         example: "Hans"
         maxLength: 180
       lastname:
         type: string
+        default: ""
         example: "Peter"
         maxLength: 180
       roles:
@@ -11629,12 +12542,9 @@ definitions:
       enabled:
         type: boolean
         example: true
-      organization:
-        type: integer
-        format: int64
-        example: 1
       root:
         type: boolean
+        default: false
         example: true
       whitelistedIps:
         type: array
@@ -11647,6 +12557,7 @@ definitions:
     properties:
       plainPassword:
         type: string
+        maxLength: 72
         example: "you wish"
     required:
       - plainPassword
@@ -11657,6 +12568,7 @@ definitions:
       plainPassword:
         type: string
         example: "you wish"
+        maxLength: 72
     required:
       - plainPassword
 
@@ -11676,15 +12588,19 @@ definitions:
     properties:
       firstname:
         type: string
+        default: ""
         example: "Hans"
         maxLength: 180
       lastname:
         type: string
+        default: ""
         example: "Peter"
         maxLength: 180
       email:
         type: string
+        format: email
         example: "none@example.com"
+        minLength: 3
         maxLength: 180
       organization:
         type: integer
@@ -11695,6 +12611,10 @@ definitions:
         items:
           type: string
           example: "ROLE_CHIEF"
+      root:
+        type: boolean
+        default: false
+        example: true
     required:
       - email
       - organization
@@ -11746,28 +12666,28 @@ definitions:
         example: 1
       view:
         type: boolean
-        example: false
         default: false
+        example: false
       delete:
         type: boolean
-        example: false
         default: false
+        example: false
       create:
         type: boolean
-        example: false
         default: false
+        example: false
       edit:
         type: boolean
-        example: false
         default: false
+        example: false
       scan:
         type: boolean
-        example: false
         default: false
+        example: false
       manage:
         type: boolean
-        example: false
         default: false
+        example: false
 
   Patch.Sub.Application.Acl:
     type: object
@@ -11782,21 +12702,27 @@ definitions:
         example: 1
       view:
         type: boolean
+        default: false
         example: 1
       delete:
         type: boolean
+        default: false
         example: 1
       create:
         type: boolean
+        default: false
         example: 1
       edit:
         type: boolean
+        default: false
         example: 1
       scan:
         type: boolean
+        default: false
         example: 1
       manage:
         type: boolean
+        default: false
         example: 1
 
   Post.Sub.Application.Scan:
@@ -11817,7 +12743,11 @@ definitions:
       uploadRemoved:
         type: boolean
         example: false
-        default: true
+        default: false
+      fullCodeCompared:
+        type: boolean
+        example: false
+        default: false
       historyInherited:
         type: boolean
         example: true
@@ -11826,7 +12756,7 @@ definitions:
         type: array
         items:
           type: integer
-          format: int64
+          format: int32
           example: 10
       version:
         type: string
@@ -11855,26 +12785,13 @@ definitions:
         type: string
       source:
         type: string
+        maxLength: 100
     required:
       - version
 
   Patch.Sub.Application.Scan:
     type: object
     properties:
-      phase:
-        type: integer
-        format: int32
-        example: 0
-      percent:
-        type: integer
-        format: int32
-        example: 100
-        minimum: 0
-        maximum: 100
-      loc:
-        type: integer
-        format: int64
-        example: 500
       version:
         type: string
         example: "1.2.3"
@@ -11912,6 +12829,10 @@ definitions:
         type: boolean
         example: true
         default: true
+      frameworkHinting:
+        type: boolean
+        example: true
+        default: true
       allowUrlInclude:
         type: boolean
         example: false
@@ -11920,7 +12841,31 @@ definitions:
         type: string
         example: "unsafe_raw"
         default: "unsafe_raw"
-        maxLength: 64
+        enum:
+          - unsafe_raw
+          - magic_quotes
+          - special_chars
+      secondOrders:
+        type: array
+        items:
+          type: string
+          enum:
+            - FILE
+            - SQL
+            - SESSION
+            - TEMPLATE
+            - POP
+          default: []
+    required:
+      - majorVersion
+      - minorVersion
+      - releaseVersion
+      - magicQuotesGpc
+      - registerGlobals
+      - allowUrlFopen
+      - allowUrlInclude
+      - filterDefault
+      - frameworkHinting
 
   Post.Sub.Application.Scan.Java:
     type: object
@@ -11942,7 +12887,13 @@ definitions:
         maxLength: 32
       implementation:
         type: string
+        default: ""
         maxLength: 255
+    required:
+      - majorVersion
+      - minorVersion
+      - releaseVersion
+      - implementation
 
   Post.Sub.Application.Scan.Library:
     type: object
@@ -12066,9 +13017,13 @@ definitions:
     properties:
       pid:
         type: integer
-        format: int64
+        format: int32
         example: 10
       finishedAt:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
+      startedAt:
         type: string
         format: date-time
         example: "2017-02-16T11:52:26+0100"
@@ -12080,16 +13035,25 @@ definitions:
         type: string
         example: "php-engine"
         maxLength: 50
+        enum:
+          - php-engine
+          - java-engine
+          - php-preparser
+          - php-patchgen
       memory:
         type: integer
         format: int64
       phase:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 11
         example: 0
       percent:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 100
         example: 100
       finished:
         type: boolean
@@ -12097,6 +13061,9 @@ definitions:
         default: false
       weight:
         type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
         example: 50
 
   Patch.Sub.Application.Scan.Process:
@@ -12104,9 +13071,13 @@ definitions:
     properties:
       pid:
         type: integer
-        format: int64
+        format: int32
         example: 10
       finishedAt:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
+      startedAt:
         type: string
         format: date-time
         example: "2017-02-16T11:52:26+0100"
@@ -12118,22 +13089,35 @@ definitions:
         type: string
         example: "php-engine"
         maxLength: 50
+        enum:
+          - php-engine
+          - java-engine
+          - php-preparser
+          - php-patchgen
       memory:
         type: integer
         format: int64
       phase:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 11
         example: 0
       percent:
         type: integer
         format: int32
+        minimum: 0
+        maximum: 100
         example: 100
       finished:
         type: boolean
+        default: false
         example: true
       weight:
         type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
         example: 50
 
   Post.Sub.Application.Scan.Issue:
@@ -12141,11 +13125,11 @@ definitions:
     properties:
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
       origin:
         type: integer
-        format: int64
+        format: int32
         example: 1
       depth:
         type: integer
@@ -12233,7 +13217,7 @@ definitions:
         example: 1
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
 
   Post.Sub.Application.Scan.Issue.Sink:
@@ -12261,6 +13245,7 @@ definitions:
         example: 10
       name:
         type: string
+        maxLength: 255
         example: "exec"
       file:
         type: integer
@@ -12276,7 +13261,7 @@ definitions:
         example: 1
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
 
   Post.Sub.Application.Scan.Issue.Concat:
@@ -12343,6 +13328,48 @@ definitions:
         format: int64
         example: 1
 
+  Post.Sub.Application.Scan.Issue.Pitfalls:
+    type: array
+    items:
+      type: object
+      properties:
+        line:
+          type: integer
+          format: int32
+          example: 1
+        startLine:
+          type: integer
+          format: int32
+          example: 1
+        endLine:
+          type: integer
+          format: int32
+          example: 5
+        startColumn:
+          type: integer
+          format: int32
+          example: 7
+        endColumn:
+          type: integer
+          format: int32
+          example: 10
+        file:
+          type: integer
+          format: int64
+          example: 1
+        function:
+          type: integer
+          format: int64
+          example: 1
+        class:
+          type: integer
+          format: int64
+          example: 1
+        type:
+          type: integer
+          format: int32
+          example: 1
+
   Post.Sub.Application.Scan.Issue.Contexts:
     type: array
     items:
@@ -12385,6 +13412,8 @@ definitions:
           type: integer
           format: int64
           example: 1
+      required:
+        - content
 
   Post.Sub.Application.Scan.Issue.Comment:
     type: object
@@ -12394,6 +13423,7 @@ definitions:
         example: "Ok"
       source:
         type: string
+        maxLength: 60
         example: "jira"
     required:
       - comment
@@ -12403,10 +13433,11 @@ definitions:
     properties:
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
       source:
         type: string
+        maxLength: 60
         example: "jira"
     required:
       - type
@@ -12416,8 +13447,13 @@ definitions:
     properties:
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
+      confidence:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
     required:
       - type
 
@@ -12460,6 +13496,7 @@ definitions:
       name:
         type: string
         example: "DVWA"
+        maxLength: 180
       default:
         type: boolean
         example: false
@@ -12478,23 +13515,42 @@ definitions:
       name:
         type: string
         example: "DVWA"
+        maxLength: 180
       default:
         type: boolean
+        default: false
         example: false
       language:
         type: integer
         format: int64
         example: 1
 
+  Post.Sub.Application.Profile.Extension:
+    type: object
+    properties:
+      extension:
+        type: string
+        maxLength: 180
+    required:
+      - extension
+
+  Patch.Sub.Application.Profile.Extension:
+    type: object
+    properties:
+      extension:
+        type: string
+        maxLength: 180
+
   Post.Sub.Application.Profile.Clone:
     type: object
     properties:
       name:
         type: string
+        maxLength: 180
         example: "Cloned Profile"
       targetApplication:
         type: integer
-        format: int64
+        format: int32
         example: 10
 
   Put.Sub.Application.Profile.Setting:
@@ -12504,7 +13560,7 @@ definitions:
         type: array
         items:
           type: integer
-          format: int64
+          format: int32
           example: 10
       codeStored:
         type: boolean
@@ -12539,8 +13595,10 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       exclude:
         type: string
         enum:
@@ -12554,10 +13612,15 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       exclude:
         type: string
+        enum:
+          - CALL
+          - RETURN
 
   Post.Sub.Application.Profile.IgnoredLocation:
     type: object
@@ -12590,23 +13653,37 @@ definitions:
         type: string
       match:
         type: string
+        enum:
+          - PARTIAL
+          - START
+          - REGEX
       exclude:
         type: string
+        enum:
+          - SECURITY
+          - QUALITY
+          - MISCONFIGURATION
+          - PATCH
+          - ANALYSIS
 
   Post.Sub.Application.Profile.Sanitizer:
     type: object
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       characters:
         type: string
+        maxLength: 180
       issueType:
         type: integer
-        format: int64
+        format: int32
         example: 10
 
   Patch.Sub.Application.Profile.Sanitizer:
@@ -12614,15 +13691,19 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       characters:
         type: string
+        maxLength: 180
       issueType:
         type: integer
-        format: int64
+        format: int32
         example: 10
 
   Post.Sub.Application.Profile.Sink:
@@ -12630,13 +13711,16 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
     required:
       - type
@@ -12646,13 +13730,16 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: integer
-        format: int64
+        format: int32
         example: 1
 
   Post.Sub.Application.Profile.Source:
@@ -12660,14 +13747,19 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       property:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: string
+        maxLength: 180
     required:
       - type
 
@@ -12676,26 +13768,35 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       property:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: string
+        maxLength: 180
 
   Post.Sub.Application.Profile.Controller:
     type: object
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: string
+        maxLength: 180
     required:
       - type
 
@@ -12704,27 +13805,35 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       type:
         type: string
+        maxLength: 180
 
   Post.Sub.Application.Profile.Validator:
     type: object
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       characters:
         type: string
+        maxLength: 180
       issueType:
         type: integer
-        format: int64
+        format: int32
         example: 10
 
   Patch.Sub.Application.Profile.Validator:
@@ -12732,15 +13841,19 @@ definitions:
     properties:
       class:
         type: string
+        maxLength: 180
       method:
         type: string
+        maxLength: 180
       parameter:
         type: string
+        maxLength: 180
       characters:
         type: string
+        maxLength: 180
       issueType:
         type: integer
-        format: int64
+        format: int32
         example: 10
 
   Post.Sub.OAuth2.Client:
@@ -12784,47 +13897,56 @@ definitions:
         default: false
       searchDn:
         type: string
+        default: ""
         example: "cn=reader,dc=example,dc=com"
         maxLength: 250
       searchPassword:
         type: string
+        default: ""
         maxLength: 250
       searchQuery:
         type: string
+        default: ""
         example: "({emailKey}={email})"
         maxLength: 250
       baseDn:
         type: string
+        default: ""
         example: "dc=example,dc=com"
         maxLength: 250
       emailKey:
         type: string
+        default: ""
         example: "mail"
         maxLength: 250
       userDn:
         type: string
+        default: ""
         example: "mail={email},dc=example,dc=com"
         maxLength: 250
       host:
         type: string
+        default: ""
         example: "ldap.example.com"
         maxLength: 250
       port:
         type: integer
-        example: 6655
         default: 389
+        format: int32
+        example: 6655
       encryption:
         type: string
-        example: tls
         default: none
+        example: tls
         enum:
           - none
           - ssl
           - tls
       protocolVersion:
         type: integer
-        example: 3
         default: 3
+        format: int32
+        example: 3
       expiredAccounts:
         type: string
         example: remove
@@ -12832,6 +13954,20 @@ definitions:
         enum:
           - remove
           - disable
+      caCertificate:
+        type: string
+      identifierKey:
+        type: string
+        default: ""
+        example: "cn"
+        maxLength: 250
+    required:
+      - searchDn
+      - searchQuery
+      - baseDn
+      - emailKey
+      - userDn
+      - host
 
 # SECURITY
 # ---------------------------------------------------------------------------

@@ -164,7 +164,7 @@ public final class ApiUtils {
     }
 
     @NotNull
-    public static Map<Long, Integer> getIssueTypeSeverities(@NotNull final Api api) throws ApiException {
+    public static Map<Integer, Integer> getIssueTypeSeverities(@NotNull final Api api) throws ApiException {
         return api.applications()
                        .scans()
                        .issues()
@@ -180,7 +180,7 @@ public final class ApiUtils {
                                AbstractMap.SimpleImmutableEntry::getValue));
     }
 
-    public static Map<Long, Type> getIssueTypeSeverities(@NotNull final Api api, String... selects) throws ApiException {
+    public static Map<Integer, Type> getIssueTypeSeverities(@NotNull final Api api, String... selects) throws ApiException {
         final Set<String> sendSelect = new HashSet<>(Arrays.asList(selects));
         sendSelect.add("id");
         return api.applications()
@@ -199,7 +199,7 @@ public final class ApiUtils {
     }
 
     @NotNull
-    public static Map<Long, String> getIssueTypeNames(@NotNull final Api api) throws ApiException {
+    public static Map<Integer, String> getIssueTypeNames(@NotNull final Api api) throws ApiException {
         return api.applications()
                        .scans()
                        .issues()
