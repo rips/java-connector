@@ -39,7 +39,7 @@ public class ApplicationHandler {
 					                    .getLanguages()
 					                    .stream()
 					                    .findFirst()
-					                    .map(IdHolder::getId)
+					                    .map(Application.Charged_quota.Language::getId)
 					                    .map(langId -> langMapping.getOrDefault(langId, "unknown"))
 					                    .orElse("unknown");
 					   return new UserApplications.Entry(app, lang);
