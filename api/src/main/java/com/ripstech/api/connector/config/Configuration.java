@@ -49,7 +49,7 @@ public class Configuration {
 	private static ObjectMapper getObjectMapperPost() {
 		return getObjectMapper().copy()
 				       .registerModule(new Jdk8Module().configureAbsentsAsNulls(false))
-				       .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+				       .setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 	}
 
 	private static ObjectMapper getObjectMapperPostWithoutRootName() {
