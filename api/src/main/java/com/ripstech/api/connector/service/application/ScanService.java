@@ -7,6 +7,7 @@ import com.ripstech.api.connector.service.template.DeletePostGetService;
 import com.ripstech.api.entity.receive.application.Scan;
 import com.ripstech.api.entity.receive.application.scan.Stats;
 import com.ripstech.api.entity.send.application.ScanSend;
+import com.ripstech.api.entity.send.application.scan.DigestSend;
 import com.ripstech.api.entity.send.application.scan.JavaSend;
 import com.ripstech.api.entity.send.application.scan.LibrarySend;
 import com.ripstech.api.entity.send.application.scan.PhpSend;
@@ -124,6 +125,7 @@ public class ScanService extends DeletePostGetService<Scan, ScanService.ScanSend
 
 	public static class ScanSendPatch {
 		private Optional<ScanSend.Patch> scan;
+		private Optional<DigestSend.Patch> digest;
 		private Optional<List<String>> tags;
 
 		public Optional<ScanSend.Patch> getScan() {
@@ -132,6 +134,15 @@ public class ScanService extends DeletePostGetService<Scan, ScanService.ScanSend
 
 		public ScanSendPatch setScan(ScanSend.Patch scan) {
 			this.scan = Optional.ofNullable(scan);
+			return this;
+		}
+
+		public Optional<DigestSend.Patch> getDigest() {
+			return digest;
+		}
+
+		public ScanSendPatch setDigest(DigestSend.Patch digest) {
+			this.digest = Optional.ofNullable(digest);
 			return this;
 		}
 
