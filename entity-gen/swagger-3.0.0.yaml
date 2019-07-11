@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "3"
+  version: "VERSION_PLACEHOLDER"
   title: "RIPS API"
   description: |
     RIPS is a static code analysis tool to automatically detect taint-style vulnerabilities in PHP and Java applications.
@@ -8800,7 +8800,6 @@ paths:
         200:
           description: Successful
           schema:
-            type: object
             $ref: '#/definitions/OAuth2.Client'
         400:
           description: Bad request
@@ -8823,7 +8822,6 @@ paths:
         200:
           description: Successful
           schema:
-            type: object
             $ref: '#/definitions/OAuth2.Client'
     delete:
       description: |
@@ -8870,12 +8868,11 @@ paths:
         200:
           description: Successful
           schema:
-            type: object
             $ref: '#/definitions/OAuth2.Client'
         400:
           description: Bad request
 
-  /system/health:
+  /systems/health:
     get:
       description: |
         Get system health information
@@ -9238,9 +9235,7 @@ paths:
         200:
           description: Successful
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/System.Ldap'
+            $ref: '#/definitions/System.Ldap'
     put:
       description: |
         Update LDAP settings
@@ -9264,7 +9259,6 @@ paths:
         200:
           description: Successful
           schema:
-            type: object
             $ref: '#/definitions/System.Ldap'
         400:
           description: Bad request
@@ -9273,7 +9267,7 @@ paths:
     post:
       description: |
         Synchronize local users with LDAP directory
-      operationId: postClients
+      operationId: postSystemLdapSync
       security:
         - email: []
           password: []
@@ -11793,7 +11787,105 @@ definitions:
         items:
           $ref: '#/definitions/Application.Scan.Issue.Type.Resource'
       parent:
-        $ref: '#/definitions/Application.Scan.Issue.Type'
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
+            example: 1
+          tag:
+            type: string
+            example: "XSS"
+            maxLength: 50
+          description:
+            type: string
+          name:
+            type: string
+            example: "Cross-Site Scripting"
+            maxLength: 150
+          markup:
+            type: string
+            example: "HTML"
+            maxLength: 50
+          severity:
+            type: integer
+            format: int32
+            example: 30
+          effort:
+            type: integer
+            format: int32
+            example: 15
+          second_order:
+            type: boolean
+            default: true
+            example: true
+          cwe:
+            type: string
+            example: "79"
+            maxLength: 50
+          owasp2010:
+            type: string
+            example: "A3"
+            maxLength: 50
+          owasp2013:
+            type: string
+            example: "A3"
+            maxLength: 50
+          owasp2017:
+            type: string
+            example: "A3"
+            maxLength: 50
+          sans:
+            type: string
+            example: "4"
+            maxLength: 50
+          pcidss:
+            type: string
+            example: "6.5.1"
+            maxLength: 50
+          asvs301:
+            type: string
+            example: "11.8"
+            maxLength: 50
+          asvs401:
+            type: string
+            example: "11.9"
+            maxLength: 50
+          category:
+            type: string
+            maxLength: 50
+            example: "client_vulnerability"
+            enum:
+              - client_vulnerability
+              - server_vulnerability
+              - code_quality
+              - misconfiguration
+          resources:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Issue.Type.Resource'
+          inactive:
+            type: boolean
+            default: false
+            example: false
+          languages:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  example: 1
+          enabled_for:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  example: 1
       inactive:
         type: boolean
         default: false
@@ -12308,6 +12400,18 @@ definitions:
         type: integer
         format: int64
         example: 15
+      functions:
+        type: integer
+        format: int64
+        example: 100
+      methods:
+        type: integer
+        format: int64
+        example: 150
+      classes:
+        type: integer
+        format: int64
+        example: 25
 
   OAuth2.Client:
     type: object
@@ -14404,5 +14508,5 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: password
-    tokenUrl: /oauth/v2/auth/tokens
+    tokenUrl: https://api-3.ripstech.com/oauth/v2/auth/tokens
     scopes: {}
