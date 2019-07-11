@@ -10132,10 +10132,10 @@ definitions:
             format: int64
             example: 1
       loc:
-        type: array
-        items:
+        type: object
+        additionalProperties:
           type: integer
-          format: int32
+          format: int64
       checksum:
         type: string
         maxLength: 64
