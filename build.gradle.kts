@@ -2,23 +2,19 @@ import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    base
-    idea
-    java
     `java-library`
     `maven-publish`
-    id("org.sonarqube") version "2.7"
 	id("net.ltgt.errorprone") version "0.7.1"
-    id("org.ajoberstar.grgit") version "3.0.0"
-    id("com.github.ben-manes.versions") version "0.20.0"
     kotlin("jvm") version "1.3.20" apply false
 }
 
 allprojects {
     group = "com.ripstech.api"
     version = "3.6.6"
+}
 
-    apply(plugin = "java")
+configure(subprojects.filterNot { it.name == "platform" }) {
+    apply(plugin = "java-library")
     apply(plugin = "net.ltgt.errorprone")
 
     java {
