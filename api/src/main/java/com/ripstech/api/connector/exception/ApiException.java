@@ -9,6 +9,7 @@ import static com.ripstech.api.connector.HttpStatus.NON_HTTP_ERROR;
 
 public class ApiException extends Exception {
 
+	private final int statusCode;
 	private final ProblemType problemType;
 	private final String plainMessage;
 
@@ -16,22 +17,29 @@ public class ApiException extends Exception {
 		super(message);
 		plainMessage = message;
 		problemType = ProblemType.UNKNOWN;
+		statusCode = 0;
 	}
 
 	public ApiException(HttpStatus status, String message) {
 		super(String.format("%s: %s", status.toString(), message));
 		plainMessage = message;
 		problemType = ProblemType.findProblemTypeOrUnknown(status.getCode(), message);
+		statusCode = status.getCode();
 	}
 
 	public ApiException(Integer status, String message) {
 		super((status != NON_HTTP_ERROR) ? String.format("%d: %s", status, message) : message);
 		plainMessage = message;
 		problemType = ProblemType.findProblemTypeOrUnknown(status, message);
+		statusCode = status;
 	}
 
 	public ApiException(ApiResponse response) {
 		this(response.getHttpStatus(), response.getMessage());
+	}
+
+	public int getStatusCode() {
+		return statusCode;
 	}
 
 	public ProblemType getProblemType() {
