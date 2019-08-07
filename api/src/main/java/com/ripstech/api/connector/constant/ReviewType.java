@@ -4,7 +4,7 @@ package com.ripstech.api.connector.constant;
 public enum ReviewType {
 
 	NOT_REVIEWED(1L, "Not reviewed", false),
-	EXPLOITABLE(2L, "Not reviewed", false),
+	EXPLOITABLE(2L, "Exploitable", false),
 	SUSPICIOUS(3L, "Suspicious", false),
 	BAD_PRACTICE(4L, "Bad practice", false),
 	NOT_SURE(5L, "Not sure", false),
