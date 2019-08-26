@@ -2844,6 +2844,7 @@ paths:
           | applicationName |                          |
           | path            | - Not available in cloud |
           | comment         |                          |
+          | server          | - Requires ROLE_WORKER   |
       operationId: getApplicationsScansStats
       parameters:
         - name: filter
@@ -2906,6 +2907,7 @@ paths:
           | application   |                          |
           | path          | - Not available in cloud |
           | comment       |                          |
+          | server        | - Requires ROLE_WORKER   |
       operationId: getApplicationScansStats
       security:
         - email: []
@@ -3069,6 +3071,7 @@ paths:
           | organizationName  | - Requires ROLE_ADMIN                       |
           | createdByEmail    | - Requires ROLE_ADMIN                       |
           | comment           |                                             |
+          | server            | - Requires ROLE_WORKER                      |
       operationId: getApplicationsScansAll
       parameters:
         - name: filter
@@ -3133,6 +3136,7 @@ paths:
           | application   |                          |
           | path          | - Not available in cloud |
           | comment       |                          |
+          | server        | - Requires ROLE_WORKER   |
       operationId: getApplicationScans
       security:
         - email: []
@@ -3201,6 +3205,7 @@ paths:
           | application   |                          |
           | path          | - Not available in cloud |
           | comment       |                          |
+          | server        | - Requires ROLE_WORKER   |
       operationId: deleteMultipleApplicationScans
       security:
         - email: []
@@ -9276,6 +9281,146 @@ paths:
         200:
           description: Successful
 
+  /servers:
+    get:
+      description: |
+        Get all servers
+
+        #### Available Filters
+          | Column           | Restrictions |
+          | ---------------- | ------------ |
+          | id               |              |
+          | name             |              |
+          | internalAddress  |              |
+          | externalAddress  |              |
+          | type             |              |
+          | startedAt        |              |
+          | stoppedAt        |              |
+          | memory           |              |
+          | cores            |              |
+      operationId: getServers
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Server'
+    post:
+      description: |
+        Add a new server
+      operationId: postServer
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: Post.Server
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              server:
+                $ref: '#/definitions/Post.Sub.Server'
+            required:
+              - server
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Server'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+
+  /servers/{serverId}:
+    get:
+      description: |
+        Get a specific server
+      operationId: getServer
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Server'
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+    patch:
+      description: |
+        Update an existing server
+      operationId: patchServer
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          type: integer
+        - name: patch.Server
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              server:
+                $ref: '#/definitions/Patch.Sub.Server'
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Server'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
 # DEFINITIONS
 # ---------------------------------------------------------------------------
 definitions:
@@ -10167,18 +10312,19 @@ definitions:
         format: int32
         example: 0
         description: |
-          | Value  | Description                  |
-          | ------ | -----------                  |
-          | 0      | Done                         |
-          | 1      | Loading files                |
-          | 2      | Parsing code                 |
-          | 3      | Scanning code                |
-          | 4      | Uncalled functions           |
-          | 5      | Second-order vulnerabilities |
-          | 6      | Scan automatically aborted   |
-          | 7      | Scan aborted by user         |
-          | 10     | Scan in queue                |
-          | 11     | Finishing the scan           |
+          | Value  | Description                      |
+          | ------ | -----------                      |
+          | 0      | Done                             |
+          | 1      | Loading files                    |
+          | 2      | Parsing code                     |
+          | 3      | Scanning code                    |
+          | 4      | Uncalled functions               |
+          | 5      | Second-order vulnerabilities     |
+          | 6      | Scan automatically aborted       |
+          | 7      | Scan aborted by user             |
+          | 10     | Scan in queue                    |
+          | 11     | Finishing the scan               |
+          | 12     | Preparing the scan for the queue |
       percent:
         type: integer
         format: int32
@@ -10411,6 +10557,16 @@ definitions:
         type: string
         example: "bamboo"
         maxLength: 100
+      server:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          name:
+            type: string
+            maxLength: 180
 
   Application.Scan.Php:
     type: object
@@ -11003,18 +11159,19 @@ definitions:
         maximum: 11
         example: 0
         description: |
-          | Value  | Description                  |
-          | ------ | -----------                  |
-          | 0      | Done                         |
-          | 1      | Loading files                |
-          | 2      | Parsing code                 |
-          | 3      | Scanning code                |
-          | 4      | Uncalled functions           |
-          | 5      | Second-order vulnerabilities |
-          | 6      | Scan automatically aborted   |
-          | 7      | Scan aborted by user         |
-          | 10     | Scan in queue                |
-          | 11     | Finishing the scan           |
+          | Value  | Description                      |
+          | ------ | -----------                      |
+          | 0      | Done                             |
+          | 1      | Loading files                    |
+          | 2      | Parsing code                     |
+          | 3      | Scanning code                    |
+          | 4      | Uncalled functions               |
+          | 5      | Second-order vulnerabilities     |
+          | 6      | Scan automatically aborted       |
+          | 7      | Scan aborted by user             |
+          | 10     | Scan in queue                    |
+          | 11     | Finishing the scan               |
+          | 12     | Preparing the scan for the queue |
       percent:
         type: integer
         format: int32
@@ -11041,6 +11198,13 @@ definitions:
           - php-preparser
           - php-patchgen
           - java-patchgen
+      parent:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
 
   Application.Scan.Export.Pdf.Queue:
     type: object
@@ -12510,6 +12674,49 @@ definitions:
       ca_certificate:
         type: string
 
+  Server:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      name:
+        type: string
+        example: "xbar1"
+        maxLength: 180
+      internal_address:
+        type: string
+        example: "10.0.0.5"
+        maxLength: 180
+      external_address:
+        type: string
+        example: "83.256.12.6"
+        maxLength: 180
+      type:
+        type: string
+        example: "aws"
+        maxLength: 50
+        enum:
+          - aws
+          - op
+      started_at:
+        type: string
+        format: date-time
+        example: "2019-02-16T11:52:26+0100"
+      stopped_at:
+        type: string
+        format: date-time
+        example: "2019-02-16T12:52:26+0100"
+      memory:
+        type: integer
+        format: int64
+        example: 7563455665
+      cores:
+        type: integer
+        format: int64
+        example: 16
+
   Post.Sub.License:
     type: object
     properties:
@@ -13590,6 +13797,10 @@ definitions:
         minimum: 0
         maximum: 100
         example: 50
+      parent:
+        type: integer
+        format: int64
+        example: 1
 
   Patch.Sub.Application.Scan.Process:
     type: object
@@ -13645,6 +13856,10 @@ definitions:
         minimum: 0
         maximum: 100
         example: 50
+      parent:
+        type: integer
+        format: int64
+        example: 1
 
   Post.Sub.Application.Scan.Issue:
     type: object
@@ -14493,6 +14708,81 @@ definitions:
       - emailKey
       - userDn
       - host
+
+  Post.Sub.Server:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 180
+      internalAddress:
+        type: string
+        maxLength: 180
+      externalAddress:
+        type: string
+        maxLength: 180
+      type:
+        type: string
+        maxLength: 50
+        enum:
+          - aws
+          - op
+      startedAt:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
+      stoppedAt:
+        type: string
+        format: date-time
+        example: "2017-02-16T12:52:26+0100"
+      memory:
+        type: integer
+        format: int64
+        example: 756797689576
+      cores:
+        type: integer
+        format: int64
+        example: 8
+    required:
+      - name
+      - type
+      - memory
+      - cores
+
+  Patch.Sub.Server:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 180
+      internalAddress:
+        type: string
+        maxLength: 180
+      externalAddress:
+        type: string
+        maxLength: 180
+      type:
+        type: string
+        maxLength: 50
+        enum:
+          - aws
+          - op
+      startedAt:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
+      stoppedAt:
+        type: string
+        format: date-time
+        example: "2017-02-16T12:52:26+0100"
+      memory:
+        type: integer
+        format: int64
+        example: 756797689576
+      cores:
+        type: integer
+        format: int64
+        example: 8
 
 # SECURITY
 # ---------------------------------------------------------------------------
