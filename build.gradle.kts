@@ -5,7 +5,7 @@ plugins {
     `java-library`
     `maven-publish`
 	id("net.ltgt.errorprone") version "0.7.1"
-    kotlin("jvm") version "1.3.20" apply false
+    kotlin("jvm") version "1.3.50" apply false
 }
 
 allprojects {
