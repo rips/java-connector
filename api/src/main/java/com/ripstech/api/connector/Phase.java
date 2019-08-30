@@ -13,6 +13,7 @@ public enum Phase {
     USER_ABORT(7, "Scan aborted by user"),
     QUEUE(10, "Scan in queue. This may take a few minutes"),
     FINISHING(11, "Finishing the scan"),
+    PREPARE_QUEUE(12, "Preparing the scan for the queue"),
     UNKNOWN(99, "Unknown");
 
     private final int phase;
