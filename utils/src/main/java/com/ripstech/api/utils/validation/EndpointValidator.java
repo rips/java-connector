@@ -43,6 +43,7 @@ public class EndpointValidator {
 				       .orElse(null);
 	}
 
+	// TODO improve validation so that exceptions with response information get thrown
 	@Nullable
 	public static String api(@NotNull String url, @NotNull ApiVersion requiredVersion)
 			throws MalformedURLException, ApiException {
