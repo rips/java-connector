@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "VERSION_PLACEHOLDER"
+  version: "3.2.4-572-ge4c4a0a4"
   title: "RIPS API"
   description: |
     RIPS is a static code analysis tool to automatically detect taint-style vulnerabilities in PHP and Java applications.
@@ -1313,6 +1313,7 @@ paths:
           | id        |              |
           | url       |              |
           | createdBy |              |
+          | createdAt |              |
       operationId: getcallbacks
       parameters:
         - name: filter
@@ -1361,6 +1362,7 @@ paths:
           | id        |              |
           | url       |              |
           | createdBy |              |
+          | createdAt |              |
       operationId: deleteMultiplecallbacks
       parameters:
         - name: filter
@@ -1834,6 +1836,49 @@ paths:
         403:
           description: Missing permissions
 
+  /users/statistics:
+    get:
+      description: |
+        Get all users statistics with permissions for current user
+  
+        #### Available Filters
+          | Column             | Restrictions          |
+          | ------------------ | --------------------- |
+          | scanId             |                       |
+          | applicationId      |                       |
+          | applicationName    |                       |
+          | version            |                       |
+          | startedAt          |                       |
+          | phase              |                       |
+          | scanInherited      |                       |
+          | loc                |                       |
+          | negativelyReviewed |                       |
+          | comment            |                       |
+          | commentCreatedAt   |                       |
+          | reviewCreatedAt    |                       |
+          | tag                |                       |
+      operationId: getUsersStatistics
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/UserStatistics'
+        403:
+          description: Missing permissions
+
   /users/{userId}:
     get:
       description: |
@@ -1909,6 +1954,53 @@ paths:
           description: Missing permissions
         404:
           description: Not found
+
+  /users/{userId}/statistics:
+    get:
+      description: |
+        Get specific user statistics
+
+        #### Available Filters
+          | Column             | Restrictions          |
+          | ------------------ | --------------------- |
+          | scanId             |                       |
+          | applicationId      |                       |
+          | applicationName    |                       |
+          | version            |                       |
+          | startedAt          |                       |
+          | phase              |                       |
+          | scanInherited      |                       |
+          | loc                |                       |
+          | negativelyReviewed |                       |
+          | comment            |                       |
+          | commentCreatedAt   |                       |
+          | reviewCreatedAt    |                       |
+          | tag                |                       |
+      operationId: getUserStatistics
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: userId
+          in: path
+          required: true
+          type: integer
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/UserStatistics'
+        403:
+          description: Missing permissions
 
   /users/{userId}/activate/{token}:
     post:
@@ -2565,6 +2657,125 @@ paths:
             items:
               $ref: '#/definitions/Application.Acl'
 
+  /applications/{applicationId}/artifacts:
+    get:
+      description: |
+        Get all artifacts for application
+
+        #### Available Filters
+          | Column     | Restrictions  |
+          | ---------- | ------------- |
+          | id         |               |
+          | createdAt  |               |
+          | name       |               |
+          | path       |               |
+          | createdBy  |               |
+          | scan       |               |
+      operationId: getApplicationArtifacts
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Artifact'
+        403:
+          description: Missing permissions
+    post:
+      description: |
+        Add a new artifact
+      operationId: postApplicationArtifact
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: post.Application.Artifact
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              artifact:
+                $ref: '#/definitions/Post.Sub.Application.Artifact'
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Artifact'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+
+  /applications/{applicationId}/artifacts/{artifactId}:
+    get:
+      description: |
+        Get a specific artifact
+      operationId: getApplicationArtifact
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: artifactId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Artifact'
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
   /applications/uploads/all:
     get:
       description: |
@@ -2578,7 +2789,7 @@ paths:
           | name               |               |
           | extension          |               |
           | size               |               |
-          | file               |               |
+          | file               | - Admins only |
           | createdBy          |               |
           | createdByEmail     |               |
           | organization       | - Admins only |
@@ -2630,15 +2841,15 @@ paths:
         Get all uploads with permissions for current user
 
         #### Available Filters
-          | Column     | Restrictions |
-          | ---------- | ------------ |
-          | id         |              |
-          | createdAt  |              |
-          | name       |              |
-          | extension  |              |
-          | size       |              |
-          | file       |              |
-          | createdBy  |              |
+          | Column     | Restrictions  |
+          | ---------- | ------------- |
+          | id         |               |
+          | createdAt  |               |
+          | name       |               |
+          | extension  |               |
+          | size       |               |
+          | file       | - Admins only |
+          | createdBy  |               |
       operationId: getApplicationUploads
       security:
         - email: []
@@ -2688,15 +2899,15 @@ paths:
         Delete all uploads with permissions for current user
 
         #### Available Filters
-          | Column     | Restrictions |
-          | ---------- | ------------ |
-          | id         |              |
-          | createdAt  |              |
-          | name       |              |
-          | extension  |              |
-          | size       |              |
-          | file       |              |
-          | createdBy  |              |
+          | Column     | Restrictions  |
+          | ---------- | ------------- |
+          | id         |               |
+          | createdAt  |               |
+          | name       |               |
+          | extension  |               |
+          | size       |               |
+          | file       | - Admins only |
+          | createdBy  |               |
       operationId: deleteMultipleApplicationUploads
       security:
         - email: []
@@ -4717,6 +4928,7 @@ paths:
           | parent             |              |
           | cve                |              |
           | hash               |              |
+          | createdAt          |              |
       operationId: getApplicationScanIssuesStats
       security:
         - email: []
@@ -4786,6 +4998,7 @@ paths:
           | parent             |              |
           | cve                |              |
           | hash               |              |
+          | createdAt          |              |
           | sink               |              |
           | sinkName           |              |
           | sinkFilePath       |              |
@@ -7476,6 +7689,7 @@ paths:
           | property   |              |
           | parameter  |              |
           | characters |              |
+          | mode       |              |
       operationId: getApplicationScanProfileSanitizers
       security:
         - email: []
@@ -7536,6 +7750,7 @@ paths:
           | property   |              |
           | parameter  |              |
           | characters |              |
+          | mode       |              |
       operationId: deleteMultipleApplicationScanProfileSanitizers
       security:
         - email: []
@@ -8507,6 +8722,8 @@ paths:
           | method     |              |
           | parameter  |              |
           | characters |              |
+          | behavior   |              |
+          | mode       |              |
       operationId: getApplicationScanProfileValidators
       security:
         - email: []
@@ -8566,6 +8783,8 @@ paths:
           | method     |              |
           | parameter  |              |
           | characters |              |
+          | behavior   |              |
+          | mode       |              |
       operationId: deleteMultipleApplicationScanProfileValidators
       security:
         - email: []
@@ -9298,6 +9517,7 @@ paths:
           | stoppedAt        |              |
           | memory           |              |
           | cores            |              |
+          | lastSeenAt       |              |
       operationId: getServers
       parameters:
         - name: filter
@@ -9421,9 +9641,573 @@ paths:
         404:
           description: Not found
 
+  /servers/{serverId}/ping:
+    patch:
+      description: |
+        Ping an existing server
+      operationId: patchServerPing
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Server'
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
+  /histories/scans/stats:
+    get:
+      description: |
+        Get statistics from history scans
+
+        #### Available Filters
+          | Column                | Restrictions |
+          | --------------------- | ------------ |
+          | id                    |              |
+          | startedAt             |              |
+          | finishedAt            |              |
+          | organizationName      |              |
+          | organizationId        |              |
+          | phase                 |              |
+          | loc                   |              |
+          | customProfile         |              |
+          | files                 |              |
+          | knownFunctions        |              |
+          | knownClasses          |              |
+          | unresolvedFunctions   |              |
+          | unresolvedClasses     |              |
+          | processTime           |              |
+          | processMemory         |              |
+          | queueTime             |              |
+          | libraryName           |              |
+          | libraryVersion        |              |
+          | libraryType           |              |
+          | libraryImplementation |              |
+          | libraryGroup          |              |
+          | issueTypeTag          |              |
+          | issueQuantity         |              |
+          | reviewTag             |              |
+          | reviewQuantity        |              |
+          | phpMajorVersion       |              |
+          | phpMinorVersion       |              |
+          | phpReleaseVersion     |              |
+          | phpMagicQuotesGpc     |              |
+          | phpRegisterGlobals    |              |
+          | phpAllowUrlFopen      |              |
+          | phpFrameworkHinting   |              |
+          | phpAllowUrlInclude    |              |
+          | phpFilterDefault      |              |
+          | javaMajorVersion      |              |
+          | javaMinorVersion      |              |
+          | javaReleaseVersion    |              |
+          | javaImplementation    |              |
+      operationId: getHistoryScansStatistics
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/History.Scan.Statistics'
+        403:
+          description: Missing permissions
+
+  /histories/scans:
+    get:
+      description: |
+        Get all history scans
+
+        #### Available Filters
+          | Column                | Restrictions |
+          | --------------------- | ------------ |
+          | id                    |              |
+          | startedAt             |              |
+          | finishedAt            |              |
+          | organizationName      |              |
+          | organizationId        |              |
+          | phase                 |              |
+          | loc                   |              |
+          | customProfile         |              |
+          | files                 |              |
+          | knownFunctions        |              |
+          | knownClasses          |              |
+          | unresolvedFunctions   |              |
+          | unresolvedClasses     |              |
+          | processTime           |              |
+          | processMemory         |              |
+          | queueTime             |              |
+          | libraryName           |              |
+          | libraryVersion        |              |
+          | libraryType           |              |
+          | libraryImplementation |              |
+          | libraryGroup          |              |
+          | issueTypeTag          |              |
+          | issueQuantity         |              |
+          | reviewTag             |              |
+          | reviewQuantity        |              |
+          | phpMajorVersion       |              |
+          | phpMinorVersion       |              |
+          | phpReleaseVersion     |              |
+          | phpMagicQuotesGpc     |              |
+          | phpRegisterGlobals    |              |
+          | phpAllowUrlFopen      |              |
+          | phpFrameworkHinting   |              |
+          | phpAllowUrlInclude    |              |
+          | phpFilterDefault      |              |
+          | javaMajorVersion      |              |
+          | javaMinorVersion      |              |
+          | javaReleaseVersion    |              |
+          | javaImplementation    |              |
+      operationId: getHistoryScans
+      parameters:
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/History.Scan'
+        403:
+          description: Missing permissions
+
+  /histories/scans/{historyScanId}:
+    get:
+      description: |
+        Get a specific history scan
+      operationId: getHistoryScan
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: historyScanId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/History.Scan'
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
+
+  /mfas/secret:
+    post:
+      description: |
+        Create MFA secret
+      operationId: postMfaSecret
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/User.Mfa'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+        429:
+          description: Too many wrong codes
+
+  /mfas/token:
+    post:
+      description: |
+        Get the authentication token
+      operationId: postMfaToken
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: post.User.Mfa.Challenge
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              challenge:
+                $ref: '#/definitions/Post.Sub.User.Mfa.Challenge'
+            required:
+              - challenge
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/User.Mfa'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+
+  /mfas/self:
+    delete:
+      description: |
+        Disable MFA for own user
+      operationId: deleteMfa
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: post.User.Mfa.Challenge
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              challenge:
+                $ref: '#/definitions/Post.Sub.User.Mfa.Challenge'
+            required:
+              - challenge
+      responses:
+        200:
+          description: Successful
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+        429:
+          description: Too many wrong codes
+
 # DEFINITIONS
 # ---------------------------------------------------------------------------
 definitions:
+  History.Scan.Statistics:
+    type: object
+    properties:
+      scans_count:
+        type: integer
+        format: int32
+      lowest_date:
+        type: string
+        format: date-time
+      highest_date:
+        type: string
+        format: date-time
+      organization_count:
+        type: integer
+        format: int32
+      process_time_sum:
+        type: integer
+        format: int64
+      process_time_avg:
+        type: number
+        format: float
+      process_time_max:
+        type: integer
+        format: int32
+      process_time_min:
+        type: integer
+        format: int32
+      queue_time_sum:
+        type: integer
+        format: int64
+      queue_time_avg:
+        type: number
+        format: float
+      queue_time_max:
+        type: integer
+        format: int32
+      queue_time_min:
+        type: integer
+        format: int32
+      process_memory_sum:
+        type: integer
+        format: int64
+      process_memory_avg:
+        type: number
+        format: float
+      process_memory_max:
+        type: integer
+        format: int32
+      process_memory_min:
+        type: integer
+        format: int32
+      loc_sum:
+        type: integer
+        format: int64
+      loc_avg:
+        type: number
+        format: float
+      loc_max:
+        type: integer
+        format: int32
+      loc_min:
+        type: integer
+        format: int32
+      files_sum:
+        type: integer
+        format: int64
+      files_avg:
+        type: number
+        format: float
+      files_max:
+        type: integer
+        format: int32
+      files_min:
+        type: integer
+        format: int32
+      issues_sum:
+        type: integer
+        format: int64
+      issues_avg:
+        type: number
+        format: float
+      issues_max:
+        type: integer
+        format: int32
+      issues_min:
+        type: integer
+        format: int32
+      reviews_sum:
+        type: integer
+        format: int32
+      libraries:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Library'
+      issue_types:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Issue.Type'
+      php:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Php'
+      java:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Java'
+
+  History.Scan:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      scan_id:
+        type: integer
+        format: int64
+      organization_id:
+        type: integer
+        format: int64
+      organization_name:
+        type: string
+        maxLength: 180
+      started_at:
+        type: string
+        format: date-time
+      finished_at:
+        type: string
+        format: date-time
+      phase:
+        type: integer
+        format: int32
+      loc:
+        type: integer
+        format: int32
+      custom_profile:
+        type: boolean
+      files:
+        type: integer
+        format: int32
+      known_functions:
+        type: integer
+        format: int32
+      known_classes:
+        type: integer
+        format: int32
+      unresolved_functions:
+        type: integer
+        format: int32
+      unresolved_classes:
+        type: integer
+        format: int32
+      process_time:
+        type: integer
+        format: int32
+      process_memory:
+        type: integer
+        format: int32
+      queue_time:
+        type: integer
+        format: int32
+      libraries:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Library'
+      issue_types:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Issue.Type'
+      php:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Php'
+      java:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Java'
+
+  History.Scan.Library:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 180
+      version:
+        type: string
+        maxLength: 80
+      type:
+        type: string
+        maxLength: 50
+      implementation:
+        type: string
+        maxLength: 120
+      group:
+        type: string
+        maxLength: 120
+
+  History.Scan.Issue.Type:
+    type: object
+    properties:
+      reviews:
+        type: array
+        items:
+          $ref: '#/definitions/History.Scan.Issue.Review'
+      quantity:
+        type: integer
+        format: int32
+      tag:
+        type: string
+        maxLength: 50
+
+  History.Scan.Php:
+    type: object
+    properties:
+      major_version:
+        type: string
+        maxLength: 32
+      minor_version:
+        type: string
+        maxLength: 32
+      release_version:
+        type: string
+        maxLength: 32
+      magic_quotes_gpc:
+        type: boolean
+      register_globals:
+        type: boolean
+      allow_url_fopen:
+        type: boolean
+      framework_hinting:
+        type: boolean
+      allow_url_include:
+        type: boolean
+      filter_default:
+        type: string
+        maxLength: 64
+
+  History.Scan.Java:
+    type: object
+    properties:
+      major_version:
+        type: string
+        maxLength: 32
+      minor_version:
+        type: string
+        maxLength: 32
+      release_version:
+        type: string
+        maxLength: 32
+      implementation:
+        type: string
+
+  History.Scan.Issue.Review:
+    type: object
+    properties:
+      quantity:
+        type: integer
+        format: int32
+      tag:
+        type: string
+        maxLength: 50
+
   Census:
     type: object
     properties:
@@ -9740,6 +10524,9 @@ definitions:
       confirmation_token:
         type: string
         maxLength: 180
+      activation_token:
+        type: string
+        maxLength: 180
       reset_token:
         type: string
         maxLength: 180
@@ -9768,8 +10555,6 @@ definitions:
       email_confirmed:
         type: boolean
         default: true
-      salt:
-        type: string
       organization:
         type: object
         properties:
@@ -9782,6 +10567,66 @@ definitions:
       ldap_identifier:
         type: string
         maxLength: 180
+
+  UserStatistics:
+    type: object
+    properties:
+      scans:
+        type: integer
+        format: int32
+      reviews:
+        type: integer
+        format: int32
+      comments:
+        type: integer
+        format: int32
+      reviewsTags:
+        type: array
+        items:
+          type: object
+          properties:
+            tag:
+              type: string
+            reviews:
+              type: integer
+              format: int32
+
+  User.Mfa:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      created_by:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          email:
+            type: string
+            format: email
+            minLength: 3
+            maxLength: 180
+      created_at:
+        type: string
+        format: date-time
+        example: "2017-02-23T14:24:44+0100"
+      enabled:
+        type: boolean
+        default: false
+        example: false
+      secret:
+        type: string
+        maxLength: 100
+      label:
+        type: string
+        maxLength: 255
+      token:
+        type: string
+        maxLength: 100
 
   Organization:
     type: object
@@ -9863,6 +10708,11 @@ definitions:
         type: integer
         format: int32
         example: 1000000
+      server_limit:
+        type: integer
+        format: int32
+        example: 2
+        default: 0
       valid_from:
         type: string
         format: date-time
@@ -10236,6 +11086,39 @@ definitions:
             format: int64
             example: 1
 
+  Application.Artifact:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      created_at:
+        type: string
+        format: date-time
+        example: "2019-02-16T11:52:25+0100"
+      name:
+        type: string
+        example: "test.zip"
+        maxLength: 255
+      path:
+        type: string
+        example: "s3://artifacts/abcdef0123456789"
+      created_by:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+      scan:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+
   Application.Upload:
     type: object
     properties:
@@ -10344,6 +11227,7 @@ definitions:
       source_type:
         type: string
         example: "upload"
+        default: "upload"
         enum:
           - upload
           - local_directory
@@ -10567,6 +11451,14 @@ definitions:
           name:
             type: string
             maxLength: 180
+      root_path:
+        type: string
+        default: ""
+        example: "/var/www"
+      root_file:
+        type: string
+        maxLength: 180
+        example: "composer.json"
 
   Application.Scan.Php:
     type: object
@@ -11178,6 +12070,12 @@ definitions:
         minimum: 0
         maximum: 100
         example: 100
+      original_percent:
+        type: integer
+        format: int32
+        minimum: 0
+        maximum: 100
+        example: 100
       weight:
         type: integer
         format: int32
@@ -11555,6 +12453,7 @@ definitions:
       comments_count:
         type: integer
         format: int32
+        default: 0
         example: 3
 
   Application.Scan.Issue.Comment:
@@ -12304,6 +13203,10 @@ definitions:
         type: integer
         format: int32
         example: 100
+      root_file:
+        type: string
+        maxLength: 180
+        example: "composer.json"
       php:
         $ref: '#/definitions/Application.Scan.Php'
       java:
@@ -12378,6 +13281,13 @@ definitions:
             type: integer
             format: int32
             example: 1
+      mode:
+        type: string
+        default: "LITERAL"
+        example: "REGEX"
+        enum:
+          - "LITERAL"
+          - "REGEX"
 
   Application.Profile.Sink:
     type: object
@@ -12472,6 +13382,21 @@ definitions:
             type: integer
             format: int32
             example: 1
+      behavior:
+        type: string
+        default: "RETURN_FALSE"
+        example: "EXIT"
+        enum:
+          - "RETURN_FALSE"
+          - "RETURN_TRUE"
+          - "EXIT"
+      mode:
+        type: string
+        default: "LITERAL"
+        example: "REGEX"
+        enum:
+          - "LITERAL"
+          - "REGEX"
 
   Application.Scan.Digest:
     type: object
@@ -12598,6 +13523,59 @@ definitions:
         items:
           type: string
 
+  System.Email:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      enabled:
+        type: boolean
+        default: false
+        example: false
+      transport:
+        type: string
+        default: "smtp"
+      host:
+        type: string
+        default: ""
+        example: "smtp.example.com"
+        maxLength: 250
+      port:
+        type: integer
+        format: int32
+        default: 587
+        example: 587
+      username:
+        type: string
+        default: ""
+        example: "mailman"
+        maxLength: 250
+      encryption:
+        type: string
+        default: "null"
+        example: "tls"
+        enum:
+          - "null"
+          - ssl
+          - tls
+      auth:
+        type: string
+        default: "login"
+        example: "login"
+        enum:
+          - "null"
+          - plain
+          - login
+          - cram-md5
+      sender:
+        type: string
+        format: email
+        default: "contact@ripstech.com"
+        example: "contact@ripstech.com"
+        maxLength: 250
+
   System.Ldap:
     type: object
     properties:
@@ -12630,6 +13608,12 @@ definitions:
         example: "mail"
         maxLength: 250
       identifier_key:
+        type: string
+        maxLength: 250
+      firstname_key:
+        type: string
+        maxLength: 250
+      lastname_key:
         type: string
         maxLength: 250
       user_dn:
@@ -12716,6 +13700,10 @@ definitions:
         type: integer
         format: int64
         example: 16
+      last_seen_at:
+        type: string
+        format: date-time
+        example: "1457-09-05T11:52:26+0100"
 
   Post.Sub.License:
     type: object
@@ -13297,6 +14285,17 @@ definitions:
     required:
       - email
 
+  Post.Sub.User.Mfa.Challenge:
+    type: object
+    properties:
+      code:
+        type: string
+        example: "654321"
+        minLength: 6
+        maxLength: 6
+    required:
+      - code
+
   Post.Sub.User.Invite.Ui:
     type: object
     properties:
@@ -13439,6 +14438,21 @@ definitions:
         default: false
         example: 1
 
+  Post.Sub.Application.Artifact:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "test.zip"
+        maxLength: 255
+      scan:
+        type: integer
+        format: int64
+        example: 1
+    required:
+      - name
+      - scan
+
   Post.Sub.Application.Scan:
     type: object
     properties:
@@ -13500,6 +14514,10 @@ definitions:
       source:
         type: string
         maxLength: 100
+      rootFile:
+        type: string
+        maxLength: 180
+        example: "composer.json"
     required:
       - version
 
@@ -13587,16 +14605,6 @@ definitions:
             - POP
           default:
             - TEMPLATE
-    required:
-      - majorVersion
-      - minorVersion
-      - releaseVersion
-      - magicQuotesGpc
-      - registerGlobals
-      - allowUrlFopen
-      - allowUrlInclude
-      - filterDefault
-      - frameworkHinting
 
   Post.Sub.Application.Scan.Java:
     type: object
@@ -13620,11 +14628,6 @@ definitions:
         type: string
         default: ""
         maxLength: 255
-    required:
-      - majorVersion
-      - minorVersion
-      - releaseVersion
-      - implementation
 
   Post.Sub.Application.Scan.Library:
     type: object
@@ -14330,6 +15333,10 @@ definitions:
         type: integer
         format: int32
         example: 100
+      rootFile:
+        type: string
+        maxLength: 180
+        example: "composer.json"
 
   Post.Sub.Application.Profile.IgnoredCode:
     type: object
@@ -14426,6 +15433,13 @@ definitions:
         type: integer
         format: int32
         example: 10
+      mode:
+        type: string
+        default: "LITERAL"
+        example: "REGEX"
+        enum:
+          - "LITERAL"
+          - "REGEX"
 
   Patch.Sub.Application.Profile.Sanitizer:
     type: object
@@ -14446,6 +15460,13 @@ definitions:
         type: integer
         format: int32
         example: 10
+      mode:
+        type: string
+        default: "LITERAL"
+        example: "REGEX"
+        enum:
+          - "LITERAL"
+          - "REGEX"
 
   Post.Sub.Application.Profile.Sink:
     type: object
@@ -14576,6 +15597,21 @@ definitions:
         type: integer
         format: int32
         example: 10
+      behavior:
+        type: string
+        default: "RETURN_FALSE"
+        example: "EXIT"
+        enum:
+          - "RETURN_FALSE"
+          - "RETURN_TRUE"
+          - "EXIT"
+      mode:
+        type: string
+        default: "LITERAL"
+        example: "REGEX"
+        enum:
+          - "LITERAL"
+          - "REGEX"
 
   Patch.Sub.Application.Profile.Validator:
     type: object
@@ -14596,6 +15632,21 @@ definitions:
         type: integer
         format: int32
         example: 10
+      behavior:
+        type: string
+        default: "RETURN_FALSE"
+        example: "EXIT"
+        enum:
+          - "RETURN_FALSE"
+          - "RETURN_TRUE"
+          - "EXIT"
+      mode:
+        type: string
+        default: "LITERAL"
+        example: "REGEX"
+        enum:
+          - "LITERAL"
+          - "REGEX"
 
   Post.Sub.OAuth2.Client:
     type: object
@@ -14628,6 +15679,62 @@ definitions:
           type: string
     required:
       - name
+
+  Put.Sub.System.Email:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        example: true
+        default: false
+      host:
+        type: string
+        default: ""
+        example: "smtp.example.com"
+        maxLength: 250
+      port:
+        type: integer
+        default: 587
+        format: int32
+        example: 1234
+      username:
+        type: string
+        default: ""
+        example: "mailman"
+        maxLength: 250
+      password:
+        type: string
+        default: ""
+        example: "youwish"
+        maxLength: 250
+      encryption:
+        type: string
+        default: "null"
+        example: "tls"
+        enum:
+          - "null"
+          - ssl
+          - tls
+      auth:
+        type: string
+        default: "login"
+        example: "login"
+        enum:
+          - "null"
+          - plain
+          - login
+          - cram-md5
+      sender:
+        type: string
+        format: email
+        default: "contact@ripstech.com"
+        example: "mail@example.com"
+        maxLength: 250
+    required:
+      - host
+      - username
+      - password
+      - sender
 
   Put.Sub.System.Ldap:
     type: object
@@ -14700,6 +15807,14 @@ definitions:
       identifierKey:
         type: string
         example: "cn"
+        maxLength: 250
+      firstnameKey:
+        type: string
+        example: "gn"
+        maxLength: 250
+      lastnameKey:
+        type: string
+        example: "sn"
         maxLength: 250
     required:
       - searchDn
