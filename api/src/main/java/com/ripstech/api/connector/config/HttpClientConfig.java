@@ -1,5 +1,6 @@
 package com.ripstech.api.connector.config;
 
+import java.net.ProxySelector;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -114,6 +115,39 @@ public class HttpClientConfig {
 			clientCache = clientBuilder.build();
 		}
 		return clientCache;
+	}
+
+	public HttpClientConfig proxySelector(ProxySelector proxySelector) {
+		clientBuilder.proxySelector(proxySelector);
+		clientCache = null;
+		return this;
+	}
+
+	public HttpClientConfig proxySelector(ProxySelector proxySelector, String user, String password) {
+		proxyAuthenticator((route, response) -> {
+			if (response.request().header("Proxy-Authorization") != null) {
+				return null;
+			}
+			return response.request()
+					.newBuilder()
+					.header("Proxy-Authorization",
+							Credentials.basic(user, password))
+					.build();
+		});
+		clientCache = null;
+		return proxySelector(proxySelector);
+	}
+
+	public HttpClientConfig proxyAuthenticator(Authenticator proxyAuthenticator) {
+		clientBuilder.proxyAuthenticator(proxyAuthenticator);
+		clientCache = null;
+		return this;
+	}
+
+	public HttpClientConfig authenticator(Authenticator authenticator) {
+		clientBuilder.authenticator(authenticator);
+		clientCache = null;
+		return this;
 	}
 
 }

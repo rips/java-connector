@@ -33,6 +33,17 @@ abstract class TypeGuessing: Logging {
         }
     }
 
+    fun guess(@Suppress("UNUSED_PARAMETER") name: String, schema: NumberSchema): GuessedType {
+        return when(schema.format) {
+            "float" -> GuessedType(ClassName.FLOAT.box())
+            "double" -> GuessedType(ClassName.DOUBLE.box())
+            else -> {
+                logger.warn("No format specified, use Double")
+                GuessedType(ClassName.DOUBLE.box())
+            }
+        }
+    }
+
     fun guess(@Suppress("UNUSED_PARAMETER") name: String, @Suppress("UNUSED_PARAMETER") schema: BooleanSchema): GuessedType {
         return GuessedType(ClassName.BOOLEAN.box())
     }
@@ -100,6 +111,7 @@ abstract class TypeGuessing: Logging {
             is DateSchema -> guess(name, schema)
             is EmailSchema -> guess(name, schema)
             is ObjectSchema -> guess(name, schema, parentTypeName)
+            is NumberSchema -> guess(name, schema)
             else -> {
                 logger.error("$name in $parentTypeName (no schema/ref) used Void")
                 GuessedType(TypeName.VOID.box())
