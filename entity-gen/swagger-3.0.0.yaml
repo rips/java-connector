@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "3.2.4-572-ge4c4a0a4"
+  version: "3.2.4-664-ge5319e0c"
   title: "RIPS API"
   description: |
     RIPS is a static code analysis tool to automatically detect taint-style vulnerabilities in PHP and Java applications.
@@ -408,18 +408,18 @@ paths:
         Get all activities
 
         #### Available Filters
-          | Column           | Restrictions          |
-          | ---------------- | --------------------- |
-          | id               |                       |
-          | type             |                       |
-          | context          |                       |
-          | application      |                       |
-          | applicationName  |                       |
-          | createdBy        |                       |
-          | createdByEmail   |                       |
-          | createdAt        |                       |
-          | organization     | - Requires ROLE_ADMIN |
-          | organizationName | - Requires ROLE_ADMIN |
+          | Column           | Restrictions                          |
+          | ---------------- | ------------------------------------- |
+          | id               |                                       |
+          | type             |                                       |
+          | context          |                                       |
+          | application      |                                       |
+          | applicationName  |                                       |
+          | createdBy        |                                       |
+          | createdByEmail   |                                       |
+          | createdAt        |                                       |
+          | organization     | - Requires ROLE_ADMIN or ROLE_SUPPORT |
+          | organizationName | - Requires ROLE_ADMIN or ROLE_SUPPORT |
       operationId: getActivities
       parameters:
         - name: filter
@@ -1706,18 +1706,18 @@ paths:
         Get all users with permissions for current user
 
         #### Available Filters
-          | Column           | Restrictions          |
-          | ---------------- | --------------------- |
-          | id               |                       |
-          | firstname        |                       |
-          | lastname         |                       |
-          | email            |                       |
-          | root             |                       |
-          | enabled          |                       |
-          | lastLogin        |                       |
-          | organization     | - Requires ROLE_ADMIN |
-          | organizationName | - Requires ROLE_ADMIN |
-          | team             |                       |
+          | Column           | Restrictions                          |
+          | ---------------- | ------------------------------------- |
+          | id               |                                       |
+          | firstname        |                                       |
+          | lastname         |                                       |
+          | email            |                                       |
+          | root             |                                       |
+          | enabled          |                                       |
+          | lastLogin        |                                       |
+          | organization     | - Requires ROLE_ADMIN or ROLE_SUPPORT |
+          | organizationName | - Requires ROLE_ADMIN or ROLE_SUPPORT |
+          | team             |                                       |
       operationId: getUsers
       parameters:
         - name: filter
@@ -2715,6 +2715,59 @@ paths:
               $ref: '#/definitions/Application.Artifact'
         403:
           description: Missing permissions
+    delete:
+      description: |
+        Delete all artifacts for application
+
+        #### Available Filters
+          | Column     | Restrictions  |
+          | ---------- | ------------- |
+          | id         |               |
+          | createdAt  |               |
+          | name       |               |
+          | path       |               |
+          | createdBy  |               |
+          | scan       |               |
+      operationId: deleteMultipleApplicationArtifacts
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+        403:
+          description: Missing permissions
     post:
       description: |
         Add a new artifact
@@ -2775,6 +2828,30 @@ paths:
           description: Missing permissions
         404:
           description: Not found
+    delete:
+      description: |
+        Delete a specific artifacts
+      operationId: deleteApplicationArtifact
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: artifactId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
 
   /applications/uploads/all:
     get:
@@ -2782,18 +2859,18 @@ paths:
         Get all uploads with permissions for current user
 
         #### Available Filters
-          | Column             | Restrictions  |
-          | ----------         | ------------  |
-          | id                 |               |
-          | createdAt          |               |
-          | name               |               |
-          | extension          |               |
-          | size               |               |
-          | file               | - Admins only |
-          | createdBy          |               |
-          | createdByEmail     |               |
-          | organization       | - Admins only |
-          | organizationName   | - Admins only |
+          | Column             | Restrictions                          |
+          | ----------         | ------------------------------------  |
+          | id                 |                                       |
+          | createdAt          |                                       |
+          | name               |                                       |
+          | extension          |                                       |
+          | size               |                                       |
+          | file               | - Requires ROLE_ADMIN or ROLE_SUPPORT |
+          | createdBy          |                                       |
+          | createdByEmail     |                                       |
+          | organization       | - Requires ROLE_ADMIN or ROLE_SUPPORT |
+          | organizationName   | - Requires ROLE_ADMIN or ROLE_SUPPORT |
       operationId: getApplicationUploadsAll
       parameters:
         - name: filter
@@ -2841,15 +2918,15 @@ paths:
         Get all uploads with permissions for current user
 
         #### Available Filters
-          | Column     | Restrictions  |
-          | ---------- | ------------- |
-          | id         |               |
-          | createdAt  |               |
-          | name       |               |
-          | extension  |               |
-          | size       |               |
-          | file       | - Admins only |
-          | createdBy  |               |
+          | Column     | Restrictions                          |
+          | ---------- | ------------------------------------- |
+          | id         |                                       |
+          | createdAt  |                                       |
+          | name       |                                       |
+          | extension  |                                       |
+          | size       |                                       |
+          | file       | - Requires ROLE_ADMIN or ROLE_SUPPORT |
+          | createdBy  |                                       |
       operationId: getApplicationUploads
       security:
         - email: []
@@ -3278,11 +3355,11 @@ paths:
           | application       |                                             |
           | path              | - Not available in cloud unless ROLE_WORKER |
           | applicationName   |                                             |
-          | organization      | - Requires ROLE_ADMIN                       |
-          | organizationName  | - Requires ROLE_ADMIN                       |
-          | createdByEmail    | - Requires ROLE_ADMIN                       |
+          | organization      | - Requires ROLE_ADMIN or ROLE_SUPPORT       |
+          | organizationName  | - Requires ROLE_ADMIN or ROLE_SUPPORT       |
+          | createdByEmail    | - Requires ROLE_ADMIN or ROLE_SUPPORT       |
           | comment           |                                             |
-          | server            | - Requires ROLE_WORKER                      |
+          | server            | - Requires ROLE_WORKER or ROLE_ADMIN        |
       operationId: getApplicationsScansAll
       parameters:
         - name: filter
@@ -3328,26 +3405,26 @@ paths:
         Get all scans of one application
 
         #### Available Filters
-          | Column        | Restrictions             |
-          | ------------- | ------------------------ |
-          | id            |                          |
-          | version       |                          |
-          | upload        |                          |
-          | phase         |                          |
-          | percent       |                          |
-          | loc           |                          |
-          | codeStored    |                          |
-          | uploadRemoved |                          |
-          | createdBy     |                          |
-          | profile       |                          |
-          | parent        |                          |
-          | startedAt     |                          |
-          | finishedAt    |                          |
-          | analysisDepth |                          |
-          | application   |                          |
-          | path          | - Not available in cloud |
-          | comment       |                          |
-          | server        | - Requires ROLE_WORKER   |
+          | Column        | Restrictions                         |
+          | ------------- | ------------------------------------ |
+          | id            |                                      |
+          | version       |                                      |
+          | upload        |                                      |
+          | phase         |                                      |
+          | percent       |                                      |
+          | loc           |                                      |
+          | codeStored    |                                      |
+          | uploadRemoved |                                      |
+          | createdBy     |                                      |
+          | profile       |                                      |
+          | parent        |                                      |
+          | startedAt     |                                      |
+          | finishedAt    |                                      |
+          | analysisDepth |                                      |
+          | application   |                                      |
+          | path          | - Not available in cloud             |
+          | comment       |                                      |
+          | server        | - Requires ROLE_WORKER or ROLE_ADMIN |
       operationId: getApplicationScans
       security:
         - email: []
@@ -3397,26 +3474,26 @@ paths:
         Delete all scans of one application
 
         #### Available Filters
-          | Column        | Restrictions             |
-          | ------------- | ------------------------ |
-          | id            |                          |
-          | version       |                          |
-          | upload        |                          |
-          | phase         |                          |
-          | percent       |                          |
-          | loc           |                          |
-          | codeStored    |                          |
-          | uploadRemoved |                          |
-          | createdBy     |                          |
-          | profile       |                          |
-          | parent        |                          |
-          | startedAt     |                          |
-          | finishedAt    |                          |
+          | Column        | Restrictions                         |
+          | ------------- | ------------------------------------ |
+          | id            |                                      |
+          | version       |                                      |
+          | upload        |                                      |
+          | phase         |                                      |
+          | percent       |                                      |
+          | loc           |                                      |
+          | codeStored    |                                      |
+          | uploadRemoved |                                      |
+          | createdBy     |                                      |
+          | profile       |                                      |
+          | parent        |                                      |
+          | startedAt     |                                      |
+          | finishedAt    |                                      |
           | analysisDepth |                          |
-          | application   |                          |
-          | path          | - Not available in cloud |
-          | comment       |                          |
-          | server        | - Requires ROLE_WORKER   |
+          | application   |                                      |
+          | path          | - Not available in cloud             |
+          | comment       |                                      |
+          | server        | - Requires ROLE_WORKER or ROLE_ADMIN |
       operationId: deleteMultipleApplicationScans
       security:
         - email: []
@@ -5488,6 +5565,186 @@ paths:
           description: Missing permissions
         404:
           description: Not found
+
+  /applications/{applicationId}/scans/{scanId}/issues/contexts:
+    get:
+      description: |
+        Get all contexts of one scan
+
+        #### Available Filters
+          | Column  | Restrictions |
+          | ------  | ------------ |
+          | id      |              |
+          | context |              |
+      operationId: getApplicationScanContexts
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Issue.Context'
+        403:
+          description: Missing permissions
+
+  /applications/{applicationId}/scans/{scanId}/issues/patches:
+    get:
+      description: |
+        Get all patches of one scan
+
+        #### Available Filters
+          | Column  | Restrictions |
+          | ------  | ------------ |
+          | id      |              |
+          | type    |              |
+          | typeTag |              |
+      operationId: getApplicationScanPatches
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Issue.Patch'
+        403:
+          description: Missing permissions
+
+  /applications/{applicationId}/scans/{scanId}/issues/summaries:
+    get:
+      description: |
+        Get all summaries of one scan
+
+        #### Available Filters
+          | Column  | Restrictions |
+          | ------  | ------------ |
+          | id      |              |
+          | line    |              |
+          | content |              |
+          | file    |              |
+      operationId: getApplicationScanSummaries
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Issue.Summary'
+        403:
+          description: Missing permissions
 
   /applications/{applicationId}/scans/{scanId}/issues/reviews/batches:
     post:
@@ -10116,13 +10373,9 @@ definitions:
         items:
           $ref: '#/definitions/History.Scan.Issue.Type'
       php:
-        type: array
-        items:
-          $ref: '#/definitions/History.Scan.Php'
+        $ref: '#/definitions/History.Scan.Php'
       java:
-        type: array
-        items:
-          $ref: '#/definitions/History.Scan.Java'
+        $ref: '#/definitions/History.Scan.Java'
 
   History.Scan.Library:
     type: object
@@ -10261,6 +10514,8 @@ definitions:
       cloud:
         type: boolean
         example: true
+      capabilities:
+        $ref: '#/definitions/Status.Capabilities'
       maintenance:
         type: boolean
         default: false
@@ -10290,6 +10545,14 @@ definitions:
               type: integer
               format: int64
               example: 1
+
+  Status.Capabilities:
+    type: object
+    properties:
+      reset_password:
+        type: boolean
+      invite_user:
+        type: boolean
 
   Language:
     type: object
@@ -11561,6 +11824,14 @@ definitions:
           id:
             type: integer
             format: int64
+      update_database:
+        type: string
+        enum:
+          - "NO"
+          - "ONLINE"
+          - "PROVIDED"
+        default: "NO"
+        maxLength: 50
 
   Application.Scan.Library:
     type: object
@@ -12044,6 +12315,7 @@ definitions:
       memory:
         type: integer
         format: int64
+        description: "Memory consumption in Kilobytes"
       phase:
         type: integer
         format: int32
@@ -12498,6 +12770,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Application.Scan.Issue.Context.Part'
+      issue:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
 
   Application.Scan.Issue.Context.Part:
     type: object
@@ -12618,6 +12897,13 @@ definitions:
             type: integer
             format: int32
             example: 10
+      issue:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
 
   Application.Scan.Issue.Patch:
     type: object
@@ -12645,6 +12931,13 @@ definitions:
         format: int32
         minimum: 1
         maximum: 100
+      issue:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
 
   Application.Scan.Issue.Patch.Type:
     type: object
@@ -12704,6 +12997,9 @@ definitions:
             example: 1
           path:
             type: string
+      whitespaces_only:
+        type: boolean
+        example: false
 
   Application.Scan.Issue.Type.Resource:
     type: object
@@ -13284,10 +13580,9 @@ definitions:
       mode:
         type: string
         default: "LITERAL"
-        example: "REGEX"
+        example: "LITERAL"
         enum:
           - "LITERAL"
-          - "REGEX"
 
   Application.Profile.Sink:
     type: object
@@ -13393,10 +13688,9 @@ definitions:
       mode:
         type: string
         default: "LITERAL"
-        example: "REGEX"
+        example: "LITERAL"
         enum:
           - "LITERAL"
-          - "REGEX"
 
   Application.Scan.Digest:
     type: object
@@ -13410,6 +13704,10 @@ definitions:
         format: int32
         default: 0
       unresolved_methods:
+        type: integer
+        format: int32
+        default: 0
+      scanned_files:
         type: integer
         format: int32
         default: 0
@@ -14628,6 +14926,14 @@ definitions:
         type: string
         default: ""
         maxLength: 255
+      updateDatabase:
+        type: string
+        enum:
+          - "NO"
+          - "ONLINE"
+          - "PROVIDED"
+        default: "NO"
+        maxLength: 50
 
   Post.Sub.Application.Scan.Library:
     type: object
@@ -15230,6 +15536,9 @@ definitions:
         type: integer
         format: int64
         example: 1
+      whitespacesOnly:
+        type: boolean
+        example: false
     required:
       - content
       - file
@@ -15436,10 +15745,9 @@ definitions:
       mode:
         type: string
         default: "LITERAL"
-        example: "REGEX"
+        example: "LITERAL"
         enum:
           - "LITERAL"
-          - "REGEX"
 
   Patch.Sub.Application.Profile.Sanitizer:
     type: object
@@ -15463,10 +15771,9 @@ definitions:
       mode:
         type: string
         default: "LITERAL"
-        example: "REGEX"
+        example: "LITERAL"
         enum:
           - "LITERAL"
-          - "REGEX"
 
   Post.Sub.Application.Profile.Sink:
     type: object
@@ -15608,10 +15915,9 @@ definitions:
       mode:
         type: string
         default: "LITERAL"
-        example: "REGEX"
+        example: "LITERAL"
         enum:
           - "LITERAL"
-          - "REGEX"
 
   Patch.Sub.Application.Profile.Validator:
     type: object
@@ -15643,10 +15949,9 @@ definitions:
       mode:
         type: string
         default: "LITERAL"
-        example: "REGEX"
+        example: "LITERAL"
         enum:
           - "LITERAL"
-          - "REGEX"
 
   Post.Sub.OAuth2.Client:
     type: object
