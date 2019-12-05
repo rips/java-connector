@@ -26,7 +26,8 @@ class IssueHandler @JvmOverloads constructor(
 	private val appId: Long,
 	private val scanId: Long,
 	var timeoutInMinutes: Long = RipsDefault.SCAN_TIMEOUT_IN_MINUTES,
-	var pollIntervalInSeconds: Long = 10
+	var pollIntervalInSeconds: Long = 10,
+	var allowsCreatedAtFilter: Boolean = false
 ): MinimalLogging() {
 
 	override fun setLogger(logger: Consumer<String>): IssueHandler {
@@ -83,18 +84,27 @@ class IssueHandler @JvmOverloads constructor(
 
 	private fun fetchIssuesAndProcess(
 		filter: Filter = Filter(),
-		latestFetchedIssueId: Long,
+		offset: Long,
 		issueAction: (Issue) -> Unit
 	): Long {
+		if (allowsCreatedAtFilter) {
+			filter.orderBy("createdAt", Filter.Order.ASC).offset(offset)
+		} else {
+			filter.orderBy("id").json(greaterThan("id", offset))
+		}
 		return when (val result = api.application(appId)
 			.scan(scanId)
 			.issues()
-			.get(filter.orderBy("id").json(greaterThan("id", latestFetchedIssueId)))
+			.get(filter)
 			.result()) {
 			is Failure -> throw result.exception()
 			is Success -> {
 				result.value.forEach(issueAction)
-				result.value.map { it.id }.max() ?: 0
+				if (allowsCreatedAtFilter) {
+					result.value.size.toLong()
+				} else {
+					result.value.map { it.id }.max() ?: 0
+				}
 			}
 		}
 	}
