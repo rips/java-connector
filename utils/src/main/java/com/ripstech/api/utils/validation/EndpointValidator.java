@@ -7,6 +7,7 @@ import com.ripstech.api.connector.exception.ApiException;
 import com.ripstech.api.connector.service.queryparameter.Filter;
 import com.ripstech.api.utils.exception.IncompatibleApiVersionException;
 import com.ripstech.api.utils.exception.InvalidApiCredentialsException;
+import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class EndpointValidator {
+
+	static {
+		DomainValidator.updateTLDOverride(DomainValidator.ArrayType.GENERIC_PLUS, new String[]{
+				"corp",
+				"home",
+				"internal",
+				"intranet",
+				"lan",
+				"local",
+				"private",
+				"test"
+		});
+	}
 
 	@Deprecated
 	public static boolean compatibleWithApiVersion(@NotNull Api api, @NotNull ApiVersion supportedVersion) throws ApiException {
