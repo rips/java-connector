@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":api"))
+    api(project(":connector"))
     compileOnly(project(path = ":entity-gen", configuration = "generatedEntities"))
     implementation("commons-validator:commons-validator:1.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0")

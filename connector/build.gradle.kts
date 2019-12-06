@@ -58,7 +58,6 @@ val javadocJar by tasks.registering(Jar::class) {
 publishing {
     publications {
         create<MavenPublication>("connector") {
-            artifactId = "connector"
             from(components["java"])
             artifact(sourcesJar.get())
 	        artifact(javadocJar.get())

@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     constraints {
-        api(project(":api"))
+        api(project(":connector"))
         api(project(":utils"))
     }
 }

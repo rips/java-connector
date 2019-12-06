@@ -1,1 +1,1 @@
-include ("platform", "api", "api:app", "entity-gen", "utils")
+include ("platform", "connector", "connector:app", "entity-gen", "utils")
