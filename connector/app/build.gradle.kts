@@ -8,5 +8,5 @@ application {
 
 dependencies {
 	implementation(project(path = ":entity-gen", configuration = "generatedEntities"))
-	implementation(project(":api"))
+	implementation(project(":connector"))
 }
