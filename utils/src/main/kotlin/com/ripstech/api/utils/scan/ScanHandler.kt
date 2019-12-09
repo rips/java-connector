@@ -122,13 +122,13 @@ class ScanHandler @JvmOverloads constructor(
 	fun getIssueHandler(
 		timeoutInMinutes: Long? = null,
 		pollIntervalInSeconds: Long? = null,
-		allowsCreatedAtFilter: Boolean = false
+		allowsCreatedAtFilter: Boolean? = null
 	): IssueHandler {
 		return IssueHandler(api, appId, scan.id).apply {
 			setLogger(logger)
 			timeoutInMinutes?.let { this.timeoutInMinutes = it }
 			pollIntervalInSeconds?.let { this.pollIntervalInSeconds = it }
-			allowsCreatedAtFilter.let { this.allowsCreatedAtFilter = it }
+			allowsCreatedAtFilter?.let { this.allowsCreatedAtFilter = it }
 		}
 	}
 
