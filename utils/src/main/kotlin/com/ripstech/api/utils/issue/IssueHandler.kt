@@ -13,6 +13,7 @@ import com.ripstech.api.connector.Phase
 import com.ripstech.api.connector.exception.ApiException
 import com.ripstech.api.connector.service.queryparameter.Filter
 import com.ripstech.api.connector.service.queryparameter.JsonFilter.greaterThan
+import com.ripstech.api.utils.validation.ApiVersion
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -26,8 +27,26 @@ class IssueHandler @JvmOverloads constructor(
 	private val appId: Long,
 	private val scanId: Long,
 	var timeoutInMinutes: Long = RipsDefault.SCAN_TIMEOUT_IN_MINUTES,
-	var pollIntervalInSeconds: Long = 10
+	var pollIntervalInSeconds: Long = 10,
+	var allowsCreatedAtFilter: Boolean = false
 ): MinimalLogging() {
+
+	companion object {
+		val API_VERSION_333: ApiVersion = ApiVersion.parse("3.3.3")
+	}
+
+	init {
+		when(val result = api.status().get().result()) {
+			is Success -> result.value.version
+			is Failure -> null
+		}?.let {
+			runCatching {
+				ApiVersion.parse(it)
+			}.onSuccess {
+				allowsCreatedAtFilter = it.isGreaterEqualThan(API_VERSION_333)
+			}
+		}
+	}
 
 	override fun setLogger(logger: Consumer<String>): IssueHandler {
 		super.logger = logger
@@ -83,18 +102,27 @@ class IssueHandler @JvmOverloads constructor(
 
 	private fun fetchIssuesAndProcess(
 		filter: Filter = Filter(),
-		latestFetchedIssueId: Long,
+		offset: Long,
 		issueAction: (Issue) -> Unit
 	): Long {
+		if (allowsCreatedAtFilter) {
+			filter.orderBy("createdAt", Filter.Order.ASC).offset(offset)
+		} else {
+			filter.orderBy("id").json(greaterThan("id", offset))
+		}
 		return when (val result = api.application(appId)
 			.scan(scanId)
 			.issues()
-			.get(filter.orderBy("id").json(greaterThan("id", latestFetchedIssueId)))
+			.get(filter)
 			.result()) {
 			is Failure -> throw result.exception()
 			is Success -> {
 				result.value.forEach(issueAction)
-				result.value.map { it.id }.max() ?: 0
+				if (allowsCreatedAtFilter) {
+					result.value.size.toLong()
+				} else {
+					result.value.map { it.id }.max() ?: 0
+				}
 			}
 		}
 	}
