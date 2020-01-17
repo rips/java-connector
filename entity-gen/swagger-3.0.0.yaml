@@ -2132,14 +2132,14 @@ paths:
         Send invite e-mail
       operationId: postUsersInviteUi
       parameters:
-        - name: post.User.Invite.Ui
+        - name: post.User.Invite.Ui.User
           in: body
           required: true
           schema:
             type: object
             properties:
               user:
-                $ref: '#/definitions/Post.Sub.User.Invite.Ui'
+                $ref: '#/definitions/Post.Sub.User.Invite.Ui.User'
             required:
               - user
       responses:
@@ -14594,7 +14594,7 @@ definitions:
     required:
       - code
 
-  Post.Sub.User.Invite.Ui:
+  Post.Sub.User.Invite.Ui.User:
     type: object
     properties:
       firstname:
