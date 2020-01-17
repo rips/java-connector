@@ -2130,7 +2130,7 @@ paths:
     post:
       description: |
         Send invite e-mail
-      operationId: postUsersInviteUi
+      operationId: postUsersInviteUiUser
       parameters:
         - name: post.User.Invite.Ui.User
           in: body

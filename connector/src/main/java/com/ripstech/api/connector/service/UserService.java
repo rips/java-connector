@@ -39,7 +39,7 @@ public class UserService extends DeletePostGetService<User, UserSend> {
 		                         Void.class);
 	}
 
-	public ApiResponse<Void> inviteUi(com.ripstech.api.entity.send.user.invite.UiSend reset) {
+	public ApiResponse<Void> inviteUi(com.ripstech.api.entity.send.user.invite.ui.UserSend reset) {
 		return new ApiResponse<>(getTarget(POST)
 				                         .appendPath("invite/ui")
 				                         .setJsonBody(reset)
