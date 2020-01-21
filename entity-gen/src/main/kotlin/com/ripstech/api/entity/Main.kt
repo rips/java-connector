@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
 
     var logger = Log.logger
 
-    val openAPI = OpenAPIV3Parser().read("swagger-3.0.0.yaml")
+    val openAPI = OpenAPIV3Parser().read("swagger.yaml")
 
 
     val receiveEntities = openAPI.components
