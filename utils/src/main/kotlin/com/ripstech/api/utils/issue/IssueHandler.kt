@@ -100,6 +100,17 @@ class IssueHandler @JvmOverloads constructor(
 		}
 	}
 
+	suspend fun processAllIssuesAsync(
+			filter: Filter = Filter(),
+			issueAction: Issue.() -> Unit
+	) {
+		checkProgressWhileFinished(0L) {
+			fetchIssuesAndProcess(filter, it) { issue ->
+				issueAction.invoke(issue)
+			}
+		}
+	}
+
 	private fun fetchIssuesAndProcess(
 		filter: Filter = Filter(),
 		offset: Long,
