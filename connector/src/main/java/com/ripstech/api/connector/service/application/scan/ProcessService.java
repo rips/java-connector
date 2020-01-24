@@ -2,7 +2,7 @@ package com.ripstech.api.connector.service.application.scan;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.ripstech.api.connector.ApiResponse;
-import com.ripstech.api.connector.service.template.PostGetService;
+import com.ripstech.api.connector.service.template.PatchDeletePostGetService;
 import com.ripstech.api.entity.receive.application.scan.Process;
 import com.ripstech.api.entity.send.application.scan.ProcessSend;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static com.ripstech.api.connector.service.template.GenericService.HttpMethod.PATCH;
 
-public class ProcessService extends PostGetService<Process, ProcessSend.Post> {
+public class ProcessService extends PatchDeletePostGetService<Process, ProcessSend.Post> {
 
 	private final long applicationId;
 	private final long scanId;
