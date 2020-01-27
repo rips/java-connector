@@ -15,6 +15,7 @@ import com.ripstech.api.connector.service.queryparameter.Filter
 import com.ripstech.api.connector.service.queryparameter.JsonFilter.greaterThan
 import com.ripstech.api.utils.validation.ApiVersion
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
@@ -166,7 +167,7 @@ class IssueHandler @JvmOverloads constructor(
 			var failCounter = 0
 			var lastPercent = progress.percent
 			var actionState = initValue
-			while (!progress.isScanFinished()) {
+			while (!progress.isScanFinished() && isActive) {
 				runCatching {
 					progress = getScanProgress()
 				}.onFailure {
