@@ -15,6 +15,7 @@ import com.ripstech.api.connector.service.queryparameter.Filter
 import com.ripstech.api.connector.service.queryparameter.JsonFilter.greaterThan
 import com.ripstech.api.utils.validation.ApiVersion
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
@@ -80,30 +81,55 @@ class IssueHandler @JvmOverloads constructor(
 	@JvmOverloads
 	fun processAllIssues(
 		filter: Filter = Filter(),
-		issueAction: Consumer<Issue>
+		issueAction: Consumer<Issue>,
+		chunkAction: Runnable
 	) {
-		processAllIssues(filter) { issueAction.accept(this) }
+		processAllIssues(
+				filter,
+				{ issueAction.accept(this) },
+				{ chunkAction.run() }
+		)
 	}
 
 	@Throws(ApiException::class, TimeoutException::class)
 	@JvmSynthetic
 	fun processAllIssues(
 		filter: Filter = Filter(),
-		issueAction: Issue.() -> Unit
+		issueAction: Issue.() -> Unit,
+		chunkAction: () -> Unit = { }
 	) {
 		runBlocking {
 			checkProgressWhileFinished(0L) {
-				fetchIssuesAndProcess(filter, it) { issue ->
-					issueAction.invoke(issue)
-				}
+				fetchIssuesAndProcess(
+						filter,
+						it,
+						issueAction::invoke,
+						chunkAction
+				)
 			}
+		}
+	}
+
+	suspend fun processAllIssuesAsync(
+			filter: Filter = Filter(),
+			issueAction: Issue.() -> Unit,
+			chunkAction: () -> Unit = { }
+	) {
+		checkProgressWhileFinished(0L) {
+			fetchIssuesAndProcess(
+					filter,
+					it,
+					issueAction::invoke,
+					chunkAction
+			)
 		}
 	}
 
 	private fun fetchIssuesAndProcess(
 		filter: Filter = Filter(),
 		offset: Long,
-		issueAction: (Issue) -> Unit
+		issueAction: (Issue) -> Unit,
+		chunkAction: () -> Unit
 	): Long {
 		if (allowsCreatedAtFilter) {
 			filter.orderBy("createdAt", Filter.Order.ASC).offset(offset)
@@ -122,7 +148,7 @@ class IssueHandler @JvmOverloads constructor(
 					result.value.size.toLong()
 				} else {
 					result.value.map { it.id }.max() ?: 0
-				}
+				}.also { chunkAction() }
 			}
 		}
 	}
@@ -141,7 +167,7 @@ class IssueHandler @JvmOverloads constructor(
 			var failCounter = 0
 			var lastPercent = progress.percent
 			var actionState = initValue
-			while (!progress.isScanFinished()) {
+			while (!progress.isScanFinished() && isActive) {
 				runCatching {
 					progress = getScanProgress()
 				}.onFailure {

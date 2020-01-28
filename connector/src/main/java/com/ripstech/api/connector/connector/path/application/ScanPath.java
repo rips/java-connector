@@ -91,4 +91,11 @@ public class ScanPath extends Path {
 		return service;
 	}
 
+	@SuppressWarnings("unused")
+	public LibraryService libraries() {
+		LibraryService service = new LibraryService(baseUri, applicationId, scanId);
+		setPrefs(service);
+		return service;
+	}
+
 }
