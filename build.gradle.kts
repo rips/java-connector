@@ -5,6 +5,7 @@ plugins {
     `java-library`
     `maven-publish`
 	id("net.ltgt.errorprone") version "0.7.1"
+    id("com.github.jk1.dependency-license-report") version "1.13"
     kotlin("jvm") version "1.3.50" apply false
 }
 
@@ -55,6 +56,12 @@ configure(subprojects.filterNot { it.name == "platform" }) {
         }
 
     }
+}
+
+licenseReport {
+//    excludeGroups = arrayOf("com.ripstech.obfuscator")
+    renderers = arrayOf<com.github.jk1.license.render.ReportRenderer>(com.github.jk1.license.render.CsvReportRenderer())
+    allowedLicensesFile = File("$projectDir/scripts/allowed-licenses.json")
 }
 
 subprojects {
