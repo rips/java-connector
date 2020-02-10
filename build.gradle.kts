@@ -1,3 +1,5 @@
+import com.github.jk1.license.render.CsvReportRenderer
+import com.github.jk1.license.render.ReportRenderer
 import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -58,10 +60,17 @@ configure(subprojects.filterNot { it.name == "platform" }) {
     }
 }
 
+tasks {
+    check {
+        dependsOn(checkLicense)
+    }
+}
+
 licenseReport {
-//    excludeGroups = arrayOf("com.ripstech.obfuscator")
-    renderers = arrayOf<com.github.jk1.license.render.ReportRenderer>(com.github.jk1.license.render.CsvReportRenderer())
-    allowedLicensesFile = File("$projectDir/scripts/allowed-licenses.json")
+    // The entity-gen runtime deps are no real runtime dependencies
+    projects = (allprojects - project(":entity-gen")).toTypedArray()
+    renderers = arrayOf<ReportRenderer>(CsvReportRenderer())
+    allowedLicensesFile = projectDir.resolve("scripts/allowed-licenses.json")
 }
 
 subprojects {
