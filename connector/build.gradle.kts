@@ -6,8 +6,8 @@ plugins {
 
 val includeInJar: Configuration by configurations.creating
 configurations {
-    compileClasspath.get().extendsFrom(includeInJar)
-    testImplementation.get().extendsFrom(includeInJar)
+    implementation.get().extendsFrom(includeInJar)
+    //testImplementation.get().extendsFrom(includeInJar)
 }
 
 repositories {
@@ -29,7 +29,7 @@ dependencies {
     }
     implementation("com.squareup.okhttp3:okhttp:3.12.1")
 
-    testCompile("org.reflections:reflections:0.9.11")
+    testCompileOnly("org.reflections:reflections:0.9.11")
     testImplementation("com.github.JensPiegsa:wiremock-extension:0.4.0")
 }
 
