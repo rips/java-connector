@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.11.0] - 2020-02-17
+
+### Added
+
+* Invite an organization
+
 
 ## [3.10.0] - 2020-01-28
 
