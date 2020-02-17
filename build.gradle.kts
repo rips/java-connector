@@ -13,7 +13,7 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.10.0"
+    version = "3.11.0"
 }
 
 configure(subprojects.filterNot { it.name == "platform" }) {
