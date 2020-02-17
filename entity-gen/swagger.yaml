@@ -1,10 +1,10 @@
 swagger: '2.0'
 
 info:
-  version: "3.3.9"
+  version: "3.4.3-7-g13a5bbd0"
   title: "RIPS API"
   description: |
-    RIPS is a static code analysis tool to automatically detect taint-style vulnerabilities in PHP and Java applications.
+    RIPS is a static code analysis tool to automatically detect taint-style vulnerabilities in PHP, Java, and JavaScript applications.
   contact:
     name: "RIPS Technologies GmbH"
     url: "https://www.ripstech.com"
@@ -87,10 +87,10 @@ paths:
         Get a specific Language
       operationId: getLanguage
       parameters:
-      - name: languageId
-        in: path
-        required: true
-        type: integer
+        - name: languageId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -778,6 +778,34 @@ paths:
         403:
           description: Missing permissions
 
+  /organizations/invite/ui:
+    post:
+      description: |
+        Invite an organization for a trial
+        operationId: postOrganizationInvite
+        security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: post.Organization.Invite.Ui
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              invitation:
+                $ref: '#/definitions/Post.Sub.Organization.Invite.Ui'
+            required:
+              - invitation
+      responses:
+        200:
+          description: Successful
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
+
   /organizations/{organizationId}:
     get:
       description: |
@@ -851,6 +879,197 @@ paths:
           description: Invalid input
         403:
           description: Missing permissions
+        404:
+          description: Not found
+
+  /organizations/{organizationId}/settings:
+    get:
+      description: |
+        Get all organization settings
+
+        #### Available Filters
+          | Column       | Restrictions            |
+          | ------------ | ----------------------- |
+          | key          |                         |
+          | value        |                         |
+          | createdAt    |                         |
+          | organization | - Requires ROLE_ADMIN   |
+      operationId: getOrganizationSettings
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Organization.Setting'
+    delete:
+      description: |
+        Delete all organization settings
+
+        #### Available Filters
+          | Column       | Restrictions            |
+          | ------------ | ----------------------- |
+          | key          |                         |
+          | value        |                         |
+          | createdAt    |                         |
+          | organization | - Requires ROLE_ADMIN   |
+      operationId: deleteMultipleOrganizationSettings
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
+        - name: orderBy
+          in: query
+          type: string
+          description: A JSON-encoded orderBy object (see 'Available Filters').
+        - name: select
+          in: query
+          type: string
+          description: A JSON-encoded select object (see 'Available Filters').
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 500
+          default: 500
+          description: Limits the number of elements in the collection.
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: Changes the offset in the collection.
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      responses:
+        200:
+          description: Successful
+
+  /organizations/{organizationId}/settings/{key}:
+    get:
+      description: |
+        Get a specific organization setting
+      operationId: getOrganizationSetting
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          type: integer
+        - name: key
+          in: path
+          required: true
+          type: string
+          maxLength: 180
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Organization.Setting'
+        404:
+          description: Not found
+    delete:
+      description: |
+        Delete a specific organization setting
+      operationId: deleteOrganizationSetting
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          type: integer
+        - name: key
+          in: path
+          required: true
+          type: string
+          maxLength: 180
+      responses:
+        200:
+          description: Successful
+        404:
+          description: Not found
+    put:
+      description: |
+        Add or update organization setting
+      operationId: putOrganizationSetting
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: organizationId
+          in: path
+          required: true
+          type: integer
+        - name: key
+          in: path
+          required: true
+          type: string
+          maxLength: 180
+        - name: put.Setting
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              setting:
+                $ref: '#/definitions/Put.Sub.Organization.Setting'
+            required:
+              - setting
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Organization.Setting'
+        400:
+          description: Invalid input
         404:
           description: Not found
 
@@ -1342,9 +1561,9 @@ paths:
           default: 0
           description: Changes the offset in the collection.
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       responses:
         200:
           description: Successful
@@ -1391,9 +1610,9 @@ paths:
           default: 0
           description: Changes the offset in the collection.
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       responses:
         200:
           description: Successful
@@ -1402,20 +1621,20 @@ paths:
         Add a new callback
       operationId: postcallback
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: post.Callback
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            callback:
-              $ref: '#/definitions/Post.Sub.Callback'
-          required:
-          - callback
+        - name: post.Callback
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              callback:
+                $ref: '#/definitions/Post.Sub.Callback'
+            required:
+              - callback
       responses:
         200:
           description: Successful
@@ -1432,14 +1651,14 @@ paths:
         Get a specific callback
       operationId: getCallback
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: callbackId
-        in: path
-        required: true
-        type: integer
+        - name: callbackId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -1454,14 +1673,14 @@ paths:
         Delete a specific callback
       operationId: deleteCallback
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: callbackId
-        in: path
-        required: true
-        type: integer
+        - name: callbackId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -1474,22 +1693,22 @@ paths:
         Update an existing callback
       operationId: patchCallback
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: callbackId
-        in: path
-        required: true
-        type: integer
-      - name: patch.Callback
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            callback:
-              $ref: '#/definitions/Patch.Sub.Callback'
+        - name: callbackId
+          in: path
+          required: true
+          type: integer
+        - name: patch.Callback
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              callback:
+                $ref: '#/definitions/Patch.Sub.Callback'
       responses:
         200:
           description: Successful
@@ -1841,7 +2060,7 @@ paths:
     get:
       description: |
         Get all users statistics with permissions for current user
-  
+
         #### Available Filters
           | Column             | Restrictions          |
           | ------------------ | --------------------- |
@@ -2660,14 +2879,16 @@ paths:
         Get all artifacts for application
 
         #### Available Filters
-          | Column     | Restrictions  |
-          | ---------- | ------------- |
-          | id         |               |
-          | createdAt  |               |
-          | name       |               |
-          | path       |               |
-          | createdBy  |               |
-          | scan       |               |
+          | Column       | Restrictions  |
+          | ------------ | ------------- |
+          | id           |               |
+          | createdAt    |               |
+          | name         |               |
+          | path         |               |
+          | createdBy    |               |
+          | scan         |               |
+          | process      |               |
+          | incompatible |               |
       operationId: getApplicationArtifacts
       security:
         - email: []
@@ -2717,14 +2938,16 @@ paths:
         Delete all artifacts for application
 
         #### Available Filters
-          | Column     | Restrictions  |
-          | ---------- | ------------- |
-          | id         |               |
-          | createdAt  |               |
-          | name       |               |
-          | path       |               |
-          | createdBy  |               |
-          | scan       |               |
+          | Column       | Restrictions  |
+          | ------------ | ------------- |
+          | id           |               |
+          | createdAt    |               |
+          | name         |               |
+          | path         |               |
+          | createdBy    |               |
+          | scan         |               |
+          | process      |               |
+          | incompatible |               |
       operationId: deleteMultipleApplicationArtifacts
       security:
         - email: []
@@ -2849,6 +3072,42 @@ paths:
           description: Missing permissions
         404:
           description: Not found
+    patch:
+      description: |
+        Update an existing artifact
+      operationId: patchApplicationArtifact
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: artifactId
+          in: path
+          required: true
+          type: integer
+        - name: patch.Application.Artifact
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              artifact:
+                $ref: '#/definitions/Patch.Sub.Application.Artifact'
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Artifact'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
 
   /applications/uploads/all:
     get:
@@ -3109,27 +3368,28 @@ paths:
         Get statistics about all applications with permissions for current user
 
         #### Available Filters
-          | Column          | Restrictions             |
-          | --------------- | ------------------------ |
-          | id              |                          |
-          | version         |                          |
-          | upload          |                          |
-          | phase           |                          |
-          | percent         |                          |
-          | loc             |                          |
-          | codeStored      |                          |
-          | uploadRemoved   |                          |
-          | createdBy       |                          |
-          | profile         |                          |
-          | parent          |                          |
-          | startedAt       |                          |
-          | finishedAt      |                          |
-          | analysisDepth   |                          |
-          | application     |                          |
-          | applicationName |                          |
-          | path            | - Not available in cloud |
-          | comment         |                          |
-          | server          | - Requires ROLE_WORKER   |
+          | Column           | Restrictions             |
+          | ---------------- | ------------------------ |
+          | id               |                          |
+          | version          |                          |
+          | upload           |                          |
+          | phase            |                          |
+          | percent          |                          |
+          | loc              |                          |
+          | codeStored       |                          |
+          | uploadRemoved    |                          |
+          | createdBy        |                          |
+          | profile          |                          |
+          | parent           |                          |
+          | startedAt        |                          |
+          | finishedAt       |                          |
+          | analysisDepth    |                          |
+          | application      |                          |
+          | applicationName  |                          |
+          | path             | - Not available in cloud |
+          | comment          |                          |
+          | server           | - Requires ROLE_WORKER   |
+          | workerFinishedAt |                          |
       operationId: getApplicationsScansStats
       parameters:
         - name: filter
@@ -3173,26 +3433,27 @@ paths:
         Get stats about all scans of one application
 
         #### Available Filters
-          | Column        | Restrictions             |
-          | ------------- | ------------------------ |
-          | id            |                          |
-          | version       |                          |
-          | upload        |                          |
-          | phase         |                          |
-          | percent       |                          |
-          | loc           |                          |
-          | codeStored    |                          |
-          | uploadRemoved |                          |
-          | createdBy     |                          |
-          | profile       |                          |
-          | parent        |                          |
-          | startedAt     |                          |
-          | finishedAt    |                          |
-          | analysisDepth |                          |
-          | application   |                          |
-          | path          | - Not available in cloud |
-          | comment       |                          |
-          | server        | - Requires ROLE_WORKER   |
+          | Column           | Restrictions             |
+          | ---------------- | ------------------------ |
+          | id               |                          |
+          | version          |                          |
+          | upload           |                          |
+          | phase            |                          |
+          | percent          |                          |
+          | loc              |                          |
+          | codeStored       |                          |
+          | uploadRemoved    |                          |
+          | createdBy        |                          |
+          | profile          |                          |
+          | parent           |                          |
+          | startedAt        |                          |
+          | finishedAt       |                          |
+          | analysisDepth    |                          |
+          | application      |                          |
+          | path             | - Not available in cloud |
+          | comment          |                          |
+          | server           | - Requires ROLE_WORKER   |
+          | workerFinishedAt |                          |
       operationId: getApplicationScansStats
       security:
         - email: []
@@ -3357,6 +3618,8 @@ paths:
           | createdByEmail    | - Requires ROLE_ADMIN or ROLE_SUPPORT       |
           | comment           |                                             |
           | server            | - Requires ROLE_WORKER or ROLE_ADMIN        |
+          | source            |                                             |
+          | workerFinishedAt  |                                             |
       operationId: getApplicationsScansAll
       parameters:
         - name: filter
@@ -3402,26 +3665,28 @@ paths:
         Get all scans of one application
 
         #### Available Filters
-          | Column        | Restrictions                         |
-          | ------------- | ------------------------------------ |
-          | id            |                                      |
-          | version       |                                      |
-          | upload        |                                      |
-          | phase         |                                      |
-          | percent       |                                      |
-          | loc           |                                      |
-          | codeStored    |                                      |
-          | uploadRemoved |                                      |
-          | createdBy     |                                      |
-          | profile       |                                      |
-          | parent        |                                      |
-          | startedAt     |                                      |
-          | finishedAt    |                                      |
-          | analysisDepth |                                      |
-          | application   |                                      |
-          | path          | - Not available in cloud             |
-          | comment       |                                      |
-          | server        | - Requires ROLE_WORKER or ROLE_ADMIN |
+          | Column           | Restrictions                         |
+          | ---------------- | ------------------------------------ |
+          | id               |                                      |
+          | version          |                                      |
+          | upload           |                                      |
+          | phase            |                                      |
+          | percent          |                                      |
+          | loc              |                                      |
+          | codeStored       |                                      |
+          | uploadRemoved    |                                      |
+          | createdBy        |                                      |
+          | profile          |                                      |
+          | parent           |                                      |
+          | startedAt        |                                      |
+          | finishedAt       |                                      |
+          | analysisDepth    |                                      |
+          | application      |                                      |
+          | path             | - Not available in cloud             |
+          | comment          |                                      |
+          | server           | - Requires ROLE_WORKER or ROLE_ADMIN |
+          | source           |                                      |
+          | workerFinishedAt |                                      |
       operationId: getApplicationScans
       security:
         - email: []
@@ -5005,6 +5270,8 @@ paths:
           | createdAt          |              |
           | commentsCount      |              |
           | patchesCount       |              |
+          | complete           |              |
+          | ignored            |              |
       operationId: getApplicationScanIssuesStats
       security:
         - email: []
@@ -6045,26 +6312,26 @@ paths:
           | typeTag |              |
       operationId: getApplicationScanIssuePatches
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: applicationId
-        in: path
-        required: true
-        type: integer
-      - name: scanId
-        in: path
-        required: true
-        type: integer
-      - name: issueId
-        in: path
-        required: true
-        type: integer
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: issueId
+          in: path
+          required: true
+          type: integer
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
       responses:
         200:
           description: Successful
@@ -6079,36 +6346,36 @@ paths:
         Add a new patch and related data to issue
       operationId: postApplicationScanIssuePatch
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: applicationId
-        in: path
-        required: true
-        type: integer
-      - name: scanId
-        in: path
-        required: true
-        type: integer
-      - name: issueId
-        in: path
-        required: true
-        type: integer
-      - name: post.Application.Scan.Issue
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            patch:
-              $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Patch'
-            modifications:
-              type: array
-              items:
-                $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Patch.Modification'
-          required:
-          - patch
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: issueId
+          in: path
+          required: true
+          type: integer
+        - name: post.Application.Scan.Issue
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              patch:
+                $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Patch'
+              modifications:
+                type: array
+                items:
+                  $ref: '#/definitions/Post.Sub.Application.Scan.Issue.Patch.Modification'
+            required:
+              - patch
       responses:
         200:
           description: Successful
@@ -6125,26 +6392,26 @@ paths:
         Get a specific patch
       operationId: getApplicationScanIssuePatch
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: applicationId
-        in: path
-        required: true
-        type: integer
-      - name: scanId
-        in: path
-        required: true
-        type: integer
-      - name: issueId
-        in: path
-        required: true
-        type: integer
-      - name: patchId
-        in: path
-        required: true
-        type: integer
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: issueId
+          in: path
+          required: true
+          type: integer
+        - name: patchId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -6250,10 +6517,10 @@ paths:
           | type     |              |
       operationId: getApplicationsScansIssuesTypesPatches
       parameters:
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
       responses:
         200:
           description: Successful
@@ -6268,10 +6535,10 @@ paths:
         Get a specific issue type patch
       operationId: getApplicationsScansIssuesTypesPatch
       parameters:
-      - name: patchId
-        in: path
-        required: true
-        type: integer
+        - name: patchId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -6332,10 +6599,10 @@ paths:
         Get a specific origin type
       operationId: getApplicationsScansOriginsType
       parameters:
-      - name: typeId
-        in: path
-        required: true
-        type: integer
+        - name: typeId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -6486,10 +6753,10 @@ paths:
           | name     |              |
       operationId: getApplicationsScansIssuesPatchesTypes
       parameters:
-      - name: filter
-        in: query
-        type: string
-        description: A JSON-encoded filter object (see 'Available Filters').
+        - name: filter
+          in: query
+          type: string
+          description: A JSON-encoded filter object (see 'Available Filters').
       responses:
         200:
           description: Successful
@@ -6504,10 +6771,10 @@ paths:
         Get a specific review type
       operationId: getApplicationsScansIssuesPatchesType
       parameters:
-      - name: typeId
-        in: path
-        required: true
-        type: integer
+        - name: typeId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -6913,12 +7180,44 @@ paths:
             $ref: '#/definitions/Application.Scan.Export.Pdf.Queue'
         403:
           description: Missing permissions
+    get:
+      description: |
+        Get all generated queued pdf
+
+        #### Available Filters
+          | Column             | Restrictions |
+          | ------------------ | ------------ |
+          | id                 |              |
+          | startedAt          |              |
+          | finishedAt         |              |
+      operationId: getApplicationScanExportPdfQueues
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Application.Scan.Export.Pdf.Queue'
+        403:
+          description: Missing permissions
 
   /applications/{applicationId}/scans/{scanId}/exports/pdfs/queues/{queueId}:
     get:
       description: |
         Get information about queued pdf
-
       operationId: getApplicationScanExportPdfQueue
       security:
         - email: []
@@ -6946,12 +7245,39 @@ paths:
           description: Missing permissions
         404:
           description: Not found
+    delete:
+      description: |
+        Delete queued pdf
+      operationId: deleteApplicationScanExportPdfQueue
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+        - name: scanId
+          in: path
+          required: true
+          type: integer
+        - name: queueId
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Successful
+        403:
+          description: Missing permissions
+        404:
+          description: Not found
 
   /applications/{applicationId}/scans/{scanId}/exports/pdfs/queues/{queueId}/downloads:
     get:
       description: |
         Download queued pdf
-
       operationId: getApplicationScanExportPdfQueueDownload
       security:
         - email: []
@@ -7174,42 +7500,42 @@ paths:
           description: Missing permissions
 
   /applications/{applicationId}/profiles/{profileId}/clone:
-      post:
-        description: |
-          Clone an existing profile
-        operationId: postApplicationScanProfileClone
-        security:
-          - email: []
-            password: []
-          - oauth2: []
-        parameters:
-          - name: applicationId
-            in: path
-            required: true
-            type: integer
-            description: Set to 0 to create application independent profile.
-          - name: profileId
-            in: path
-            required: true
-            type: integer
-            description: The id of the profile that should be cloned.
-          - name: Post.Application.Profile.Clone
-            in: body
-            required: true
-            schema:
-              type: object
-              properties:
-                profile:
-                  $ref: '#/definitions/Post.Sub.Application.Profile.Clone'
-        responses:
-          200:
-            description: Successful
-            schema:
-              $ref: '#/definitions/Application.Profile'
-          400:
-            description: Invalid input
-          403:
-            description: Missing permissions
+    post:
+      description: |
+        Clone an existing profile
+      operationId: postApplicationScanProfileClone
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          type: integer
+          description: Set to 0 to create application independent profile.
+        - name: profileId
+          in: path
+          required: true
+          type: integer
+          description: The id of the profile that should be cloned.
+        - name: Post.Application.Profile.Clone
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              profile:
+                $ref: '#/definitions/Post.Sub.Application.Profile.Clone'
+      responses:
+        200:
+          description: Successful
+          schema:
+            $ref: '#/definitions/Application.Profile'
+        400:
+          description: Invalid input
+        403:
+          description: Missing permissions
 
   /applications/{applicationId}/profiles/globals:
     get:
@@ -9766,7 +10092,7 @@ paths:
               email:
                 $ref: '#/definitions/Put.Sub.System.Email'
             required:
-              - ldap
+              - email
       responses:
         200:
           description: Successful
@@ -9774,6 +10100,32 @@ paths:
             $ref: '#/definitions/System.Email'
         400:
           description: Bad request
+
+  /systems/emails/tests:
+    post:
+      description: |
+        Test e-mail settings
+      operationId: postSystemEmailTest
+      security:
+        - email: []
+          password: []
+        - oauth2: []
+      parameters:
+        - name: post.System.Email.Test
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              test:
+                $ref: '#/definitions/Post.Sub.System.Email.Test'
+            required:
+              - test
+      responses:
+        200:
+          description: Successful
+        400:
+          description: Invalid e-mail settings
 
   /systems/ldap:
     get:
@@ -9984,6 +10336,14 @@ paths:
           in: path
           required: true
           type: integer
+        - name: patch.Server.System
+          in: body
+          required: false
+          schema:
+            type: object
+            properties:
+              system:
+                $ref: '#/definitions/Patch.Sub.Server.System'
       responses:
         200:
           description: Successful
@@ -10352,20 +10712,20 @@ paths:
         Create a notification subscription
       operationId: postNotificationSubscription
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: post.Notification.Subscription
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            subscription:
-              $ref: '#/definitions/Post.Sub.Notification.Subscription'
-          required:
-            - subscription
+        - name: post.Notification.Subscription
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              subscription:
+                $ref: '#/definitions/Post.Sub.Notification.Subscription'
+            required:
+              - subscription
       responses:
         200:
           description: Successful
@@ -10408,24 +10768,24 @@ paths:
         Update a notification subscription
       operationId: patchNotificationSubscription
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: subscriptionId
-        in: path
-        required: true
-        type: integer
-      - name: patch.Notification.Subscription
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            subscription:
-              $ref: '#/definitions/Patch.Sub.Notification.Subscription'
-          required:
-            - subscription
+        - name: subscriptionId
+          in: path
+          required: true
+          type: integer
+        - name: patch.Notification.Subscription
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              subscription:
+                $ref: '#/definitions/Patch.Sub.Notification.Subscription'
+            required:
+              - subscription
       responses:
         200:
           description: Successful
@@ -10442,14 +10802,14 @@ paths:
         Delete a specific notification subscription
       operationId: deleteNotificationSubscription
       security:
-      - email: []
-        password: []
-      - oauth2: []
+        - email: []
+          password: []
+        - oauth2: []
       parameters:
-      - name: subscriptionId
-        in: path
-        required: true
-        type: integer
+        - name: subscriptionId
+          in: path
+          required: true
+          type: integer
       responses:
         200:
           description: Successful
@@ -10470,7 +10830,6 @@ paths:
           | --------------------- | ------------ |
           | id                    |              |
           | eventType             |              |
-          | userId                |              |
           | createdAt             |              |
           | fetchedAt             |              |
           | readAt                |              |
@@ -11299,6 +11658,58 @@ definitions:
         type: integer
         format: int32
         example: 5
+      created_at:
+        type: string
+        format: date-time
+        example: "2017-02-23T14:24:44+0100"
+
+  Organization.Setting:
+    type: object
+    properties:
+      key:
+        type: string
+        maxLength: 180
+        example: "setting_key"
+        enum:
+          - health_module_database
+          - health_module_disk
+          - health_module_ldap
+          - health_module_memory
+          - health_module_product
+          - health_module_queue
+          - health_module_security
+          - health_module_storage
+          - health_module_cache
+      organization:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          name:
+            type: string
+            maxLength: 180
+      value:
+        type: string
+        maxLength: 1000000
+        example: "zero"
+      created_at:
+        type: string
+        format: date-time
+        example: "2017-02-16T17:05:25+0100"
+      created_by:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          email:
+            type: string
+            format: email
+            minLength: 3
+            maxLength: 180
 
   Quota:
     type: object
@@ -11753,6 +12164,35 @@ definitions:
             type: integer
             format: int64
             example: 1
+      process:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          version:
+            type: string
+            maxLength: 50
+            example: "3.0.0"
+          name:
+            type: string
+            maxLength: 50
+            example: "php-engine"
+            enum:
+              - php-engine
+              - java-engine
+              - javascript-engine
+              - php-preparser
+              - php-patchgen
+              - java-patchgen
+              - java-db-processing
+              - java-db-preprocessing
+              - java-db-postprocessing
+      incompatible:
+        type: boolean
+        default: false
+        example: true
 
   Application.Upload:
     type: object
@@ -11825,6 +12265,10 @@ definitions:
         type: string
         format: date-time
         example: "2017-02-16T17:05:51+0100"
+      worker_finished_at:
+        type: string
+        format: date-time
+        example: "2017-02-16T17:05:55+0100"
       phase:
         type: integer
         format: int32
@@ -11836,8 +12280,8 @@ definitions:
           | 1      | Loading files                    |
           | 2      | Parsing code                     |
           | 3      | Scanning code                    |
-          | 4      | Uncalled functions               |
-          | 5      | Second-order vulnerabilities     |
+          | 4      | Libraries database generation    |
+          | 5      | Waiting for issues               |
           | 6      | Scan automatically aborted       |
           | 7      | Scan aborted by user             |
           | 10     | Scan in queue                    |
@@ -12701,8 +13145,8 @@ definitions:
           | 1      | Loading files                    |
           | 2      | Parsing code                     |
           | 3      | Scanning code                    |
-          | 4      | Uncalled functions               |
-          | 5      | Second-order vulnerabilities     |
+          | 4      | Libraries database generation    |
+          | 5      | Waiting for issues               |
           | 6      | Scan automatically aborted       |
           | 7      | Scan aborted by user             |
           | 10     | Scan in queue                    |
@@ -12737,6 +13181,7 @@ definitions:
         enum:
           - php-engine
           - java-engine
+          - javascript-engine
           - php-preparser
           - php-patchgen
           - java-patchgen
@@ -12785,6 +13230,10 @@ definitions:
         type: integer
         format: int32
         example: 1
+      created_at:
+        type: string
+        format: date-time
+        example: "2017-02-16T11:52:26+0100"
       type:
         type: object
         properties:
@@ -13102,6 +13551,11 @@ definitions:
         format: int32
         default: 0
         example: 3
+      contexts_count:
+        type: integer
+        format: int32
+        default: 0
+        example: 3
       patches_count:
         type: integer
         format: int32
@@ -13163,7 +13617,7 @@ definitions:
     properties:
       id:
         type: integer
-        format: int32
+        format: int64
         example: 1
       type:
         type: string
@@ -14065,6 +14519,7 @@ definitions:
           - "RETURN_FALSE"
           - "RETURN_TRUE"
           - "EXIT"
+          - "THROW_EXCEPTION"
       mode:
         type: string
         default: "LITERAL"
@@ -14084,6 +14539,18 @@ definitions:
         format: int32
         default: 0
       unresolved_methods:
+        type: integer
+        format: int32
+        default: 0
+      resolved_functions:
+        type: integer
+        format: int32
+        default: 0
+      resolved_classes:
+        type: integer
+        format: int32
+        default: 0
+      resolved_methods:
         type: integer
         format: int32
         default: 0
@@ -14382,6 +14849,27 @@ definitions:
         type: string
         format: date-time
         example: "1457-09-05T11:52:26+0100"
+      ami:
+        type: string
+        maxLength: 120
+      system:
+        $ref: '#/definitions/Server.System'
+
+  Server.System:
+    type: object
+    properties:
+      memory_used:
+        type: integer
+        format: int32
+      disk_space_free:
+        type: integer
+        format: int32
+      disk_space_available:
+        type: integer
+        format: int32
+      cpu_usage:
+        type: integer
+        format: int32
 
   Notification.Type:
     type: object
@@ -14412,6 +14900,8 @@ definitions:
           | 5      | New comment event                |
           | 6      | New user event                   |
           | 7      | New exploitable review event     |
+          | 8      | Summary statistics               |
+          | 9      | Summary for Health Check         |
         enum:
           - 1
           - 2
@@ -14420,12 +14910,17 @@ definitions:
           - 5
           - 6
           - 7
+          - 8
+          - 9
       user:
         type: object
         properties:
           id:
             type: integer
             format: int64
+      summary_interval:
+        type: string
+        maxLength: 20
       scan:
         type: object
         properties:
@@ -14466,6 +14961,8 @@ definitions:
           | 5      | New comment event                |
           | 6      | New user event                   |
           | 7      | New exploitable review event     |
+          | 8      | Summary statistics               |
+          | 9      | Summary for Health Check         |
           | 100    | Mail notification failed         |
         enum:
           - 1
@@ -14475,6 +14972,8 @@ definitions:
           - 5
           - 6
           - 7
+          - 8
+          - 9
           - 100
       user:
         type: object
@@ -14606,6 +15105,79 @@ definitions:
         example: 5
     required:
       - name
+
+  Post.Sub.Organization.Invite.Ui:
+    type: object
+    properties:
+      company:
+        type: string
+        maxLength: 180
+      email:
+        type: string
+        format: email
+        minLength: 3
+        maxLength: 180
+      firstName:
+        type: string
+        default: ''
+        maxLength: 180
+      lastName:
+        type: string
+        default: ''
+        maxLength: 180
+      loc:
+        type: integer
+        format: int32
+      applications:
+        type: integer
+        format: int32
+      scans:
+        type: integer
+        format: int32
+      users:
+        type: integer
+        format: int32
+      duration:
+        type: integer
+        format: int32
+      languages:
+        type: array
+        items:
+          type: integer
+          format: int64
+      concurrentScans:
+        type: integer
+        format: int32
+      trialIssueTypes:
+        type: array
+        items:
+          type: integer
+          format: int32
+      trialIssueTypesUseDefaults:
+        type: boolean
+      issueTypeLimit:
+        type: integer
+        format: int32
+      issueTypeLimitUseDefaults:
+        type: boolean
+    required:
+      - company
+      - email
+      - applications
+      - scans
+      - users
+      - loc
+      - duration
+      - languages
+
+  Put.Sub.Organization.Setting:
+    type: object
+    properties:
+      value:
+        type: string
+        maxLength: 1000000
+    required:
+      - value
 
   Patch.Sub.Organization:
     type: object
@@ -15287,9 +15859,33 @@ definitions:
         type: integer
         format: int64
         example: 1
+      process:
+        type: integer
+        format: int64
+      incompatible:
+        type: boolean
+        default: false
     required:
       - name
       - scan
+
+  Patch.Sub.Application.Artifact:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "test.zip"
+        maxLength: 255
+      scan:
+        type: integer
+        format: int64
+        example: 1
+      process:
+        type: integer
+        format: int64
+      incompatible:
+        type: boolean
+        default: false
 
   Post.Sub.Application.Scan:
     type: object
@@ -15371,6 +15967,18 @@ definitions:
         format: int32
         default: 0
       unresolvedMethods:
+        type: integer
+        format: int32
+        default: 0
+      resolvedFunctions:
+        type: integer
+        format: int32
+        default: 0
+      resolvedClasses:
+        type: integer
+        format: int32
+        default: 0
+      resolvedMethods:
         type: integer
         format: int32
         default: 0
@@ -15618,6 +16226,7 @@ definitions:
         enum:
           - php-engine
           - java-engine
+          - javascript-engine
           - php-preparser
           - php-patchgen
           - java-patchgen
@@ -15680,6 +16289,7 @@ definitions:
         enum:
           - php-engine
           - java-engine
+          - javascript-engine
           - php-preparser
           - php-patchgen
           - java-patchgen
@@ -16458,6 +17068,7 @@ definitions:
           - "RETURN_FALSE"
           - "RETURN_TRUE"
           - "EXIT"
+          - "THROW_EXCEPTION"
       mode:
         type: string
         default: "LITERAL"
@@ -16492,6 +17103,7 @@ definitions:
           - "RETURN_FALSE"
           - "RETURN_TRUE"
           - "EXIT"
+          - "THROW_EXCEPTION"
       mode:
         type: string
         default: "LITERAL"
@@ -16586,6 +17198,18 @@ definitions:
       - username
       - password
       - sender
+
+  Post.Sub.System.Email.Test:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+        example: "mail@example.com"
+        minLength: 3
+        maxLength: 180
+    required:
+      - email
 
   Put.Sub.System.Ldap:
     type: object
@@ -16709,6 +17333,9 @@ definitions:
         type: integer
         format: int64
         example: 8
+      ami:
+        type: string
+        maxLength: 120
     required:
       - name
       - type
@@ -16749,6 +17376,25 @@ definitions:
         type: integer
         format: int64
         example: 8
+      ami:
+        type: string
+        maxLength: 120
+
+  Patch.Sub.Server.System:
+    type: object
+    properties:
+      memoryUsed:
+        type: integer
+        format: int32
+      diskSpaceFree:
+        type: integer
+        format: int32
+      diskSpaceAvailable:
+        type: integer
+        format: int32
+      cpuUsage:
+        type: integer
+        format: int32
 
   Post.Sub.Notification.Subscription:
     type: object
@@ -16766,6 +17412,8 @@ definitions:
           | 5      | New comment event                |
           | 6      | New user event                   |
           | 7      | New exploitable review event     |
+          | 8      | Summary statistics               |
+          | 9      | Summary for Health Check         |
         enum:
           - 1
           - 2
@@ -16774,12 +17422,17 @@ definitions:
           - 5
           - 6
           - 7
+          - 8
+          - 9
       user:
         type: integer
         format: int64
       scan:
         type: integer
         format: int64
+      summaryInterval:
+        type: string
+        maxLength: 20
       application:
         type: integer
         format: int64
@@ -16806,6 +17459,8 @@ definitions:
           | 5      | New comment event                |
           | 6      | New user event                   |
           | 7      | New exploitable review event     |
+          | 8      | Summary statistics               |
+          | 9      | Summary for Health Check         |
         enum:
           - 1
           - 2
@@ -16814,12 +17469,17 @@ definitions:
           - 5
           - 6
           - 7
+          - 8
+          - 9
       user:
         type: integer
         format: int64
       scan:
         type: integer
         format: int64
+      summaryInterval:
+        type: string
+        maxLength: 20
       application:
         type: integer
         format: int64
