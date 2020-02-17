@@ -1,3 +1,5 @@
+import com.github.jk1.license.render.CsvReportRenderer
+import com.github.jk1.license.render.ReportRenderer
 import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -5,12 +7,13 @@ plugins {
     `java-library`
     `maven-publish`
 	id("net.ltgt.errorprone") version "0.7.1"
+    id("com.github.jk1.dependency-license-report") version "1.13"
     kotlin("jvm") version "1.3.50" apply false
 }
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.10.0"
+    version = "3.11.0"
 }
 
 configure(subprojects.filterNot { it.name == "platform" }) {
@@ -55,6 +58,19 @@ configure(subprojects.filterNot { it.name == "platform" }) {
         }
 
     }
+}
+
+tasks {
+    check {
+        dependsOn(checkLicense)
+    }
+}
+
+licenseReport {
+    // The entity-gen runtime deps are no real runtime dependencies
+    projects = (allprojects - project(":entity-gen")).toTypedArray()
+    renderers = arrayOf<ReportRenderer>(CsvReportRenderer())
+    allowedLicensesFile = projectDir.resolve("scripts/allowed-licenses.json")
 }
 
 subprojects {
