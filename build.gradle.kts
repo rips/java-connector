@@ -1,5 +1,4 @@
 import com.github.jk1.license.render.CsvReportRenderer
-import com.github.jk1.license.render.ReportRenderer
 import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -13,7 +12,7 @@ plugins {
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.11.0"
+    version = "3.11.1"
 }
 
 configure(subprojects.filterNot { it.name == "platform" }) {
@@ -67,9 +66,8 @@ tasks {
 }
 
 licenseReport {
-    // The entity-gen runtime deps are no real runtime dependencies
     projects = (allprojects - project(":entity-gen")).toTypedArray()
-    renderers = arrayOf<ReportRenderer>(CsvReportRenderer())
+    renderers = arrayOf(CsvReportRenderer())
     allowedLicensesFile = projectDir.resolve("scripts/allowed-licenses.json")
 }
 
