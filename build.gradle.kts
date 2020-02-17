@@ -1,3 +1,4 @@
+import com.github.jk1.license.render.CsvReportRenderer
 import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -58,10 +59,16 @@ configure(subprojects.filterNot { it.name == "platform" }) {
     }
 }
 
+tasks {
+    check {
+        dependsOn(checkLicense)
+    }
+}
+
 licenseReport {
-//    excludeGroups = arrayOf("com.ripstech.obfuscator")
-    renderers = arrayOf<com.github.jk1.license.render.ReportRenderer>(com.github.jk1.license.render.CsvReportRenderer())
-    allowedLicensesFile = File("$projectDir/scripts/allowed-licenses.json")
+    projects = (allprojects - project(":entity-gen")).toTypedArray()
+    renderers = arrayOf(CsvReportRenderer())
+    allowedLicensesFile = projectDir.resolve("scripts/allowed-licenses.json")
 }
 
 subprojects {
