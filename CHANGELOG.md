@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1] - 2020-02-17
+
+### Fixed
+
+* Fix pom file generation
+
+
 ## [3.11.0] - 2020-02-17
 
 ### Added
