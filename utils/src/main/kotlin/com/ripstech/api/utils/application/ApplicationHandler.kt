@@ -39,7 +39,7 @@ class ApplicationHandler @JvmOverloads constructor(
                 log("Use existing application (${it.id}) for scanning.")
             }
         } ?: run {
-            val validQuota = quotas.firstOrNull { it.canCreateAppAndScan() } ?: error(
+            val validQuota = quotas.bestMatch() ?: error(
                     "No valid quota for language '$language' to create app with name '$'"
             )
             val appPayload = ApplicationSend.Post(appName).setChargedQuota(validQuota.id)
@@ -96,6 +96,9 @@ class ApplicationHandler @JvmOverloads constructor(
 
 }
 
+private fun List<Quota>.bestMatch(): Quota? = filter { it.canCreateAppAndScan() }
+        .firstOrNull { it.maxApplications == null }
+        ?: maxBy { it.maxApplications - it.currentApplication }
 
 private fun Quota.canCreateAppAndScan(): Boolean {
     if(!canScan()) return false
