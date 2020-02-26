@@ -17,11 +17,11 @@ import java.time.OffsetDateTime
 import java.util.function.Consumer
 
 class ApplicationHandler @JvmOverloads constructor(
-        private val api: Api,
-        private val appName: String,
-        private val language: String,
-        private val uiUrl: String? = null
-): MinimalLogging() {
+    private val api: Api,
+    private val appName: String,
+    private val language: String,
+    private val uiUrl: String? = null
+) : MinimalLogging() {
 
     override fun setLogger(logger: Consumer<String>): ApplicationHandler {
         super.logger = logger
@@ -33,7 +33,7 @@ class ApplicationHandler @JvmOverloads constructor(
 
         val quotaFilter = Or(quotas.map { Equal("chargedQuota", it.id) })
         val filter = Filter().json(And(Equal("name", appName), quotaFilter))
-        val application = when(val appResult = api.applications().get(filter).result()) {
+        val application = when (val appResult = api.applications().get(filter).result()) {
             is Failure -> throw appResult.exception()
             is Success -> appResult.value.firstOrNull()?.also {
                 log("Use existing application (${it.id}) for scanning.")
@@ -43,7 +43,7 @@ class ApplicationHandler @JvmOverloads constructor(
                     "No valid quota for language '$language' to create app with name '$'"
             )
             val appPayload = ApplicationSend.Post(appName).setChargedQuota(validQuota.id)
-            when(val appCreateResult = api.applications().post(appPayload).result()) {
+            when (val appCreateResult = api.applications().post(appPayload).result()) {
                 is Failure -> throw appCreateResult.exception()
                 is Success -> appCreateResult.value.also {
                     log("Use created application (${it.id}) with quota (${validQuota.id}) for scanning.")
@@ -91,9 +91,7 @@ class ApplicationHandler @JvmOverloads constructor(
                 }.let {
                     UserApplications(it)
                 }
-
     }
-
 }
 
 private fun List<Quota>.bestMatch(): Quota? = filter { it.canCreateAppAndScan() }
@@ -101,13 +99,13 @@ private fun List<Quota>.bestMatch(): Quota? = filter { it.canCreateAppAndScan() 
         ?: maxBy { it.maxApplications - it.currentApplication }
 
 private fun Quota.canCreateAppAndScan(): Boolean {
-    if(!canScan()) return false
-    maxApplications?.let { if(currentApplication >= it) return false }
+    if (!canScan()) return false
+    maxApplications?.let { if (currentApplication >= it) return false }
     return true
 }
 
 private fun Quota.canScan(): Boolean {
-    if(validFrom > OffsetDateTime.now() || validUntil < OffsetDateTime.now()) return false
-    maxScans?.let { if(currentScan >= it) return false }
+    if (validFrom > OffsetDateTime.now() || validUntil < OffsetDateTime.now()) return false
+    maxScans?.let { if (currentScan >= it) return false }
     return true
 }

@@ -1,15 +1,23 @@
 package com.ripstech.api.entity.generator.entity
 
 import com.fasterxml.jackson.annotation.JsonRootName
-import com.squareup.javapoet.*
+import com.squareup.javapoet.AnnotationSpec
+import com.squareup.javapoet.ArrayTypeName
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.ParameterizedTypeName
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import io.swagger.v3.oas.models.media.ArraySchema
 import io.swagger.v3.oas.models.media.ObjectSchema
 import io.swagger.v3.oas.models.media.Schema
-import org.apache.logging.log4j.kotlin.Logging
-import java.util.*
+import java.util.Arrays
+import java.util.Optional
 import javax.lang.model.element.Modifier
+import org.apache.logging.log4j.kotlin.Logging
 
-class RipsEntityArraySend(val name: String, val schema: Schema<Any>): RipsEntity(name), Logging {
+class RipsEntityArraySend(val name: String, val schema: Schema<Any>) : RipsEntity(name), Logging {
 
     override fun wrapTypeName(typeName: TypeName) = ParameterizedTypeName.get(ClassName.get(Optional::class.java), typeName)!!
 
@@ -22,7 +30,7 @@ class RipsEntityArraySend(val name: String, val schema: Schema<Any>): RipsEntity
         var constructorParameter = ArrayTypeName.of(elementClassName)
 
         val fields =
-                when(schema) {
+                when (schema) {
                     is ObjectSchema -> schema.properties
                     is ArraySchema -> {
                         superClass = ParameterizedTypeName.get(ClassName.get(ArrayList::class.java),
@@ -45,7 +53,7 @@ class RipsEntityArraySend(val name: String, val schema: Schema<Any>): RipsEntity
                 .map {
                     val schema = schema.properties[it.first]
                     var type = it.second
-                    when(schema) {
+                    when (schema) {
                         is ArraySchema -> {
                             val subFields = schema.items
                                     .properties
@@ -80,11 +88,11 @@ class RipsEntityArraySend(val name: String, val schema: Schema<Any>): RipsEntity
         val postElementClass = TypeSpec.classBuilder(postElementClassName)
                 .superclass(elementClassName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .apply { if(requiredFields != null) {
+                .apply { if (requiredFields != null) {
                     this.addMethod(buildConstructor(requiredFields))
                 } else {
                     logger.warn("$name has no required arguments")
-                }}
+                } }
                 .addMethods(fields.flatMap { it.value.second }.filter { it.name.startsWith("set") })
                 .build()
 
@@ -114,5 +122,4 @@ class RipsEntityArraySend(val name: String, val schema: Schema<Any>): RipsEntity
 
         return JavaFile.builder(outerClassName.packageName(), outerClass.build()).build()
     }
-
 }

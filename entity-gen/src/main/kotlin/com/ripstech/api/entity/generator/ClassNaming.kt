@@ -9,7 +9,6 @@ class ClassNaming {
             return FqClassName(packageName, parts.last())
         }
     }
-
 }
 
 data class FqClassName(val packageName: String = "", val name: String)
