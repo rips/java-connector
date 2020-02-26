@@ -60,7 +60,7 @@ publishing {
         create<MavenPublication>("connector") {
             from(components["java"])
             artifact(sourcesJar.get())
-	        artifact(javadocJar.get())
+            artifact(javadocJar.get())
             pom {
                 description.set("A library to connect to the RIPS API.")
             }

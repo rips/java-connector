@@ -1,16 +1,23 @@
 package com.ripstech.api.entity.generator.entity
 
 import com.fasterxml.jackson.annotation.JsonRootName
-import com.squareup.javapoet.*
+import com.squareup.javapoet.AnnotationSpec
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.ParameterizedTypeName
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import io.swagger.v3.oas.models.media.Schema
-import org.apache.logging.log4j.kotlin.Logging
-import java.util.*
+import java.util.Optional
 import javax.lang.model.element.Modifier
+import org.apache.logging.log4j.kotlin.Logging
 
-class RipsEntitySend(name: String,
-                     post: Schema<Any>? = null,
-                     patch: Schema<Any>? = null,
-                     put: Schema<Any>? = null): RipsEntity(name), Logging {
+class RipsEntitySend(
+    name: String,
+    post: Schema<Any>? = null,
+    patch: Schema<Any>? = null,
+    put: Schema<Any>? = null
+) : RipsEntity(name), Logging {
 
     private var commonProperties: Map<String, Map<Method, Schema<out Any>>> = mapOf()
     private val methodProperties: MutableMap<Method, Map<String, Schema<out Any>>> = mutableMapOf()
@@ -47,7 +54,7 @@ class RipsEntitySend(name: String,
     }
 
     private fun addMethodProperties(method: Method, schema: Map<String, Schema<out Any>>) {
-        if(schema.isNotEmpty()) {
+        if (schema.isNotEmpty()) {
             methodProperties[method] = emptyMap()
         }
         (schema - commonProperties.keys)
@@ -74,7 +81,7 @@ class RipsEntitySend(name: String,
 
         val commonFields = commonProperties.map {
             val distinct = it.value.toList().distinctBy { listOf(it.second.format, it.second.type, it.second.properties, it.second.`$ref`) }
-            if(distinct.size > 1) {
+            if (distinct.size > 1) {
                 logger.warn("Schema of $outerClassName::${it.key} in ${distinct.map { it.first }} are different.")
             }
             buildFields(it.key, distinct.first().second, Modifier.PROTECTED, outerClassName, METHOD_TYPE.GET, METHOD_TYPE.SET)
@@ -89,7 +96,7 @@ class RipsEntitySend(name: String,
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .superclass(outerClassName)
 
-            val allFields= commonFields.map { it.first }.toMutableList()
+            val allFields = commonFields.map { it.first }.toMutableList()
 
             properties.value.map { buildFields(it.key, it.value, Modifier.PRIVATE, innerClassName, METHOD_TYPE.SET, METHOD_TYPE.GET) }
                     .apply {
@@ -125,7 +132,6 @@ class RipsEntitySend(name: String,
                     .apply { innerClass.addMethods(this) }
 
             innerClass.build()
-
         }.apply { clazz.addTypes(this) }
 
         return JavaFile.builder(outerClassName.packageName(), clazz.build()).build()
@@ -136,5 +142,4 @@ class RipsEntitySend(name: String,
         PATCH,
         PUT,
     }
-
 }

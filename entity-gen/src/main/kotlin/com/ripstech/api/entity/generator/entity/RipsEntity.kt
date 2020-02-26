@@ -3,12 +3,19 @@ package com.ripstech.api.entity.generator.entity
 import com.ripstech.api.entity.generator.ClassNaming
 import com.ripstech.api.entity.generator.TypeGuessingCommon
 import com.ripstech.api.entity.generator.TypeNaming
-import com.squareup.javapoet.*
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.CodeBlock
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.ParameterSpec
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import io.swagger.v3.oas.models.media.Schema
+import java.util.Optional
+import javax.lang.model.element.Modifier
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
-import java.util.*
-import javax.lang.model.element.Modifier
 
 abstract class RipsEntity(name: String) {
 
@@ -78,5 +85,4 @@ abstract class RipsEntity(name: String) {
         GET,
         SET
     }
-
 }

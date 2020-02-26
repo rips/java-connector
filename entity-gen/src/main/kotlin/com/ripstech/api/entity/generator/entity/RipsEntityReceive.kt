@@ -1,13 +1,17 @@
 package com.ripstech.api.entity.generator.entity
 
-import com.squareup.javapoet.*
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeSpec
 import io.swagger.v3.oas.models.media.ArraySchema
 import io.swagger.v3.oas.models.media.ObjectSchema
 import io.swagger.v3.oas.models.media.Schema
-import org.apache.logging.log4j.kotlin.Logging
 import javax.lang.model.element.Modifier
+import org.apache.logging.log4j.kotlin.Logging
 
-class RipsEntityReceive(name: String, val schema: Schema<Any>): RipsEntity(name), Logging {
+class RipsEntityReceive(name: String, val schema: Schema<Any>) : RipsEntity(name), Logging {
 
     private fun innerSchemaBuilder(properties: Map<String, Schema<Any>>, subTypeName: ClassName, typeBuilder: TypeSpec.Builder) {
         properties
@@ -28,10 +32,12 @@ class RipsEntityReceive(name: String, val schema: Schema<Any>): RipsEntity(name)
                 }
     }
 
-    private fun innerBuild(fields: Map<String, Triple<FieldSpec, List<MethodSpec>, TypeSpec?>>,
-                           properties: Map<String, Schema<Any>>,
-                           outerClassName: ClassName,
-                           clazz: TypeSpec.Builder) {
+    private fun innerBuild(
+        fields: Map<String, Triple<FieldSpec, List<MethodSpec>, TypeSpec?>>,
+        properties: Map<String, Schema<Any>>,
+        outerClassName: ClassName,
+        clazz: TypeSpec.Builder
+    ) {
         val innerTypes = fields
                 .filterValues { it.third != null }
                 .map { it.key to it.value.third!! }
@@ -68,5 +74,4 @@ class RipsEntityReceive(name: String, val schema: Schema<Any>): RipsEntity(name)
 
         return JavaFile.builder(outerClassName.packageName(), clazz.build()).build()
     }
-
 }

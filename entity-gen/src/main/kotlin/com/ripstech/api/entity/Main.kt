@@ -4,14 +4,17 @@ import com.ripstech.api.entity.generator.entity.RipsEntity
 import com.ripstech.api.entity.generator.entity.RipsEntityArraySend
 import com.ripstech.api.entity.generator.entity.RipsEntityReceive
 import com.ripstech.api.entity.generator.entity.RipsEntitySend
-import com.squareup.javapoet.*
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
 import io.swagger.v3.oas.models.media.ArraySchema
 import io.swagger.v3.oas.models.media.ObjectSchema
 import io.swagger.v3.parser.OpenAPIV3Parser
-import org.apache.logging.log4j.kotlin.logger
 import java.nio.file.Paths
 import javax.lang.model.element.Modifier
-
+import org.apache.logging.log4j.kotlin.logger
 
 object Log {
     var logger = logger()
@@ -41,12 +44,11 @@ fun main(args: Array<String>) {
 
     val openAPI = OpenAPIV3Parser().read("swagger.yaml")
 
-
     val receiveEntities = openAPI.components
             .schemas
             .filterKeys { s -> !s.contains("""^(Post|Patch|Put).""".toRegex()) }
             .mapNotNull {
-                when(it.value) {
+                when (it.value) {
                     is ObjectSchema -> RipsEntityReceive(it.key, it.value)
                     else -> {
                         logger.error("not implemented scheme: ${it.key}")
@@ -55,16 +57,14 @@ fun main(args: Array<String>) {
                 }
             }
 
-
-
-    //first stage
+    // first stage
     val sendEntities = openAPI.components
             .schemas
             .filterKeys { s -> s.contains("""^(Post|Patch|Put).""".toRegex()) }
             .asIterable()
             .groupBy {
                 val components = it.key.split(".Sub.")
-                if(components.size <= 1) {
+                if (components.size <= 1) {
                     it.key.removePrefix("Post.").removePrefix("Put.")
                 } else {
                     components.last()
@@ -92,5 +92,4 @@ fun main(args: Array<String>) {
     IdHolder.javaFile.writeTo(generatedPath)
     (receiveEntities + sendEntities)
             .forEach { it.build().writeTo(generatedPath) }
-
 }

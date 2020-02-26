@@ -1,18 +1,19 @@
-import com.github.jk1.license.render.CsvReportRenderer
 import net.ltgt.gradle.errorprone.errorprone
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-library`
     `maven-publish`
-	id("net.ltgt.errorprone") version "0.7.1"
-    id("com.github.jk1.dependency-license-report") version "1.13"
+    id("net.ltgt.errorprone") version "0.7.1"
     kotlin("jvm") version "1.3.50" apply false
+    id("com.ripstech.common") version "0.0.2"
 }
+
+version = gitVersion.describedVersion
 
 allprojects {
     group = "com.ripstech.api"
-    version = "3.11.1"
+    version = rootProject.version
 }
 
 configure(subprojects.filterNot { it.name == "platform" }) {
@@ -51,24 +52,15 @@ configure(subprojects.filterNot { it.name == "platform" }) {
 
         withType<JavaCompile> {
             with(options.errorprone) {
-                //allDisabledChecksAsWarnings = true //is buggy right now
+                // allDisabledChecksAsWarnings = true //is buggy right now
                 disableWarningsInGeneratedCode = true
             }
         }
-
-    }
-}
-
-tasks {
-    check {
-        dependsOn(checkLicense)
     }
 }
 
 licenseReport {
     projects = (allprojects - project(":entity-gen")).toTypedArray()
-    renderers = arrayOf(CsvReportRenderer())
-    allowedLicensesFile = projectDir.resolve("scripts/allowed-licenses.json")
 }
 
 subprojects {
@@ -104,12 +96,10 @@ subprojects {
                                 developerConnection.set("scm:git:ssh://github.com:rips/java-connector.git")
                                 url.set("https://github.com/rips/java-connector/tree/master")
                             }
-
                         }
                     }
                 }
             }
         }
     }
-
 }
