@@ -4,21 +4,31 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
-import io.swagger.v3.oas.models.media.*
-import org.apache.logging.log4j.kotlin.Logging
+import io.swagger.v3.oas.models.media.ArraySchema
+import io.swagger.v3.oas.models.media.BooleanSchema
+import io.swagger.v3.oas.models.media.DateSchema
+import io.swagger.v3.oas.models.media.DateTimeSchema
+import io.swagger.v3.oas.models.media.EmailSchema
+import io.swagger.v3.oas.models.media.IntegerSchema
+import io.swagger.v3.oas.models.media.MapSchema
+import io.swagger.v3.oas.models.media.NumberSchema
+import io.swagger.v3.oas.models.media.ObjectSchema
+import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.media.StringSchema
 import java.math.BigInteger
 import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.Collections
+import org.apache.logging.log4j.kotlin.Logging
 
-abstract class TypeGuessing: Logging {
+abstract class TypeGuessing : Logging {
 
     protected val emptyList = CodeBlock.of("\$T.\$N()", ClassName.get(Collections::class.java), "emptyList")!!
     protected val emptyMap = CodeBlock.of("\$T.\$N()", ClassName.get(Collections::class.java), "emptyMap")!!
     protected val emptySet = CodeBlock.of("\$T.\$N()", ClassName.get(Collections::class.java), "emptySet")!!
 
     fun guess(name: String, schema: IntegerSchema): GuessedType {
-        return when(schema.format) {
+        return when (schema.format) {
             "int32" -> GuessedType(ClassName.INT.box())
             "int64" -> GuessedType(ClassName.LONG.box())
             "bigint" -> GuessedType(BigInteger::class.java)
@@ -34,7 +44,7 @@ abstract class TypeGuessing: Logging {
     }
 
     fun guess(@Suppress("UNUSED_PARAMETER") name: String, schema: NumberSchema): GuessedType {
-        return when(schema.format) {
+        return when (schema.format) {
             "float" -> GuessedType(ClassName.FLOAT.box())
             "double" -> GuessedType(ClassName.DOUBLE.box())
             else -> {
@@ -68,7 +78,7 @@ abstract class TypeGuessing: Logging {
     }
 
     fun guess(name: String, schema: StringSchema): GuessedType {
-        return when(name) {
+        return when (name) {
             "created_at", "published_at", "valid_until", "validUntil", "valid_from", "validFrom", "last_login", "submission", "start", "finish",
             "created" -> {
                 logger.warn("Select DateTimeSchema via name ($name)")
@@ -93,10 +103,10 @@ abstract class TypeGuessing: Logging {
     abstract fun guess(name: String, schema: ObjectSchema, parentTypeName: ClassName): GuessedType
 
     open fun guess(name: String, schema: Schema<*>, parentTypeName: ClassName = ClassName.OBJECT): GuessedType {
-        if(schema.`$ref` != null) { //TODO lookup
+        if (schema.`$ref` != null) { // TODO lookup
             val (packageName, entityName) = ClassNaming.naming(schema.`$ref`.replace("#/components/schemas/", ""))
             return GuessedType(ClassName.get(
-                    sequenceOf("com.ripstech.api.entity", "receive", packageName) //TODO refs only work for receive package
+                    sequenceOf("com.ripstech.api.entity", "receive", packageName) // TODO refs only work for receive package
                             .filter { it.isNotBlank() }
                             .joinToString("."),
                     entityName))
@@ -118,5 +128,4 @@ abstract class TypeGuessing: Logging {
             }
         }
     }
-
 }
