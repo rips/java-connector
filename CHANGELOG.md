@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.12.1] - 2020-02-27
+## Fixed
+- Expose appId in ScanHandler
+
 ## [3.12.0] - 2020-02-27
 ### Added
 - The ApplicationHandler creates or fetch an app by name
