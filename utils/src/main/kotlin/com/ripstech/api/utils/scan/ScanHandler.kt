@@ -20,7 +20,7 @@ import java.util.function.Consumer
 
 class ScanHandler @JvmOverloads constructor(
     private val api: Api,
-    private val appId: Long,
+    val appId: Long,
     var uiUrl: String? = null
 ) : MinimalLogging() {
 
