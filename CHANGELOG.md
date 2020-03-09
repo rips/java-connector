@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.12.2] - 2020-03-09
+## Fixed
+- Wrong entity wrapper for invite organization
+
 ## [3.12.1] - 2020-02-27
 ## Fixed
 - Expose appId in ScanHandler

@@ -20,7 +20,7 @@ public class OrganizationService extends PatchDeletePostGetService<Organization,
 	public ApiResponse<Void> inviteUi(com.ripstech.api.entity.send.organization.invite.UiSend invite) {
 		return new ApiResponse<>(getTarget(POST, false)
 				.appendPath("invite/ui")
-				.setJsonBody(new OrganizationWrapper(invite))
+				.setJsonBody(new InvitationWrapper(invite))
 				.setSendAuthHeader(false),
 			Void.class);
 	}
@@ -40,11 +40,11 @@ public class OrganizationService extends PatchDeletePostGetService<Organization,
 		return new TypeReference<List<Organization>>() {};
 	}
 
-	private static class OrganizationWrapper {
-		public UiSend organization;
+	private static class InvitationWrapper {
+		public UiSend invitation;
 
-		public OrganizationWrapper(UiSend organization) {
-			this.organization = organization;
+		public InvitationWrapper(UiSend invitation) {
+			this.invitation = invitation;
 		}
 	}
 }
