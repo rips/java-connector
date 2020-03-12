@@ -13,6 +13,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -97,8 +99,16 @@ public class EndpointValidator {
 
 	@Nullable
 	public static String ui(@NotNull String uiUrl) throws IOException {
+		return ui(uiUrl, null);
+	}
+
+	@Nullable
+	public static String ui(@NotNull String uiUrl, SSLSocketFactory sslSocketFactory) throws IOException {
 		URL url = new URL(uiUrl + "/assets/version.json");
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		if (sslSocketFactory != null) {
+			connection.setSSLSocketFactory(sslSocketFactory);
+		}
 		connection.setRequestMethod("GET");
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "application/json");
