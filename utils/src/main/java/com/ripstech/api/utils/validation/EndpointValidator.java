@@ -103,7 +103,7 @@ public class EndpointValidator {
 	}
 
 	@Nullable
-	public static String ui(@NotNull String uiUrl, SSLSocketFactory sslSocketFactory) throws IOException {
+	public static String ui(@NotNull String uiUrl, @Nullable SSLSocketFactory sslSocketFactory) throws IOException {
 		URL url = new URL(uiUrl + "/assets/version.json");
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		if (sslSocketFactory != null) {
