@@ -51,29 +51,20 @@ public class ProfileHandler {
 	}
 
 	public static AnalysisProfiles getAnalysisProfiles(Api api, Language language) throws ApiException {
-		AtomicLong defaultApplicationId = new AtomicLong(-1);
 		AtomicLong defaultGlobalId = new AtomicLong(-1);
 		final Set<Profile> profiles = api.applications()
-																		 .profiles()
-																		 .all()
-																		 .get(new Filter(equal("language", language.getId())))
-																		 .orThrow(ApiException::new)
-																		 .stream().peek(p -> {
-																				if (p.getDefault_()) {
-																					if (p.getApplication() == null) {
-																						defaultGlobalId.set(p.getId());
-																					} else {
-																						defaultApplicationId.set(p.getId());
-																					}
-																				}
-																			})
-																			.collect(Collectors.toSet());
+		                                 .profiles()
+		                                 .all()
+		                                 .get(new Filter(equal("language", language.getId())))
+		                                 .orThrow(ApiException::new)
+		                                 .stream().peek(p -> {
+		                                   if (p.getDefault_()) {
+		                                   		defaultGlobalId.set(p.getId());
+		                                   	}
+		                                 }).collect(Collectors.toSet());
 		Long defaultId = null;
 		if (defaultGlobalId.get() != -1) {
 			defaultId = defaultGlobalId.get();
-		}
-		if (defaultApplicationId.get() != -1) {
-			defaultId = defaultApplicationId.get();
 		}
 		return new AnalysisProfiles(profiles, defaultId);
 	}
