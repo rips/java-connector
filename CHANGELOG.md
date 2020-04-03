@@ -1,11 +1,15 @@
 # Changelog
+## [3.13.0] - 2020-04-03
+### Added
+- Endpoint to fetch all profiles
+- Extend ProfileHandler to fetch analysis profiles by language
 
 ## [3.12.2] - 2020-03-09
-## Fixed
+### Fixed
 - Wrong entity wrapper for invite organization
 
 ## [3.12.1] - 2020-02-27
-## Fixed
+### Fixed
 - Expose appId in ScanHandler
 
 ## [3.12.0] - 2020-02-27
