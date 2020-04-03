@@ -1,6 +1,7 @@
 package com.ripstech.api.connector.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ripstech.api.connector.connector.path.application.ProfileWoIdPath;
 import com.ripstech.api.connector.service.template.PatchDeletePostGetService;
 import com.ripstech.api.entity.receive.Application;
 import com.ripstech.api.entity.send.ApplicationSend;
@@ -32,6 +33,12 @@ public class ApplicationService extends PatchDeletePostGetService<Application, A
 
 	public ScanWoIdPath scans() {
 		ScanWoIdPath path = new ScanWoIdPath(baseUri);
+		path.setHttpClientConfig(httpClientConfig);
+		return path;
+	}
+
+	public ProfileWoIdPath profiles() {
+		ProfileWoIdPath path = new ProfileWoIdPath(baseUri);
 		path.setHttpClientConfig(httpClientConfig);
 		return path;
 	}
